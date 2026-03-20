@@ -1,0 +1,747 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\controllers\\visacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\controllers\\visacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\controllers\\hotelcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\controllers\\hotelcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\controllers\\flightcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\controllers\\flightcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\middleware\\exceptionmiddleware.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\middleware\\exceptionmiddleware.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\weatherforecast.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\weatherforecast.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\services\\fileservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\services\\fileservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\services\\paymentservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\services\\paymentservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\services\\visaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\services\\visaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\services\\hotelservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\services\\hotelservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\services\\flightservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\services\\flightservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\services\\passwordhasher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\services\\passwordhasher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\services\\jwtservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\services\\jwtservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\models\\flight.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\models\\flight.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\dtos\\common\\paginationdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\dtos\\common\\paginationdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\dtos\\visa\\applyvisadto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\dtos\\visa\\applyvisadto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\dtos\\visa\\createvisadto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\dtos\\visa\\createvisadto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\dtos\\hotel\\reviewdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\dtos\\hotel\\reviewdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\dtos\\hotel\\hotelsearchdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\dtos\\hotel\\hotelsearchdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\dtos\\hotel\\createroomdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\dtos\\hotel\\createroomdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\dtos\\hotel\\createhoteldto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\dtos\\hotel\\createhoteldto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\dtos\\hotel\\bookhoteldto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\dtos\\hotel\\bookhoteldto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\dtos\\flight\\flightsearchdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\dtos\\flight\\flightsearchdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\dtos\\flight\\bookflightdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\dtos\\flight\\bookflightdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\dtos\\flight\\createflightdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\dtos\\flight\\createflightdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\dtos\\user\\changepassworddto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\dtos\\user\\changepassworddto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\dtos\\user\\updateprofiledto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\dtos\\user\\updateprofiledto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\dtos\\auth\\logindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\dtos\\auth\\logindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\dtos\\auth\\registerdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\dtos\\auth\\registerdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\models\\visadocument.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\models\\visadocument.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\models\\visaapplication.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\models\\visaapplication.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\models\\visa.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\models\\visa.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\models\\hotelreview.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\models\\hotelreview.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\models\\hotelbooking.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\models\\hotelbooking.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\models\\room.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\models\\room.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\models\\hotel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\models\\hotel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\models\\flightbooking.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\models\\flightbooking.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|c:\\users\\sayem\\desktop\\final_project\\backend\\tour_\u0026_travel_api\\tour_\u0026_travel_api\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{45081A25-2703-4DED-B716-045879A541DA}|Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api.csproj|solutionrelative:tour_\u0026_travel_api\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 6,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ExceptionMiddleware.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Middleware\\ExceptionMiddleware.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\Middleware\\ExceptionMiddleware.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Middleware\\ExceptionMiddleware.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\Middleware\\ExceptionMiddleware.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAADwvyIAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:51:39.465Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "AdminController.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Controllers\\AdminController.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\Controllers\\AdminController.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Controllers\\AdminController.cs*",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\Controllers\\AdminController.cs*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:44:58.491Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Controllers\\AuthController.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\Controllers\\AuthController.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Controllers\\AuthController.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\Controllers\\AuthController.cs",
+              "ViewState": "AgIAABYAAAAAAAAAAAAgwAAAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:43:57.378Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "FlightController.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Controllers\\FlightController.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\Controllers\\FlightController.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Controllers\\FlightController.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\Controllers\\FlightController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:44:23.509Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "HotelController.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Controllers\\HotelController.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\Controllers\\HotelController.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Controllers\\HotelController.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\Controllers\\HotelController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:44:35.994Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "UserController.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Controllers\\UserController.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\Controllers\\UserController.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Controllers\\UserController.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\Controllers\\UserController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:44:12.079Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "VisaController.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Controllers\\VisaController.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\Controllers\\VisaController.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Controllers\\VisaController.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\Controllers\\VisaController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:44:48.745Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "PaymentService.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Services\\PaymentService.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\Services\\PaymentService.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Services\\PaymentService.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\Services\\PaymentService.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAAACAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:52:33.114Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "HotelService.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Services\\HotelService.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\Services\\HotelService.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Services\\HotelService.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\Services\\HotelService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:52:17.16Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "VisaService.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Services\\VisaService.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\Services\\VisaService.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Services\\VisaService.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\Services\\VisaService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:52:25.405Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "FileService.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Services\\FileService.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\Services\\FileService.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Services\\FileService.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\Services\\FileService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:52:41.636Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Program.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\Program.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Program.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\Program.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAqwHYAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T17:05:36.134Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\appsettings.json",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\appsettings.json",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\appsettings.json",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-03-19T17:07:07.666Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "WeatherForecast.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\WeatherForecast.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\WeatherForecast.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\WeatherForecast.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\WeatherForecast.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAIAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T17:13:36.918Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "FlightService.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Services\\FlightService.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\Services\\FlightService.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Services\\FlightService.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\Services\\FlightService.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAqwCcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:52:10.23Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "UserService.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Services\\UserService.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\Services\\UserService.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Services\\UserService.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\Services\\UserService.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAqwCwAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:52:01.628Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "AuthService.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Services\\AuthService.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\Services\\AuthService.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Services\\AuthService.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\Services\\AuthService.cs",
+              "ViewState": "AgIAABQAAAAAAAAAAAAqwDMAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:51:48.359Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "PasswordHasher.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Services\\PasswordHasher.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\Services\\PasswordHasher.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Services\\PasswordHasher.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\Services\\PasswordHasher.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:53:00.929Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "JwtService.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Services\\JwtService.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\Services\\JwtService.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Services\\JwtService.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\Services\\JwtService.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAqwCoAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:52:49.36Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "Flight.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Models\\Flight.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\Models\\Flight.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Models\\Flight.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\Models\\Flight.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:45:29.419Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "PaginationDto.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\DTOs\\Common\\PaginationDto.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\DTOs\\Common\\PaginationDto.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\DTOs\\Common\\PaginationDto.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\DTOs\\Common\\PaginationDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:48:43.728Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "ApplyVisaDto.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\DTOs\\Visa\\ApplyVisaDto.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\DTOs\\Visa\\ApplyVisaDto.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\DTOs\\Visa\\ApplyVisaDto.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\DTOs\\Visa\\ApplyVisaDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:48:53.283Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "CreateVisaDto.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\DTOs\\Visa\\CreateVisaDto.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\DTOs\\Visa\\CreateVisaDto.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\DTOs\\Visa\\CreateVisaDto.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\DTOs\\Visa\\CreateVisaDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:49:02.755Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "ReviewDto.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\DTOs\\Hotel\\ReviewDto.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\DTOs\\Hotel\\ReviewDto.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\DTOs\\Hotel\\ReviewDto.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\DTOs\\Hotel\\ReviewDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:49:11.227Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "HotelSearchDto.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\DTOs\\Hotel\\HotelSearchDto.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\DTOs\\Hotel\\HotelSearchDto.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\DTOs\\Hotel\\HotelSearchDto.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\DTOs\\Hotel\\HotelSearchDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T17:01:02.048Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "CreateRoomDto.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\DTOs\\Hotel\\CreateRoomDto.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\DTOs\\Hotel\\CreateRoomDto.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\DTOs\\Hotel\\CreateRoomDto.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\DTOs\\Hotel\\CreateRoomDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:49:56.949Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "CreateHotelDto.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\DTOs\\Hotel\\CreateHotelDto.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\DTOs\\Hotel\\CreateHotelDto.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\DTOs\\Hotel\\CreateHotelDto.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\DTOs\\Hotel\\CreateHotelDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:50:05.149Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "BookHotelDto.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\DTOs\\Hotel\\BookHotelDto.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\DTOs\\Hotel\\BookHotelDto.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\DTOs\\Hotel\\BookHotelDto.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\DTOs\\Hotel\\BookHotelDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:49:47.866Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "FlightSearchDto.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\DTOs\\Flight\\FlightSearchDto.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\DTOs\\Flight\\FlightSearchDto.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\DTOs\\Flight\\FlightSearchDto.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\DTOs\\Flight\\FlightSearchDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T17:00:05.214Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "BookFlightDto.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\DTOs\\Flight\\BookFlightDto.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\DTOs\\Flight\\BookFlightDto.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\DTOs\\Flight\\BookFlightDto.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\DTOs\\Flight\\BookFlightDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:50:15.552Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "CreateFlightDto.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\DTOs\\Flight\\CreateFlightDto.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\DTOs\\Flight\\CreateFlightDto.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\DTOs\\Flight\\CreateFlightDto.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\DTOs\\Flight\\CreateFlightDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:50:24.074Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
+              "Title": "ChangePasswordDto.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\DTOs\\User\\ChangePasswordDto.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\DTOs\\User\\ChangePasswordDto.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\DTOs\\User\\ChangePasswordDto.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\DTOs\\User\\ChangePasswordDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:50:33.438Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 32,
+              "Title": "UpdateProfileDto.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\DTOs\\User\\UpdateProfileDto.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\DTOs\\User\\UpdateProfileDto.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\DTOs\\User\\UpdateProfileDto.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\DTOs\\User\\UpdateProfileDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:50:41.758Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 33,
+              "Title": "LoginDto.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\DTOs\\Auth\\LoginDto.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\DTOs\\Auth\\LoginDto.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\DTOs\\Auth\\LoginDto.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\DTOs\\Auth\\LoginDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:50:52.486Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 34,
+              "Title": "RegisterDto.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\DTOs\\Auth\\RegisterDto.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\DTOs\\Auth\\RegisterDto.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\DTOs\\Auth\\RegisterDto.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\DTOs\\Auth\\RegisterDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:50:58.75Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 35,
+              "Title": "AppDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Data\\AppDbContext.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\Data\\AppDbContext.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Data\\AppDbContext.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\Data\\AppDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:47:06.014Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 36,
+              "Title": "VisaDocument.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Models\\VisaDocument.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\Models\\VisaDocument.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Models\\VisaDocument.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\Models\\VisaDocument.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:46:41.773Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 37,
+              "Title": "VisaApplication.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Models\\VisaApplication.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\Models\\VisaApplication.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Models\\VisaApplication.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\Models\\VisaApplication.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:46:33.22Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 38,
+              "Title": "Visa.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Models\\Visa.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\Models\\Visa.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Models\\Visa.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\Models\\Visa.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:46:25.21Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 39,
+              "Title": "HotelReview.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Models\\HotelReview.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\Models\\HotelReview.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Models\\HotelReview.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\Models\\HotelReview.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:46:18.371Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 40,
+              "Title": "HotelBooking.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Models\\HotelBooking.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\Models\\HotelBooking.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Models\\HotelBooking.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\Models\\HotelBooking.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:46:09.885Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 41,
+              "Title": "Room.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Models\\Room.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\Models\\Room.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Models\\Room.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\Models\\Room.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:46:01.285Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 42,
+              "Title": "Hotel.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Models\\Hotel.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\Models\\Hotel.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Models\\Hotel.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\Models\\Hotel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:45:54.468Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 43,
+              "Title": "FlightBooking.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Models\\FlightBooking.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\Models\\FlightBooking.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Models\\FlightBooking.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\Models\\FlightBooking.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:45:43.935Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 44,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Models\\User.cs",
+              "RelativeDocumentMoniker": "Tour_\u0026_Travel_api\\Models\\User.cs",
+              "ToolTip": "C:\\Users\\sayem\\Desktop\\final_Project\\backend\\Tour_\u0026_Travel_api\\Tour_\u0026_Travel_api\\Models\\User.cs",
+              "RelativeToolTip": "Tour_\u0026_Travel_api\\Models\\User.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T16:45:18.085Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
