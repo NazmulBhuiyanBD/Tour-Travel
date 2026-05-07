@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tour_&_Travel_api", "Tour_&_Travel_api.csproj", "{1A779D8D-2CEE-F35C-0E16-E820AB9D4A27}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tour_Travel_api", "Tour_Travel_api.csproj", "{1A779D8D-2CEE-F35C-0E16-E820AB9D4A27}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
