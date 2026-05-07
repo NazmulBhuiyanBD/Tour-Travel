@@ -1,33 +1,30 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Scalar.AspNetCore;
 using System.Text;
+using System.Threading.Tasks;
 using TravelApp.Data;
 using TravelApp.Middleware;
 using TravelApp.Services;
+using TravelApp.Hubs;
+
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ======================
-// ?? SERVICES
-// ======================
 builder.Services.AddControllers();
-
-// OpenAPI (Swagger alternative in .NET 9)
+builder.Services.AddSignalR();
 builder.Services.AddOpenApi();
-
-// ======================
-// ?? DATABASE
-// ======================
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")
-    )
-);
+{
+    var connectionString =
+        Environment.GetEnvironmentVariable("DATABASE_URL")
+        ?? builder.Configuration.GetConnectionString("DefaultConnection");
 
-// ======================
-// ?? JWT AUTH
-// ======================
+    options.UseNpgsql(connectionString);
+});
+
 var jwt = builder.Configuration.GetSection("Jwt");
 
 builder.Services.AddAuthentication(options =>
@@ -49,24 +46,34 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(jwt["Key"]))
     };
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var accessToken = context.Request.Query["access_token"];
+            var path = context.HttpContext.Request.Path;
+            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/chathub"))
+            {
+                context.Token = accessToken;
+            }
+            return Task.CompletedTask;
+        }
+    };
 });
-
-// ======================
-// ?? CUSTOM SERVICES
-// ======================
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<FlightService>();
 builder.Services.AddScoped<HotelService>();
-builder.Services.AddScoped<VisaService>();
+
+builder.Services.AddScoped<TourService>();
+builder.Services.AddScoped<BookingService>();
+builder.Services.AddScoped<PaymentService>();
 builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<FileService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddHttpClient<PaymentService>();
 
-// ======================
-// ?? CORS
-// ======================
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -79,41 +86,50 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// ======================
-// ?? EXCEPTION MIDDLEWARE
-// ======================
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    // Automatically apply any pending migrations
+    Console.WriteLine("Applying database migrations...");
+    try {
+        context.Database.Migrate();
+        Console.WriteLine("Database migrations applied successfully.");
+    } catch (Exception ex) {
+        Console.WriteLine($"Error applying migrations: {ex.Message}");
+    }
+
+    if (!context.Admins.Any())
+    {
+        context.Admins.Add(new TravelApp.Models.Admin 
+        {
+             Name = "System Admin",
+             Email = "admin@travel.com",
+             Password = TravelApp.Services.PasswordHasher.Hash("admin123"),
+             Phone = "0000000000"
+        });
+        context.SaveChanges();
+    }
+    DbInitializer.Initialize(context);
+}
+
 app.UseMiddleware<ExceptionMiddleware>();
 
-// ======================
-// ?? OPEN API (.NET 9)
-// ======================
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.MapScalarApiReference();
 }
 
-// ======================
-// ?? STATIC FILES (for images)
-// ======================
 app.UseStaticFiles();
 
-// ======================
-// ?? CORS
-// ======================
 app.UseCors("AllowAll");
-
-// ======================
-// ?? AUTH
-// ======================
 app.UseAuthentication();
 app.UseAuthorization();
 
-// ======================
 app.UseHttpsRedirection();
 
-// ======================
-// ?? ROUTES
-// ======================
 app.MapControllers();
+app.MapHub<ChatHub>("/chathub");
 
-app.Run();
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5198";
+app.Run($"http://0.0.0.0:{port}");

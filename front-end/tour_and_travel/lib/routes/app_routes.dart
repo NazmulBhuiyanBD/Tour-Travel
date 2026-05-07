@@ -1,0 +1,30 @@
+abstract class Routes {
+  static const INITIAL = '/';
+  static const ONBOARDING = '/onboarding';
+  static const LOGIN = '/login';
+  static const SIGNUP = '/signup';
+  static const DASHBOARD = '/dashboard';
+  static const USER_DASHBOARD = '/user-dashboard';
+  static const BOOKING_HISTORY = '/booking-history';
+  static const ADMIN_DASHBOARD = '/admin-dashboard';
+  static const ADMIN_CHAT = '/admin-chat';
+  static const ADMIN_LOGIN = '/admin-login';
+  static const ADMIN_CHAT_LIST = '/admin-chat-list';
+  static const ADMIN_USER_MANAGE = '/admin-user-manage';
+  static const ADMIN_FLIGHT_MANAGE = '/admin-flight-manage';
+  static const ADMIN_HOTEL_MANAGE = '/admin-hotel-manage';
+  static const ADMIN_TOUR_MANAGE = '/admin-tour-manage';
+  static const ADMIN_BOOKINGS = '/admin-bookings';
+  static const SUPER_ADMIN_MANAGE = '/super-admin-manage';
+  static const ADMIN_TOP_DESTINATIONS = '/admin-top-destinations';
+  static const ADMIN_POPULAR_AIRLINES = '/admin-popular-airlines';
+  static const ADMIN_FEATURED_HOTELS = '/admin-featured-hotels';
+  static const VERIFY_EMAIL = '/verify-email';
+  static const FORGOT_PASSWORD = '/forgot-password';
+  static const RESET_PASSWORD = '/reset-password';
+  static const TOUR_DETAILS = '/tour-details';
+  static const HOTEL_DETAILS = '/hotel-details';
+  static const MY_FLIGHT_BOOKINGS = '/my-flight-bookings';
+  static const FLIGHT_BOOKING_DETAILS = '/flight-booking-details';
+  static const BOOKING_SUCCESS = '/booking-success';
+}

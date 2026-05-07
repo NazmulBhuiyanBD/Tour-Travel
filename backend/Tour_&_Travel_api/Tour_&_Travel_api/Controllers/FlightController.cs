@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using TravelApp.Data;
 using TravelApp.DTOs.Flight;
-using TravelApp.Models;
+using TravelApp.Services;
 
 namespace TravelApp.Controllers
 {
@@ -11,65 +10,57 @@ namespace TravelApp.Controllers
     [Route("api/[controller]")]
     public class FlightController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly FlightService _flightService;
 
-        public FlightController(AppDbContext context)
+        public FlightController(FlightService flightService)
         {
-            _context = context;
+            _flightService = flightService;
         }
 
         private int GetUserId() =>
             int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            return Ok(_flightService.Search(null, null));
+        }
+
         [Authorize(Roles = "Admin")]
         [HttpPost("add")]
         public IActionResult Add(CreateFlightDto dto)
         {
-            var f = new Flight
-            {
-                Airline = dto.Airline,
-                From = dto.From,
-                To = dto.To,
-                DepartureTime = dto.DepartureTime,
-                ArrivalTime = dto.ArrivalTime,
-                Price = dto.Price,
-                AvailableSeats = dto.AvailableSeats
-            };
-
-            _context.Flights.Add(f);
-            _context.SaveChanges();
-            return Ok();
+            _flightService.AddFlight(dto);
+            return Ok(new { message = "Flight added safely" });
         }
 
         [HttpGet("search")]
         public IActionResult Search(string from, string to)
         {
-            return Ok(_context.Flights
-                .Where(x => x.From == from && x.To == to)
-                .ToList());
+            var result = _flightService.Search(from, to);
+            return Ok(result);
+        }
+
+        [HttpGet("popular")]
+        public IActionResult GetPopular()
+        {
+            return Ok(_flightService.GetPopularFlights());
         }
 
         [Authorize]
         [HttpPost("book")]
         public IActionResult Book(BookFlightDto dto)
         {
-            var f = _context.Flights.Find(dto.FlightId);
-
-            if (f.AvailableSeats < dto.SeatCount)
-                return BadRequest("No seats");
-
-            f.AvailableSeats -= dto.SeatCount;
-
-            _context.FlightBookings.Add(new FlightBooking
+            try
             {
-                UserId = GetUserId(),
-                FlightId = dto.FlightId,
-                SeatCount = dto.SeatCount,
-                TotalPrice = f.Price * dto.SeatCount
-            });
-
-            _context.SaveChanges();
-            return Ok();
+                var userId = GetUserId();
+                _flightService.BookFlight(userId, dto);
+                return Ok(new { message = "Flight booked successfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
     }
 }

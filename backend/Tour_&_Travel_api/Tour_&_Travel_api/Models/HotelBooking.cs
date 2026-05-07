@@ -1,4 +1,4 @@
-﻿namespace TravelApp.Models
+namespace TravelApp.Models
 {
     public class HotelBooking
     {
@@ -11,6 +11,9 @@
         public DateTime CheckOut { get; set; }
 
         public decimal TotalPrice { get; set; }
+
+        public string PaymentMethod { get; set; }
+        public string TransactionId { get; set; }
 
         public Room Room { get; set; }
     }

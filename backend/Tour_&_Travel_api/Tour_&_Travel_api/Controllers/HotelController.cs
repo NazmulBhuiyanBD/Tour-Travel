@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using TravelApp.Data;
 using TravelApp.DTOs.Hotel;
-using TravelApp.Models;
+using TravelApp.Services;
 
 namespace TravelApp.Controllers
 {
@@ -11,11 +10,11 @@ namespace TravelApp.Controllers
     [Route("api/[controller]")]
     public class HotelController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly HotelService _hotelService;
 
-        public HotelController(AppDbContext context)
+        public HotelController(HotelService hotelService)
         {
-            _context = context;
+            _hotelService = hotelService;
         }
 
         private int GetUserId() =>
@@ -25,39 +24,36 @@ namespace TravelApp.Controllers
         [HttpPost("add")]
         public IActionResult Add(CreateHotelDto dto)
         {
-            _context.Hotels.Add(new Hotel
-            {
-                Name = dto.Name,
-                Location = dto.Location,
-                Description = dto.Description
-            });
-
-            _context.SaveChanges();
-            return Ok();
+            _hotelService.AddHotel(dto);
+            return Ok(new { message = "Hotel added successfully" });
         }
 
         [HttpGet]
-        public IActionResult Get() => Ok(_context.Hotels.ToList());
+        public IActionResult Get()
+        {
+            return Ok(_hotelService.GetHotels());
+        }
+
+        [HttpGet("featured")]
+        public IActionResult GetFeatured()
+        {
+            return Ok(_hotelService.GetFeaturedHotels());
+        }
 
         [Authorize]
         [HttpPost("book")]
         public IActionResult Book(BookHotelDto dto)
         {
-            var room = _context.Rooms.Find(dto.RoomId);
-
-            room.AvailableRooms--;
-
-            _context.HotelBookings.Add(new HotelBooking
+            try
             {
-                UserId = GetUserId(),
-                RoomId = dto.RoomId,
-                CheckIn = dto.CheckIn,
-                CheckOut = dto.CheckOut,
-                TotalPrice = room.Price
-            });
-
-            _context.SaveChanges();
-            return Ok();
+                var userId = GetUserId();
+                _hotelService.BookHotel(userId, dto);
+                return Ok(new { message = "Hotel booked successfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
     }
 }

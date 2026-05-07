@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace TravelApp.Models
 {
@@ -20,5 +20,13 @@ namespace TravelApp.Models
         public string Role { get; set; } = "User";
 
         public bool IsActive { get; set; } = true;
+
+        public bool IsEmailConfirmed { get; set; } = false;
+
+        public string? EmailConfirmationToken { get; set; }
+
+        public string? ResetPasswordToken { get; set; }
+
+        public DateTime? ResetPasswordTokenExpiry { get; set; }
     }
 }

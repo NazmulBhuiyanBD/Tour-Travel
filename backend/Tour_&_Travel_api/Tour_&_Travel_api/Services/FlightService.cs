@@ -1,4 +1,4 @@
-﻿using TravelApp.Data;
+using TravelApp.Data;
 using TravelApp.DTOs.Flight;
 using TravelApp.Models;
 
@@ -32,9 +32,45 @@ namespace TravelApp.Services
 
         public List<Flight> Search(string from, string to)
         {
-            return _context.Flights
-                .Where(x => x.From == from && x.To == to)
-                .ToList();
+            var query = _context.Flights.AsQueryable();
+
+            if (!string.IsNullOrEmpty(from))
+                query = query.Where(x => x.From.ToLower().Contains(from.ToLower()));
+
+            if (!string.IsNullOrEmpty(to))
+                query = query.Where(x => x.To.ToLower().Contains(to.ToLower()));
+
+            return query.ToList();
+        }
+
+        public List<Flight> GetPopularFlights()
+        {
+            return _context.Flights.Where(f => f.IsPopular).ToList();
+        }
+
+        public void BookFlight(int userId, BookFlightDto dto)
+        {
+            var f = _context.Flights.Find(dto.FlightId);
+
+            if (f == null)
+                throw new Exception("Flight not found");
+
+            if (f.AvailableSeats < dto.SeatCount)
+                throw new Exception("Not enough seats available");
+
+            f.AvailableSeats -= dto.SeatCount;
+
+            _context.FlightBookings.Add(new FlightBooking
+            {
+                UserId = userId,
+                FlightId = dto.FlightId,
+                SeatCount = dto.SeatCount,
+                TotalPrice = f.Price * dto.SeatCount,
+                PaymentMethod = dto.PaymentMethod,
+                TransactionId = dto.TransactionId
+            });
+
+            _context.SaveChanges();
         }
     }
 }

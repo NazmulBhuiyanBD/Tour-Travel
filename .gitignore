@@ -1,0 +1,51 @@
+# OS-specific files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# Flutter/Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+front-end/tour_and_travel/build/
+front-end/tour_and_travel/.dart_tool/
+front-end/tour_and_travel/.packages
+front-end/tour_and_travel/.flutter-plugins
+front-end/tour_and_travel/.flutter-plugins-dependencies
+
+# .NET
+bin/
+obj/
+publish/
+*.user
+*.userosscache
+*.sln.docstates
+Tour_&_Travel_api/bin/
+Tour_&_Travel_api/obj/
+backend/Tour_&_Travel_api/Tour_&_Travel_api/bin/
+backend/Tour_&_Travel_api/Tour_&_Travel_api/obj/
+backend/Tour_&_Travel_api/Tour_&_Travel_api/Properties/launchSettings.json
+
+# Environment variables
+.env
+*.env.local
+appsettings.Development.json
+
+# Docker
+.dockerignore

@@ -1,4 +1,4 @@
-﻿namespace TravelApp.DTOs.Flight
+namespace TravelApp.DTOs.Flight
 {
     public class CreateFlightDto
     {
@@ -11,5 +11,6 @@
 
         public decimal Price { get; set; }
         public int AvailableSeats { get; set; }
+        public bool IsPopular { get; set; }
     }
 }
