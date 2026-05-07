@@ -12,19 +12,19 @@ EXPOSE 5198
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Tour_&_Travel_api.csproj", "."]
-RUN dotnet restore "./Tour_&_Travel_api.csproj"
+COPY ["Tour_Travel_api.csproj", "."]
+RUN dotnet restore "./Tour_Travel_api.csproj"
 COPY . .
 WORKDIR "/src/."
-RUN dotnet build "./Tour_&_Travel_api.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "./Tour_Travel_api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Tour_&_Travel_api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./Tour_Travel_api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # This stage is used in production or when running from VS in normal mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Tour_&_Travel_api.dll"]
+ENTRYPOINT ["dotnet", "Tour_Travel_api.dll"]
