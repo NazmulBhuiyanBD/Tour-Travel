@@ -38,9 +38,9 @@ publish/
 *.sln.docstates
 Tour_&_Travel_api/bin/
 Tour_&_Travel_api/obj/
-backend/Tour_&_Travel_api/Tour_&_Travel_api/bin/
-backend/Tour_&_Travel_api/Tour_&_Travel_api/obj/
-backend/Tour_&_Travel_api/Tour_&_Travel_api/Properties/launchSettings.json
+backend/Tour_Travel_api/Tour_Travel_api/bin/
+backend/Tour_Travel_api/Tour_Travel_api/obj/
+backend/Tour_Travel_api/Tour_Travel_api/Properties/launchSettings.json
 
 # Environment variables
 .env
