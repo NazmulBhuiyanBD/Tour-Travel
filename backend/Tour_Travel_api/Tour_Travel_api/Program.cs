@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using System.Text;
-using System.Threading.Tasks;
 using TravelApp.Data;
 using TravelApp.Middleware;
 using TravelApp.Services;
@@ -16,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddSignalR();
 builder.Services.AddOpenApi();
+
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
@@ -23,7 +23,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     if (!string.IsNullOrEmpty(databaseUrl))
     {
         var uri = new Uri(databaseUrl);
-
         var userInfo = uri.UserInfo.Split(':');
 
         var connectionString =
@@ -64,27 +63,31 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = jwt["Issuer"],
         ValidAudience = jwt["Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(jwt["Key"]))
+            Encoding.UTF8.GetBytes(jwt["Key"]!))
     };
+
     options.Events = new JwtBearerEvents
     {
         OnMessageReceived = context =>
         {
             var accessToken = context.Request.Query["access_token"];
             var path = context.HttpContext.Request.Path;
-            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/chathub"))
+
+            if (!string.IsNullOrEmpty(accessToken) &&
+                path.StartsWithSegments("/chathub"))
             {
                 context.Token = accessToken;
             }
+
             return Task.CompletedTask;
         }
     };
 });
+
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<FlightService>();
 builder.Services.AddScoped<HotelService>();
-
 builder.Services.AddScoped<TourService>();
 builder.Services.AddScoped<BookingService>();
 builder.Services.AddScoped<PaymentService>();
@@ -109,40 +112,49 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    // Automatically apply any pending migrations
+
     Console.WriteLine("Applying database migrations...");
-    try {
+
+    try
+    {
         context.Database.Migrate();
         Console.WriteLine("Database migrations applied successfully.");
-    } catch (Exception ex) {
-        Console.WriteLine($"Error applying migrations: {ex.Message}");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex.ToString());
     }
 
-    if (!context.Admins.Any())
+    // Only seed locally
+    if (app.Environment.IsDevelopment())
     {
-        context.Admins.Add(new TravelApp.Models.Admin 
+        if (!context.Admins.Any())
         {
-             Name = "System Admin",
-             Email = "admin@travel.com",
-             Password = TravelApp.Services.PasswordHasher.Hash("admin123"),
-             Phone = "0000000000"
-        });
-        context.SaveChanges();
+            context.Admins.Add(new TravelApp.Models.Admin
+            {
+                Name = "System Admin",
+                Email = "admin@travel.com",
+                Password = PasswordHasher.Hash("admin123"),
+                Phone = "0000000000"
+            });
+
+            context.SaveChanges();
+        }
+
+        DbInitializer.Initialize(context);
     }
-    DbInitializer.Initialize(context);
 }
 
 app.UseMiddleware<ExceptionMiddleware>();
 
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-    app.MapScalarApiReference();
-}
+// Enable API docs
+app.MapOpenApi();
+app.MapScalarApiReference();
 
 app.UseStaticFiles();
 
 app.UseCors("AllowAll");
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -151,5 +163,7 @@ app.UseHttpsRedirection();
 app.MapControllers();
 app.MapHub<ChatHub>("/chathub");
 
+// Render port
 var port = Environment.GetEnvironmentVariable("PORT") ?? "5198";
+
 app.Run($"http://0.0.0.0:{port}");
