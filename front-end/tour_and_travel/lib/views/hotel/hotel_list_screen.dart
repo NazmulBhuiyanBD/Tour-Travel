@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../controllers/hotel_controller.dart';
+import '../../view_models/hotel_view_model.dart';
 import '../../core/constant/api_constants.dart';
 import '../../core/constant/app_colors.dart';
 import 'hotel_booking_screen.dart';
 import 'hotel_details_screen.dart';
+import 'hotel_search_screen.dart';
 import '../../routes/app_routes.dart';
 
 class HotelListScreen extends StatelessWidget {
   final GlobalKey<ScaffoldState>? scaffoldKey;
-  final HotelController _hotelController = Get.put(HotelController());
+  final HotelViewModel _hotelViewModel = Get.put(HotelViewModel());
 
   HotelListScreen({super.key, this.scaffoldKey});
 
@@ -28,13 +29,15 @@ class HotelListScreen extends StatelessWidget {
           // Hotel List
           Expanded(
             child: Obx(() {
-              if (_hotelController.isLoading.value && _hotelController.hotelList.isEmpty) {
+              if (_hotelViewModel.isLoading.value && _hotelViewModel.hotelList.isEmpty) {
                 return const Center(
                   child: CircularProgressIndicator(color: AppColors.primaryBlue),
                 );
               }
 
-              if (_hotelController.hotelList.isEmpty) {
+              final hotels = _hotelViewModel.searchResults;
+
+              if (hotels.isEmpty) {
                 return Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -56,7 +59,7 @@ class HotelListScreen extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: Text(
-                      "Showing ${_hotelController.hotelList.length} Search Results",
+                      "Showing ${hotels.length} Search Results",
                       style: const TextStyle(color: AppColors.textPrimary, fontSize: 13),
                     ),
                   ),
@@ -64,9 +67,9 @@ class HotelListScreen extends StatelessWidget {
                     child: ListView.builder(
                       physics: const BouncingScrollPhysics(),
                       padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
-                      itemCount: _hotelController.hotelList.length,
+                      itemCount: hotels.length,
                       itemBuilder: (context, index) {
-                        var hotel = _hotelController.hotelList[index];
+                        var hotel = hotels[index];
                         return _buildHotelCard(hotel);
                       },
                     ),
@@ -150,27 +153,48 @@ class HotelListScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
         children: [
-          // Filter Button
+          // Sort Dropdown
           Expanded(
-            child: ElevatedButton.icon(
-              onPressed: () {},
-              icon: const Icon(Icons.tune, color: Colors.white, size: 18),
-              label: const Text("Filter", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.filterOrange,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                elevation: 2,
-              ),
-            ),
+            child: Obx(() {
+              String currentSort = _hotelViewModel.selectedSortType.value;
+              String label = "Default";
+              if (currentSort == 'low') label = "Low to High";
+              if (currentSort == 'high') label = "High to Low";
+
+              return PopupMenuButton<String>(
+                onSelected: (String value) => _hotelViewModel.sortHotels(value),
+                itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                  const PopupMenuItem<String>(value: 'default', child: Text('Default')),
+                  const PopupMenuItem<String>(value: 'low', child: Text('Price: Low to High')),
+                  const PopupMenuItem<String>(value: 'high', child: Text('Price: High to Low')),
+                ],
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  decoration: BoxDecoration(
+                    color: AppColors.filterOrange,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 4)],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.sort, color: Colors.white, size: 18),
+                      const SizedBox(width: 8),
+                      Text(label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                      const Icon(Icons.arrow_drop_down, color: Colors.white),
+                    ],
+                  ),
+                ),
+              );
+            }),
           ),
           const SizedBox(width: 12),
           // Search Button
           Expanded(
             child: OutlinedButton.icon(
-              onPressed: () {},
+              onPressed: () => Get.to(() => const HotelSearchScreen()),
               icon: const Icon(Icons.search, color: AppColors.primaryBlue, size: 18),
-              label: const Text("Search Flight", style: TextStyle(color: AppColors.primaryBlue, fontWeight: FontWeight.bold)),
+              label: const Text("Search Hotel", style: TextStyle(color: AppColors.primaryBlue, fontWeight: FontWeight.bold)),
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -256,9 +280,13 @@ class HotelListScreen extends StatelessWidget {
                     children: [
                       const Icon(Icons.location_on, size: 16, color: AppColors.textSecondary),
                       const SizedBox(width: 4),
-                      Text(
-                        hotel['location'] ?? 'Location',
-                        style: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
+                      Expanded(
+                        child: Text(
+                          hotel['location'] ?? 'Location',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
+                        ),
                       ),
                     ],
                   ),

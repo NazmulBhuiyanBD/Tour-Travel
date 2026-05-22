@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tour_and_travel/routes/app_routes.dart';
-import '../../controllers/auth_controller.dart';
+import '../../view_models/auth_view_model.dart';
 import '../../core/constant/app_colors.dart';
+import '../../core/constant/api_constants.dart';
 import '../../data/services/storage_service.dart';
 import '../dashboard/user_dashboard_screen.dart';
-import '../dashboard/booking_history_screen.dart';
 import '../profile/edit_profile_screen.dart';
-import '../support/user_ticket_list_view.dart' as tour_and_travel_support;
+import '../support/help_support_screen.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final AuthController authController = Get.find<AuthController>();
+    final AuthViewModel authViewModel = Get.find<AuthViewModel>();
     final user = StorageService.to.getUser();
 
     return Drawer(
       backgroundColor: Colors.white,
       child: SafeArea(
         child: Obx(() {
-          final user = authController.user.value;
+          final user = authViewModel.user.value;
           return Column(
             children: [
               // Close Button
@@ -42,10 +42,15 @@ class AppDrawer extends StatelessWidget {
                 child: Row(
                   children: [
                     // Avatar
-                    const CircleAvatar(
+                    CircleAvatar(
                       radius: 32,
                       backgroundColor: AppColors.primaryBlue,
-                      child: Icon(Icons.person, size: 36, color: Colors.white),
+                      backgroundImage: user.profilePicture != null && user.profilePicture!.isNotEmpty
+                          ? NetworkImage("${ApiConstants.mediaBaseUrl}${user.profilePicture}")
+                          : null,
+                      child: user.profilePicture == null || user.profilePicture!.isEmpty
+                          ? const Icon(Icons.person, size: 36, color: Colors.white)
+                          : null,
                     ),
                     const SizedBox(width: 14),
                     // Name, Phone, Location
@@ -95,7 +100,7 @@ class AppDrawer extends StatelessWidget {
               title: 'Dashboard',
               onTap: () {
                 Navigator.of(context).pop();
-                if (authController.user.value.role == 'Admin' || authController.user.value.role == 'SuperAdmin') {
+                if (authViewModel.user.value.role == 'Admin' || authViewModel.user.value.role == 'SuperAdmin') {
                    // If we're already on admin dashboard, just pop
                    if (Get.currentRoute == Routes.ADMIN_DASHBOARD) return;
                    Get.offAllNamed(Routes.ADMIN_DASHBOARD);
@@ -120,7 +125,7 @@ class AppDrawer extends StatelessWidget {
               title: 'Change Password',
               onTap: () {
                 Navigator.of(context).pop();
-                Get.snackbar('Coming Soon', 'Change Password is under development');
+                Get.toNamed(Routes.CHANGE_PASSWORD);
               },
             ),
             _DrawerMenuItem(
@@ -138,7 +143,7 @@ class AppDrawer extends StatelessWidget {
               title: 'My Hotels Bookings',
               onTap: () {
                 Navigator.of(context).pop();
-                Get.to(() => BookingHistoryScreen());
+                Get.toNamed(Routes.MY_HOTEL_BOOKINGS);
               },
             ),
             _DrawerMenuItem(
@@ -147,7 +152,7 @@ class AppDrawer extends StatelessWidget {
               title: 'My Tours Bookings',
               onTap: () {
                 Navigator.of(context).pop();
-                Get.to(() => BookingHistoryScreen());
+                Get.toNamed(Routes.MY_TOUR_BOOKINGS);
               },
             ),
             _DrawerMenuItem(
@@ -156,7 +161,7 @@ class AppDrawer extends StatelessWidget {
               title: 'My Reviews',
               onTap: () {
                 Navigator.of(context).pop();
-                Get.snackbar('Coming Soon', 'Reviews is under development');
+                Get.toNamed(Routes.MY_REVIEWS);
               },
             ),
             _DrawerMenuItem(
@@ -165,7 +170,7 @@ class AppDrawer extends StatelessWidget {
               title: 'Help / Support',
               onTap: () {
                 Navigator.of(context).pop();
-                Get.to(() => const tour_and_travel_support.UserTicketListView());
+                Get.to(() => const HelpSupportScreen());
               },
             ),
             const Spacer(),
@@ -175,7 +180,7 @@ class AppDrawer extends StatelessWidget {
               title: 'Logout',
               onTap: () {
                 Navigator.of(context).pop();
-                authController.logout();
+                authViewModel.logout();
               },
             ),
               const SizedBox(height: 20),

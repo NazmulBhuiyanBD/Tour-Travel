@@ -1,27 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tour_and_travel/controllers/booking_controller.dart';
+import 'package:tour_and_travel/view_models/booking_view_model.dart';
 import 'package:tour_and_travel/routes/app_routes.dart';
-import '../../controllers/hotel_controller.dart';
-import '../../controllers/payment_controller.dart';
+import '../../view_models/hotel_view_model.dart';
+import '../../view_models/payment_view_model.dart';
 
 class HotelBookingScreen extends StatefulWidget {
+  final int hotelId;
   final String hotelName;
   final double price;
 
-  const HotelBookingScreen({super.key, required this.hotelName, required this.price});
+  final int availableRooms;
+  final int? initialNights;
+
+  const HotelBookingScreen({
+    super.key,
+    required this.hotelId,
+    required this.hotelName,
+    required this.price,
+    this.availableRooms = 10,
+    this.initialNights,
+  });
 
   @override
   State<HotelBookingScreen> createState() => _HotelBookingScreenState();
 }
 
 class _HotelBookingScreenState extends State<HotelBookingScreen> {
-  final HotelController _hotelController = Get.find<HotelController>();
-  final PaymentController _paymentController = Get.put(PaymentController());
-  
-  // Hardcoded for demo; in reality, users would pick a room from a list
-  final int mockupRoomId = 1;
-  
+  static const int _maxNights = 7;
+
+  final HotelViewModel _hotelViewModel = Get.find<HotelViewModel>();
+  final PaymentViewModel _paymentViewModel = Get.put(PaymentViewModel());
+  int _roomCount = 1;
+
   DateTime _checkInDate = DateTime.now().add(const Duration(days: 1));
   DateTime _checkOutDate = DateTime.now().add(const Duration(days: 4));
   
@@ -31,6 +42,10 @@ class _HotelBookingScreenState extends State<HotelBookingScreen> {
   @override
   void initState() {
     super.initState();
+    if (widget.initialNights != null) {
+      final nights = widget.initialNights!.clamp(1, _maxNights);
+      _checkOutDate = _checkInDate.add(Duration(days: nights));
+    }
     _updateControllers();
   }
 
@@ -39,12 +54,23 @@ class _HotelBookingScreenState extends State<HotelBookingScreen> {
     _checkOutController.text = "${_checkOutDate.year}-${_checkOutDate.month.toString().padLeft(2, '0')}-${_checkOutDate.day.toString().padLeft(2, '0')}";
   }
 
+  void _clampCheckOutDate() {
+    final minCheckOut = _checkInDate.add(const Duration(days: 1));
+    final maxCheckOut = _checkInDate.add(const Duration(days: _maxNights));
+    if (_checkOutDate.isBefore(minCheckOut)) {
+      _checkOutDate = minCheckOut;
+    } else if (_checkOutDate.isAfter(maxCheckOut)) {
+      _checkOutDate = maxCheckOut;
+    }
+  }
+
   Future<void> _selectDate(BuildContext context, bool isCheckIn) async {
+    final maxCheckOut = _checkInDate.add(const Duration(days: _maxNights));
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: isCheckIn ? _checkInDate : _checkOutDate,
       firstDate: isCheckIn ? DateTime.now() : _checkInDate.add(const Duration(days: 1)),
-      lastDate: DateTime.now().add(const Duration(days: 365)),
+      lastDate: isCheckIn ? DateTime.now().add(const Duration(days: 365)) : maxCheckOut,
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
@@ -66,9 +92,7 @@ class _HotelBookingScreenState extends State<HotelBookingScreen> {
       setState(() {
         if (isCheckIn) {
           _checkInDate = picked;
-          if (_checkOutDate.isBefore(_checkInDate.add(const Duration(days: 1)))) {
-            _checkOutDate = _checkInDate.add(const Duration(days: 1));
-          }
+          _clampCheckOutDate();
         } else {
           _checkOutDate = picked;
         }
@@ -77,10 +101,12 @@ class _HotelBookingScreenState extends State<HotelBookingScreen> {
     }
   }
 
+  int get _maxRooms => widget.availableRooms.clamp(1, 4);
+
   double get _totalAmount {
     int nights = _checkOutDate.difference(_checkInDate).inDays;
     if (nights <= 0) nights = 1;
-    return widget.price * nights;
+    return widget.price * nights * _roomCount;
   }
 
   int get _totalNights {
@@ -110,8 +136,28 @@ class _HotelBookingScreenState extends State<HotelBookingScreen> {
               ),
               const SizedBox(height: 10),
               Text(
-                "Price per night: \$${widget.price.toStringAsFixed(2)}",
+                "Price per night: \$${widget.price.toStringAsFixed(2)} • ${widget.availableRooms} rooms available • Max $_maxNights nights",
                 style: const TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text("Number of Rooms (max 4)", style: TextStyle(fontWeight: FontWeight.bold)),
+                  Row(
+                    children: [
+                      IconButton(
+                        onPressed: _roomCount > 1 ? () => setState(() => _roomCount--) : null,
+                        icon: const Icon(Icons.remove_circle_outline, color: Colors.teal),
+                      ),
+                      Text("$_roomCount", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      IconButton(
+                        onPressed: _roomCount < _maxRooms ? () => setState(() => _roomCount++) : null,
+                        icon: const Icon(Icons.add_circle_outline, color: Colors.teal),
+                      ),
+                    ],
+                  ),
+                ],
               ),
               const SizedBox(height: 30),
               _buildDateField(
@@ -184,18 +230,18 @@ class _HotelBookingScreenState extends State<HotelBookingScreen> {
                       title: const Text("SSLCommerz", style: TextStyle(fontWeight: FontWeight.w600)),
                       subtitle: const Text("Pay via local cards or mobile banking"),
                       value: "sslcommerz",
-                      groupValue: _paymentController.selectedPaymentMethod.value,
+                      groupValue: _paymentViewModel.selectedPaymentMethod.value,
                       activeColor: Colors.teal,
-                      onChanged: (val) => _paymentController.selectedPaymentMethod.value = val!,
+                      onChanged: (val) => _paymentViewModel.selectedPaymentMethod.value = val!,
                     ),
                     const Divider(height: 1),
                     RadioListTile<String>(
                       title: const Text("PayPal", style: TextStyle(fontWeight: FontWeight.w600)),
                       subtitle: const Text("Pay securely via PayPal account"),
                       value: "paypal",
-                      groupValue: _paymentController.selectedPaymentMethod.value,
+                      groupValue: _paymentViewModel.selectedPaymentMethod.value,
                       activeColor: Colors.teal,
-                      onChanged: (val) => _paymentController.selectedPaymentMethod.value = val!,
+                      onChanged: (val) => _paymentViewModel.selectedPaymentMethod.value = val!,
                     ),
                   ],
                 ),
@@ -210,40 +256,52 @@ class _HotelBookingScreenState extends State<HotelBookingScreen> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                     elevation: 5,
                   ),
-                  onPressed: (_hotelController.isLoading.value || _paymentController.isLoading.value) ? null : () async {
+                  onPressed: (_hotelViewModel.isLoading.value || _paymentViewModel.isLoading.value) ? null : () async {
+                    if (_totalNights > _maxNights) {
+                      Get.snackbar("Invalid Stay", "Maximum stay is $_maxNights nights per booking.");
+                      return;
+                    }
+
                     String transactionId = "HOTEL_${DateTime.now().millisecondsSinceEpoch}";
                     bool paymentSuccess = false;
                     
-                    if (_paymentController.selectedPaymentMethod.value == "sslcommerz") {
-                      paymentSuccess = await _paymentController.processSslCommerzPayment(
+                    if (_paymentViewModel.selectedPaymentMethod.value == "sslcommerz") {
+                      paymentSuccess = await _paymentViewModel.processSslCommerzPayment(
                         amount: _totalAmount,
                         transactionId: transactionId,
                         productName: "Hotel: ${widget.hotelName}",
                       );
                     } else {
-                      paymentSuccess = await _paymentController.processPaypalPayment(
+                      paymentSuccess = await _paymentViewModel.processPaypalPayment(
                         amount: _totalAmount,
                         transactionId: transactionId,
                       );
                     }
     
                     if (paymentSuccess) {
-                      bool success = await _hotelController.bookHotel(
-                        mockupRoomId, 
-                        "${_checkInController.text}T00:00:00Z", 
+                      bool success = await _hotelViewModel.bookHotel(
+                        widget.hotelId,
+                        "${_checkInController.text}T00:00:00Z",
                         "${_checkOutController.text}T00:00:00Z",
                         transactionId,
-                        _paymentController.selectedPaymentMethod.value
+                        _paymentViewModel.selectedPaymentMethod.value,
+                        roomCount: _roomCount,
                       );
                       if (success) {
-                        if (Get.isRegistered<BookingController>()) {
-                          Get.find<BookingController>().fetchBookingHistory();
+                        if (Get.isRegistered<BookingViewModel>()) {
+                          Get.find<BookingViewModel>().fetchBookingHistory();
                         }
-                        Get.toNamed(Routes.BOOKING_SUCCESS, arguments: 'Hotel');
+                        Get.toNamed(Routes.BOOKING_SUCCESS, arguments: {
+                          'type': 'Hotel',
+                          'title': "Hotel: ${widget.hotelName}",
+                          'price': _totalAmount,
+                          'quantity': _roomCount,
+                          'transactionId': transactionId,
+                        });
                       }
                     }
                   },
-                  child: (_hotelController.isLoading.value || _paymentController.isLoading.value)
+                  child: (_hotelViewModel.isLoading.value || _paymentViewModel.isLoading.value)
                     ? const CircularProgressIndicator(color: Colors.white)
                     : const Text("Pay & Confirm Reservation", style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold)),
                 )),

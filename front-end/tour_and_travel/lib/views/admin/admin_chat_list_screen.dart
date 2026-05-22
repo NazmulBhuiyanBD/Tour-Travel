@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../controllers/chat_controller.dart';
+import '../../view_models/chat_view_model.dart';
 import '../../core/constant/app_colors.dart';
 import '../../routes/app_routes.dart';
 
@@ -9,8 +9,8 @@ class AdminChatListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ChatController chatController = Get.put(ChatController());
-    chatController.fetchUserChatList();
+    final ChatViewModel chatViewModel = Get.put(ChatViewModel());
+    chatViewModel.fetchUserChatList();
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FE),
@@ -53,11 +53,11 @@ class AdminChatListScreen extends StatelessWidget {
               // Chat Thread List
               Expanded(
                 child: Obx(() {
-                  if (chatController.isLoadingHistory.value && chatController.userChatThreads.isEmpty) {
+                  if (chatViewModel.isLoadingHistory.value && chatViewModel.userChatThreads.isEmpty) {
                     return const Center(child: CircularProgressIndicator(color: Color(0xFF3F51B5)));
                   }
                   
-                  if (chatController.userChatThreads.isEmpty) {
+                  if (chatViewModel.userChatThreads.isEmpty) {
                     return Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -79,12 +79,12 @@ class AdminChatListScreen extends StatelessWidget {
 
                   return RefreshIndicator(
                     color: const Color(0xFF3F51B5),
-                    onRefresh: () => chatController.fetchUserChatList(),
+                    onRefresh: () => chatViewModel.fetchUserChatList(),
                     child: ListView.builder(
                       physics: const BouncingScrollPhysics(),
-                      itemCount: chatController.userChatThreads.length,
+                      itemCount: chatViewModel.userChatThreads.length,
                       itemBuilder: (context, index) {
-                        final thread = chatController.userChatThreads[index];
+                        final thread = chatViewModel.userChatThreads[index];
                         return _ChatThreadCard(thread: thread);
                       },
                     ),

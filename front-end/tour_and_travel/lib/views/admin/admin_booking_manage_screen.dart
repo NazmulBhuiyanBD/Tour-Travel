@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import '../../controllers/admin_management_controller.dart';
+import '../../view_models/admin_management_view_model.dart';
 import '../../core/constant/app_colors.dart';
 
 class AdminBookingManageScreen extends StatefulWidget {
@@ -13,7 +13,7 @@ class AdminBookingManageScreen extends StatefulWidget {
 
 class _AdminBookingManageScreenState extends State<AdminBookingManageScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final controller = Get.find<AdminManagementController>();
+  final controller = Get.find<AdminManagementViewModel>();
 
   @override
   void initState() {
@@ -87,7 +87,7 @@ class _AdminBookingManageScreenState extends State<AdminBookingManageScreen> wit
                       ),
                       labelColor: const Color(0xFF3F51B5),
                       unselectedLabelColor: const Color(0xFF697386),
-                      labelStyle: const TextStyle(fontWeight: FontWeight.bold),
+                      labelStyle: const TextStyle(fontWeight: FontWeight.bold,),
                       tabs: const [
                         Tab(text: "Hotels"),
                         Tab(text: "Flights"),
@@ -119,7 +119,7 @@ class _AdminBookingManageScreenState extends State<AdminBookingManageScreen> wit
 
 class _BookingList extends StatelessWidget {
   final String type;
-  final AdminManagementController controller;
+  final AdminManagementViewModel controller;
 
   const _BookingList({required this.type, required this.controller});
 

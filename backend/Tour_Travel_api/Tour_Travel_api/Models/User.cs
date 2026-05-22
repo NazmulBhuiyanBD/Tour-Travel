@@ -17,6 +17,12 @@ namespace TravelApp.Models
 
         public string Phone { get; set; }
 
+        public string? Gender { get; set; }
+
+        public DateTime? DateOfBirth { get; set; }
+
+        public string? Address { get; set; }
+
         public string Role { get; set; } = "User";
 
         public bool IsActive { get; set; } = true;
@@ -28,5 +34,7 @@ namespace TravelApp.Models
         public string? ResetPasswordToken { get; set; }
 
         public DateTime? ResetPasswordTokenExpiry { get; set; }
+
+        public string? ProfilePicture { get; set; }
     }
 }

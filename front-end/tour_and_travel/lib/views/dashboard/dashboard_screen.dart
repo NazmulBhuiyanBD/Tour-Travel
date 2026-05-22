@@ -3,11 +3,14 @@ import 'package:get/get.dart';
 import 'package:tour_and_travel/views/main_screen.dart';
 import '../../core/constant/api_constants.dart';
 import '../../core/constant/app_colors.dart';
-import '../../controllers/dashboard_controller.dart';
+import '../../view_models/dashboard_view_model.dart';
+import '../../view_models/notification_view_model.dart';
+import '../../routes/app_routes.dart';
+import '../hotel/hotel_details_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   final GlobalKey<ScaffoldState>? scaffoldKey;
-  final DashboardController controller = Get.put(DashboardController());
+  final DashboardViewModel controller = Get.put(DashboardViewModel());
 
   DashboardScreen({super.key, this.scaffoldKey});
 
@@ -30,12 +33,56 @@ class DashboardScreen extends StatelessWidget {
             letterSpacing: 1.2,
           ),
         ),
+        actions: [
+          Obx(() {
+            final NotificationViewModel notifController = Get.put(NotificationViewModel());
+            final int count = notifController.unreadCount.value;
+            return Stack(
+              alignment: Alignment.center,
+              children: [
+                IconButton(
+                  onPressed: () => Get.toNamed(Routes.NOTIFICATIONS),
+                  icon: const Icon(Icons.notifications_outlined, color: AppColors.textPrimary, size: 28),
+                ),
+                if (count > 0)
+                  Positioned(
+                    right: 6,
+                    top: 6,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: const BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                      constraints: const BoxConstraints(
+                        minWidth: 16,
+                        minHeight: 16,
+                      ),
+                      child: Text(
+                        count.toString(),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+              ],
+            );
+          }),
+          const SizedBox(width: 8),
+        ],
         backgroundColor: Colors.white,
         elevation: 0,
       ),
       body: RefreshIndicator(
         onRefresh: () async {
           controller.fetchAll();
+          if (Get.isRegistered<NotificationViewModel>()) {
+            await Get.find<NotificationViewModel>().fetchNotifications();
+          }
         },
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
@@ -323,20 +370,25 @@ class DashboardScreen extends StatelessWidget {
           children: controller.featuredHotels.asMap().entries.map((entry) {
             final hotel = entry.value;
             final index = entry.key;
-            
-            return Container(
-              width: 180,
-              margin: EdgeInsets.only(right: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    height: 120,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      color: AppColors.primaryBlue.withOpacity(0.2),
-                      boxShadow: [
-                        BoxShadow(
+            return GestureDetector(
+              onTap: () {
+                // Ensure hotel is a map before passing to HotelDetailsScreen
+                final hotelData = hotel is Map<String, dynamic> ? hotel : Map<String, dynamic>.from(hotel);
+                Get.to(() => HotelDetailsScreen(hotelData: hotelData));
+              },
+              child: Container(
+                width: 180,
+                margin: EdgeInsets.only(right: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: 120,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        color: AppColors.primaryBlue.withOpacity(0.2),
+                        boxShadow: [
+                          BoxShadow(
                           color: Colors.black.withOpacity(0.08),
                           blurRadius: 8,
                           offset: const Offset(0, 4),
@@ -389,6 +441,7 @@ class DashboardScreen extends StatelessWidget {
                   ),
                 ],
               ),
+            ),
             );
           }).toList(),
         ),

@@ -35,7 +35,6 @@ namespace TravelApp.Services
             using var smtp = new SmtpClient();
             try
             {
-                // Accept all SSL certificates (in case of certificate issues)
                 smtp.ServerCertificateValidationCallback = (s, c, h, e) => true;
 
                 await smtp.ConnectAsync(emailSettings["SmtpServer"], int.Parse(emailSettings["Port"]), SecureSocketOptions.StartTls);
@@ -44,7 +43,6 @@ namespace TravelApp.Services
             }
             catch (Exception ex)
             {
-                // In production, log the exception.
                 Console.WriteLine($"Error sending email: {ex.Message}");
             }
             finally

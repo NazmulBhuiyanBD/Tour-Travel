@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../controllers/admin_management_controller.dart';
+import '../../view_models/admin_management_view_model.dart';
 import '../../core/constant/app_colors.dart';
 
 class AdminFlightManageScreen extends StatelessWidget {
@@ -8,7 +8,7 @@ class AdminFlightManageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(AdminManagementController());
+    final controller = Get.put(AdminManagementViewModel());
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FE),
@@ -141,12 +141,16 @@ class AdminFlightManageScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
-                                  "\$${flight['price']}",
+                                  "From \$${flight['price']}",
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
                                     color: Color(0xFF3F51B5),
                                   ),
+                                ),
+                                Text(
+                                  "${flight['availableSeats'] ?? 0} seats total",
+                                  style: const TextStyle(fontSize: 11, color: Color(0xFF697386)),
                                 ),
                                 const SizedBox(height: 4),
                                 Row(
@@ -195,14 +199,53 @@ class AdminFlightManageScreen extends StatelessWidget {
     );
   }
 
-  void _showFlightForm(BuildContext context, AdminManagementController controller, {dynamic flight}) {
+  void _showFlightForm(BuildContext context, AdminManagementViewModel controller, {dynamic flight}) {
     final isEdit = flight != null;
     final airlineController = TextEditingController(text: isEdit ? (flight['airline'] ?? '') : '');
     final fromController = TextEditingController(text: isEdit ? (flight['from'] ?? '') : '');
     final toController = TextEditingController(text: isEdit ? (flight['to'] ?? '') : '');
-    final priceController = TextEditingController(text: isEdit ? (flight['price'].toString()) : '');
-    final seatController = TextEditingController(text: isEdit ? (flight['availableSeats'].toString()) : '');
+    final economySeats = TextEditingController();
+    final economyPrice = TextEditingController();
+    final premiumSeats = TextEditingController();
+    final premiumPrice = TextEditingController();
+    final businessSeats = TextEditingController();
+    final businessPrice = TextEditingController();
+    final firstSeats = TextEditingController();
+    final firstPrice = TextEditingController();
     bool isPopular = isEdit ? (flight['isPopular'] ?? false) : false;
+
+    void loadSeatClass(String name, TextEditingController seats, TextEditingController price, List<dynamic> classes) {
+      for (final sc in classes) {
+        if ((sc['className'] ?? '').toString() == name) {
+          seats.text = sc['availableSeats']?.toString() ?? '';
+          price.text = sc['price']?.toString() ?? '';
+          break;
+        }
+      }
+    }
+
+    if (isEdit) {
+      final classes = flight['seatClasses'] ?? flight['SeatClasses'];
+      if (classes is List && classes.isNotEmpty) {
+        loadSeatClass('Economy', economySeats, economyPrice, classes);
+        loadSeatClass('Premium Economy', premiumSeats, premiumPrice, classes);
+        loadSeatClass('Business Class', businessSeats, businessPrice, classes);
+        loadSeatClass('First Class', firstSeats, firstPrice, classes);
+      } else {
+        economySeats.text = flight['availableSeats']?.toString() ?? '';
+        economyPrice.text = flight['price']?.toString() ?? '';
+      }
+    }
+
+    DateTime selectedDate = isEdit && flight['departureTime'] != null 
+        ? DateTime.parse(flight['departureTime']) 
+        : DateTime.now();
+    TimeOfDay selectedDepTime = isEdit && flight['departureTime'] != null
+        ? TimeOfDay.fromDateTime(DateTime.parse(flight['departureTime']))
+        : const TimeOfDay(hour: 9, minute: 0);
+    TimeOfDay selectedArrTime = isEdit && flight['arrivalTime'] != null
+        ? TimeOfDay.fromDateTime(DateTime.parse(flight['arrivalTime']))
+        : const TimeOfDay(hour: 11, minute: 30);
 
     Get.bottomSheet(
       Container(
@@ -212,79 +255,310 @@ class AdminFlightManageScreen extends StatelessWidget {
           borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
         ),
         child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  margin: const EdgeInsets.only(bottom: 24),
-                  decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(2)),
-                ),
-              ),
-              Text(
-                isEdit ? 'Edit Flight' : 'Add New Flight',
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF1A1F36)),
-              ),
-              const SizedBox(height: 24),
-              _buildField(airlineController, 'Airline Name', Icons.airplanemode_active_rounded),
-              const SizedBox(height: 16),
-              Row(
+          child: StatefulBuilder(
+            builder: (context, setModalState) {
+              int calcTotalSeats() {
+                var sum = 0;
+                for (final c in [economySeats, premiumSeats, businessSeats, firstSeats]) {
+                  sum += int.tryParse(c.text.trim()) ?? 0;
+                }
+                return sum;
+              }
+
+              double? calcMinPrice() {
+                double? min;
+                for (final c in [economyPrice, premiumPrice, businessPrice, firstPrice]) {
+                  final p = double.tryParse(c.text.trim());
+                  if (p != null && p > 0) {
+                    min = min == null ? p : (p < min! ? p : min);
+                  }
+                }
+                return min;
+              }
+
+              void refresh() => setModalState(() {});
+
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                   Expanded(child: _buildField(fromController, 'From', Icons.location_on_rounded)),
-                   const SizedBox(width: 16),
-                   Expanded(child: _buildField(toController, 'To', Icons.location_on_rounded)),
-                ],
-              ),
-              const SizedBox(height: 16),
-              _buildField(priceController, 'Price (\$)', Icons.attach_money_rounded, isNum: true),
-              const SizedBox(height: 16),
-              _buildField(seatController, 'Seats Available', Icons.event_seat_rounded, isNum: true),
-              const SizedBox(height: 16),
-              StatefulBuilder(
-                builder: (context, setModalState) {
-                  return SwitchListTile(
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      margin: const EdgeInsets.only(bottom: 24),
+                      decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(2)),
+                    ),
+                  ),
+                  Text(
+                    isEdit ? 'Edit Flight' : 'Add New Flight',
+                    style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF1A1F36)),
+                  ),
+                  const SizedBox(height: 24),
+                  _buildField(airlineController, 'Airline Name', Icons.airplanemode_active_rounded),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                       Expanded(child: _buildField(fromController, 'From', Icons.location_on_rounded)),
+                       const SizedBox(width: 16),
+                       Expanded(child: _buildField(toController, 'To', Icons.location_on_rounded)),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  const Text('Seat Classes', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'Enter seats and price per class. Totals update automatically.',
+                    style: TextStyle(fontSize: 12, color: Color(0xFF697386)),
+                  ),
+                  const SizedBox(height: 8),
+                  _buildSeatRow('Economy', economySeats, economyPrice, onChanged: refresh),
+                  _buildSeatRow('Premium Economy', premiumSeats, premiumPrice, onChanged: refresh),
+                  _buildSeatRow('Business Class', businessSeats, businessPrice, onChanged: refresh),
+                  _buildSeatRow('First Class', firstSeats, firstPrice, onChanged: refresh),
+                  const SizedBox(height: 12),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF3F51B5).withOpacity(0.08),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFF3F51B5).withOpacity(0.2)),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Total available seats: ${calcTotalSeats()}',
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          calcMinPrice() != null
+                              ? 'Display price (lowest): \$${calcMinPrice()!.toStringAsFixed(2)}'
+                              : 'Display price: enter class prices above',
+                          style: const TextStyle(fontSize: 13, color: Color(0xFF697386)),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  
+                  // Date and Time Pickers
+                  Row(
+                    children: [
+                      Expanded(
+                        child: InkWell(
+                          onTap: () async {
+                            final picked = await showDatePicker(
+                              context: context,
+                              initialDate: selectedDate,
+                              firstDate: DateTime.now().subtract(const Duration(days: 365)),
+                              lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
+                            );
+                            if (picked != null) {
+                              setModalState(() => selectedDate = picked);
+                            }
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey.shade300),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.calendar_today_rounded, size: 20, color: Color(0xFF3F51B5)),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Text("Date", style: TextStyle(fontSize: 11, color: Colors.grey)),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}",
+                                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: InkWell(
+                          onTap: () async {
+                            final picked = await showTimePicker(
+                              context: context,
+                              initialTime: selectedDepTime,
+                            );
+                            if (picked != null) {
+                              setModalState(() => selectedDepTime = picked);
+                            }
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey.shade300),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.access_time_rounded, size: 20, color: Color(0xFF3F51B5)),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Text("Dep. Time", style: TextStyle(fontSize: 11, color: Colors.grey)),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        selectedDepTime.format(context),
+                                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: InkWell(
+                          onTap: () async {
+                            final picked = await showTimePicker(
+                              context: context,
+                              initialTime: selectedArrTime,
+                            );
+                            if (picked != null) {
+                              setModalState(() => selectedArrTime = picked);
+                            }
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey.shade300),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.access_time_rounded, size: 20, color: Color(0xFFF2994A)),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Text("Arr. Time", style: TextStyle(fontSize: 11, color: Colors.grey)),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        selectedArrTime.format(context),
+                                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  SwitchListTile(
                     title: const Text("Trending Airline", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF1A1F36))),
                     subtitle: const Text("Mark as popular and trending flight"),
                     value: isPopular,
                     onChanged: (val) => setModalState(() => isPopular = val),
                     activeColor: const Color(0xFFF9A825),
                     contentPadding: EdgeInsets.zero,
-                  );
-                }
-              ),
-              const SizedBox(height: 32),
-              ElevatedButton(
-                onPressed: () {
-                  final data = {
-                    'airline': airlineController.text,
-                    'from': fromController.text,
-                    'to': toController.text,
-                    'price': double.parse(priceController.text),
-                    'availableSeats': int.parse(seatController.text),
-                    'departureTime': DateTime.now().toIso8601String(), // Mocked for now
-                    'arrivalTime': DateTime.now().add(const Duration(hours: 3)).toIso8601String(),
-                    'isPopular': isPopular,
-                  };
-                  if (isEdit) {
-                    controller.updateFlight(flight['id'], data);
-                  } else {
-                    controller.addFlight(data);
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF3F51B5),
-                  foregroundColor: Colors.white,
-                  minimumSize: const Size(double.infinity, 56),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                  elevation: 0,
-                ),
-                child: Text(isEdit ? 'Update Flight' : 'Save Flight'),
-              ),
-              const SizedBox(height: 20),
-            ],
+                  ),
+                  const SizedBox(height: 32),
+                  ElevatedButton(
+                    onPressed: () {
+                      final depDateTime = DateTime(
+                        selectedDate.year,
+                        selectedDate.month,
+                        selectedDate.day,
+                        selectedDepTime.hour,
+                        selectedDepTime.minute,
+                      );
+                      var arrDateTime = DateTime(
+                        selectedDate.year,
+                        selectedDate.month,
+                        selectedDate.day,
+                        selectedArrTime.hour,
+                        selectedArrTime.minute,
+                      );
+                      if (arrDateTime.isBefore(depDateTime)) {
+                        arrDateTime = arrDateTime.add(const Duration(days: 1));
+                      }
+
+                      List<Map<String, dynamic>> seatClasses = [];
+                      void addClass(String name, TextEditingController seats, TextEditingController price) {
+                        final s = int.tryParse(seats.text) ?? 0;
+                        final p = double.tryParse(price.text) ?? 0;
+                        if (s > 0 && p > 0) {
+                          seatClasses.add({'className': name, 'availableSeats': s, 'price': p});
+                        }
+                      }
+                      addClass('Economy', economySeats, economyPrice);
+                      addClass('Premium Economy', premiumSeats, premiumPrice);
+                      addClass('Business Class', businessSeats, businessPrice);
+                      addClass('First Class', firstSeats, firstPrice);
+
+                      if (seatClasses.isEmpty) {
+                        Get.snackbar('Validation', 'Add at least one seat class with seats and price.',
+                            snackPosition: SnackPosition.BOTTOM,
+                            backgroundColor: Colors.red.withOpacity(0.85),
+                            colorText: Colors.white);
+                        return;
+                      }
+
+                      final minPrice = calcMinPrice() ?? 0;
+                      final totalSeats = calcTotalSeats();
+
+                      final data = {
+                        'airline': airlineController.text,
+                        'from': fromController.text,
+                        'to': toController.text,
+                        'price': minPrice,
+                        'availableSeats': totalSeats,
+                        'seatClasses': seatClasses,
+                        'departureTime': depDateTime.toIso8601String(),
+                        'arrivalTime': arrDateTime.toIso8601String(),
+                        'isPopular': isPopular,
+                      };
+                      if (isEdit) {
+                        controller.updateFlight(flight['id'], data);
+                      } else {
+                        controller.addFlight(data);
+                      }
+                      Get.back();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF3F51B5),
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size(double.infinity, 56),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      elevation: 0,
+                    ),
+                    child: Text(isEdit ? 'Update Flight' : 'Save Flight'),
+                  ),
+                  const SizedBox(height: 20),
+                ],
+              );
+            }
           ),
         ),
       ),
@@ -301,6 +575,49 @@ class AdminFlightManageScreen extends StatelessWidget {
         prefixIcon: Icon(icon, size: 20),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      ),
+    );
+  }
+
+  Widget _buildSeatRow(
+    String label,
+    TextEditingController seats,
+    TextEditingController price, {
+    VoidCallback? onChanged,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        children: [
+          Expanded(flex: 2, child: Text(label, style: const TextStyle(fontWeight: FontWeight.w600))),
+          Expanded(
+            child: TextField(
+              controller: seats,
+              keyboardType: TextInputType.number,
+              onChanged: (_) => onChanged?.call(),
+              decoration: InputDecoration(
+                labelText: 'Seats',
+                prefixIcon: const Icon(Icons.event_seat_rounded, size: 20),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: TextField(
+              controller: price,
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              onChanged: (_) => onChanged?.call(),
+              decoration: InputDecoration(
+                labelText: 'Price (\$)',
+                prefixIcon: const Icon(Icons.attach_money_rounded, size: 20),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

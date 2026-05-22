@@ -14,10 +14,12 @@ namespace TravelApp.Controllers
     public class SupportController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly NotificationService _notificationService;
 
-        public SupportController(AppDbContext context)
+        public SupportController(AppDbContext context, NotificationService notificationService)
         {
             _context = context;
+            _notificationService = notificationService;
         }
 
         public class CreateTicketDto
@@ -78,6 +80,9 @@ namespace TravelApp.Controllers
 
             _context.ChatMessages.Add(message);
             await _context.SaveChangesAsync();
+
+            // Create notification for user acknowledging support ticket creation
+            await _notificationService.CreateNotificationAsync(userId, "Support Ticket Created", $"Your support ticket '{dto.Subject}' has been created successfully. An agent will respond soon.");
 
             return Ok(ticket);
         }
@@ -234,6 +239,12 @@ namespace TravelApp.Controllers
 
             _context.ChatMessages.Add(message);
             await _context.SaveChangesAsync();
+
+            if (isAdmin)
+            {
+                // Notify the user who owns the ticket that an admin responded
+                await _notificationService.CreateNotificationAsync(ticket.UserId, "Support Ticket Response", $"Admin has responded to your ticket '{ticket.Subject}': {dto.Message}");
+            }
 
             string adminName = null;
             if (isAdmin)

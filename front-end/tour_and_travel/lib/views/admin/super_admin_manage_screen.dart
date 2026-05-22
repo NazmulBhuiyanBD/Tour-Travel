@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../controllers/admin_management_controller.dart';
+import '../../view_models/admin_management_view_model.dart';
 import '../../core/constant/app_colors.dart';
 
 class SuperAdminManageScreen extends StatelessWidget {
@@ -8,7 +8,7 @@ class SuperAdminManageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(AdminManagementController());
+    final controller = Get.put(AdminManagementViewModel());
     controller.fetchAdmins();
 
     return Scaffold(
@@ -190,7 +190,7 @@ class SuperAdminManageScreen extends StatelessWidget {
     );
   }
 
-  void _showAdminForm(BuildContext context, AdminManagementController controller) {
+  void _showAdminForm(BuildContext context, AdminManagementViewModel controller) {
     final nameController = TextEditingController();
     final emailController = TextEditingController();
     final phoneController = TextEditingController();

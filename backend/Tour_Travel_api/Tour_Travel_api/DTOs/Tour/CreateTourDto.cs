@@ -6,8 +6,12 @@ namespace TravelApp.DTOs.Tour
         public string Description { get; set; }
         public int DurationDays { get; set; }
         public decimal Price { get; set; }
+        public string? StartPoint { get; set; }
+        public string? EndPoint { get; set; }
         public string Itinerary { get; set; }
         public bool IsTopDestination { get; set; }
         public string? ImageUrl { get; set; }
+        public DateTime StartDate { get; set; }
+        public int Vacancy { get; set; } = 20;
     }
 }

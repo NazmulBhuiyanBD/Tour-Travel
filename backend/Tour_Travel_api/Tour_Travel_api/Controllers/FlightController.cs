@@ -35,7 +35,7 @@ namespace TravelApp.Controllers
         }
 
         [HttpGet("search")]
-        public IActionResult Search(string from, string to)
+        public IActionResult Search(string? from, string? to)
         {
             var result = _flightService.Search(from, to);
             return Ok(result);
@@ -47,14 +47,20 @@ namespace TravelApp.Controllers
             return Ok(_flightService.GetPopularFlights());
         }
 
+        [HttpGet("{id}/seat-classes")]
+        public IActionResult GetSeatClasses(int id)
+        {
+            return Ok(_flightService.GetSeatClasses(id));
+        }
+
         [Authorize]
         [HttpPost("book")]
-        public IActionResult Book(BookFlightDto dto)
+        public async Task<IActionResult> Book(BookFlightDto dto)
         {
             try
             {
                 var userId = GetUserId();
-                _flightService.BookFlight(userId, dto);
+                await _flightService.BookFlight(userId, dto);
                 return Ok(new { message = "Flight booked successfully" });
             }
             catch (Exception ex)

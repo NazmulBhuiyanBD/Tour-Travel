@@ -15,5 +15,6 @@ namespace TravelApp.Models
 
         public int AvailableSeats { get; set; }
         public bool IsPopular { get; set; } = false;
+        public ICollection<FlightSeatClass> SeatClasses { get; set; } = new List<FlightSeatClass>();
     }
 }

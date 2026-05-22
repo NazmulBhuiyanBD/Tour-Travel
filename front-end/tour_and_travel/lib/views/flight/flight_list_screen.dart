@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../controllers/flight_controller.dart';
+import '../../view_models/flight_view_model.dart';
 import '../../core/constant/app_colors.dart';
 import 'flight_booking_screen.dart';
 import 'flight_search_screen.dart';
 
 class FlightListScreen extends StatelessWidget {
   final GlobalKey<ScaffoldState>? scaffoldKey;
-  final FlightController _flightController = Get.put(FlightController());
+  final FlightViewModel _flightViewModel = Get.put(FlightViewModel());
 
   FlightListScreen({super.key, this.scaffoldKey});
 
@@ -26,15 +26,15 @@ class FlightListScreen extends StatelessWidget {
           // Flight List
           Expanded(
             child: Obx(() {
-              if (_flightController.isLoading.value && _flightController.flightList.isEmpty) {
+              if (_flightViewModel.isLoading.value && _flightViewModel.flightList.isEmpty) {
                 return const Center(
                   child: CircularProgressIndicator(color: AppColors.primaryBlue),
                 );
               }
 
-              final flights = _flightController.fromCity.value.isEmpty
-                  ? _flightController.flightList
-                  : _flightController.searchResults;
+              final flights = _flightViewModel.fromCity.value.isEmpty
+                  ? _flightViewModel.flightList
+                  : _flightViewModel.searchResults;
 
               if (flights.isEmpty) {
                 return Center(
@@ -115,8 +115,8 @@ class FlightListScreen extends StatelessWidget {
                   ),
                   Center(
                     child: Obx(() {
-                      final from = _flightController.fromCity.value;
-                      final to = _flightController.toCity.value;
+                      final from = _flightViewModel.fromCity.value;
+                      final to = _flightViewModel.toCity.value;
                       return Text(
                         (from.isEmpty || to.isEmpty) ? 'Flights' : '$from to $to',
                         style: const TextStyle(
@@ -150,9 +150,9 @@ class FlightListScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Obx(() {
-            final flights = _flightController.fromCity.value.isEmpty
-                ? _flightController.flightList
-                : _flightController.searchResults;
+            final flights = _flightViewModel.fromCity.value.isEmpty
+                ? _flightViewModel.flightList
+                : _flightViewModel.searchResults;
             return Text(
               "Showing ${flights.length} Flights",
               style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
@@ -163,13 +163,13 @@ class FlightListScreen extends StatelessWidget {
               const Text("Sort by:", style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
               const SizedBox(width: 8),
               Obx(() {
-                String currentSort = _flightController.selectedSortType.value;
+                String currentSort = _flightViewModel.selectedSortType.value;
                 String label = "Default";
                 if (currentSort == 'low') label = "Low to High";
                 if (currentSort == 'high') label = "High to Low";
                 
                 return PopupMenuButton<String>(
-                  onSelected: (String value) => _flightController.sortFlights(value),
+                  onSelected: (String value) => _flightViewModel.sortFlights(value),
                   itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
                     const PopupMenuItem<String>(
                       value: 'default',
@@ -248,23 +248,30 @@ class FlightListScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: AppColors.primaryBlue.withOpacity(0.1),
-                            shape: BoxShape.circle,
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: AppColors.primaryBlue.withOpacity(0.1),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(Icons.airplanemode_active, color: AppColors.primaryBlue, size: 20),
                           ),
-                          child: const Icon(Icons.airplanemode_active, color: AppColors.primaryBlue, size: 20),
-                        ),
-                        const SizedBox(width: 12),
-                        Text(
-                          flight['airline'] ?? 'Airline',
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppColors.textPrimary),
-                        ),
-                      ],
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              flight['airline'] ?? 'Airline',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppColors.textPrimary),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
+                    const SizedBox(width: 8),
                     Text(
                       '\$${flight['price'] ?? '0'}',
                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: AppColors.cardGreen),

@@ -1,6 +1,0 @@
-@Tour___Travel_api_HostAddress = http://localhost:5198
-
-GET {{Tour___Travel_api_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

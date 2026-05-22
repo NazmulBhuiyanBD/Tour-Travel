@@ -4,6 +4,7 @@ namespace TravelApp.DTOs.Hotel
     {
         public int HotelId { get; set; }
         public int RoomId { get; set; }
+        public int RoomCount { get; set; } = 1;
         public DateTime CheckIn { get; set; }
         public DateTime CheckOut { get; set; }
         public string PaymentMethod { get; set; }

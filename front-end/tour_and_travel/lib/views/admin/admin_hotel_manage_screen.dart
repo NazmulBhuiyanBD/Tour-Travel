@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tour_and_travel/core/constant/api_constants.dart';
-import '../../controllers/admin_management_controller.dart';
+import '../../view_models/admin_management_view_model.dart';
 import '../../core/constant/app_colors.dart';
 
 class AdminHotelManageScreen extends StatelessWidget {
@@ -9,7 +9,7 @@ class AdminHotelManageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(AdminManagementController());
+    final controller = Get.put(AdminManagementViewModel());
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FE),
@@ -205,13 +205,26 @@ class AdminHotelManageScreen extends StatelessWidget {
     );
   }
 
-  void _showHotelForm(BuildContext context, AdminManagementController controller, {dynamic hotel}) {
+  void _showHotelForm(BuildContext context, AdminManagementViewModel controller, {dynamic hotel}) {
     final isEdit = hotel != null;
     final nameController = TextEditingController(text: isEdit ? (hotel['name'] ?? '') : '');
     final locController = TextEditingController(text: isEdit ? (hotel['location'] ?? '') : '');
     final descController = TextEditingController(text: isEdit ? (hotel['description'] ?? '') : '');
     final priceController = TextEditingController(text: isEdit ? (hotel['pricePerNight']?.toString() ?? hotel['price']?.toString() ?? '') : '');
+    final roomsController = TextEditingController(text: isEdit ? (hotel['availableRooms']?.toString() ?? '10') : '10');
     bool isFeatured = isEdit ? (hotel['isFeatured'] ?? false) : false;
+    
+    // Parse existing amenities
+    List<String> existingAmenities = [];
+    if (isEdit && hotel['amenities'] != null) {
+      existingAmenities = (hotel['amenities'] as String).split(',').map((e) => e.trim()).toList();
+    }
+    
+    final List<String> commonAmenities = ['Free WiFi', 'Swimming Pool', 'Gym', 'Restaurant', 'Parking', 'Air Conditioning'];
+    List<String> selectedAmenities = commonAmenities.where((a) => existingAmenities.contains(a)).toList();
+    List<String> otherAmenities = existingAmenities.where((a) => !commonAmenities.contains(a)).where((a) => a.isNotEmpty).toList();
+    bool isOtherSelected = otherAmenities.isNotEmpty;
+    final otherAmenityController = TextEditingController(text: otherAmenities.join(', '));
     
     // Sync reactive state with form
     controller.selectedHotelImagePath.value = isEdit ? (hotel['imageUrl'] ?? '') : '';
@@ -282,6 +295,16 @@ class AdminHotelManageScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               TextField(
+                controller: roomsController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: 'Available Rooms',
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  prefixIcon: const Icon(Icons.meeting_room_rounded),
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextField(
                 controller: descController,
                 maxLines: 3,
                 decoration: InputDecoration(
@@ -289,6 +312,67 @@ class AdminHotelManageScreen extends StatelessWidget {
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                   prefixIcon: const Icon(Icons.description_rounded),
                 ),
+              ),
+              const SizedBox(height: 16),
+              const Text('Amenities', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFF1A1F36))),
+              const SizedBox(height: 8),
+              StatefulBuilder(
+                builder: (context, setModalState) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          ...commonAmenities.map((amenity) {
+                            final isSelected = selectedAmenities.contains(amenity);
+                            return FilterChip(
+                              label: Text(amenity),
+                              selected: isSelected,
+                              onSelected: (selected) {
+                                setModalState(() {
+                                  if (selected) {
+                                    selectedAmenities.add(amenity);
+                                  } else {
+                                    selectedAmenities.remove(amenity);
+                                  }
+                                });
+                              },
+                              selectedColor: const Color(0xFF3F51B5).withOpacity(0.2),
+                              checkmarkColor: const Color(0xFF3F51B5),
+                            );
+                          }).toList(),
+                          FilterChip(
+                            label: const Text("Other"),
+                            selected: isOtherSelected,
+                            onSelected: (selected) {
+                              setModalState(() {
+                                isOtherSelected = selected;
+                                if (!selected) {
+                                  otherAmenityController.clear();
+                                }
+                              });
+                            },
+                            selectedColor: const Color(0xFF3F51B5).withOpacity(0.2),
+                            checkmarkColor: const Color(0xFF3F51B5),
+                          ),
+                        ],
+                      ),
+                      if (isOtherSelected) ...[
+                        const SizedBox(height: 12),
+                        TextField(
+                          controller: otherAmenityController,
+                          decoration: InputDecoration(
+                            labelText: 'Custom Amenities (comma separated)',
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                            prefixIcon: const Icon(Icons.add_circle_outline),
+                          ),
+                        ),
+                      ],
+                    ],
+                  );
+                }
               ),
               const SizedBox(height: 16),
               StatefulBuilder(
@@ -355,13 +439,20 @@ class AdminHotelManageScreen extends StatelessWidget {
               const SizedBox(height: 32),
               ElevatedButton(
                 onPressed: () {
+                  List<String> finalAmenities = [...selectedAmenities];
+                  if (isOtherSelected && otherAmenityController.text.trim().isNotEmpty) {
+                    finalAmenities.addAll(otherAmenityController.text.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty));
+                  }
+                  
                   final data = {
                     'name': nameController.text,
                     'location': locController.text,
                     'description': descController.text,
                     'pricePerNight': double.tryParse(priceController.text) ?? 0.0,
+                    'availableRooms': int.tryParse(roomsController.text) ?? 10,
                     'imageUrl': controller.selectedHotelImagePath.value,
                     'isFeatured': isFeatured,
+                    'amenities': finalAmenities.join(', '),
                   };
                   if (isEdit) {
                     controller.updateHotel(hotel['id'], data);

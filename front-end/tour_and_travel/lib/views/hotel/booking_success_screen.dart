@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tour_and_travel/routes/app_routes.dart';
+import 'package:printing/printing.dart';
+import 'package:pdf/pdf.dart';
+import '../../core/utils/pdf_invoice_api.dart';
 
 class BookingSuccessScreen extends StatelessWidget {
   const BookingSuccessScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final String bookingType = Get.arguments ?? 'Stay';
+    final args = Get.arguments;
+    final Map<String, dynamic> bookingDetails = (args is Map<String, dynamic>) 
+        ? args 
+        : {'type': (args as String?) ?? 'Booking'};
+        
+    final String bookingType = bookingDetails['type'] ?? 'Stay';
+    
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -84,6 +93,33 @@ class BookingSuccessScreen extends StatelessWidget {
                   ),
                   child: const Text(
                     "View Booking",
+                    style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 15),
+
+              // Download PDF Button
+              SizedBox(
+                width: double.infinity,
+                height: 55,
+                child: ElevatedButton.icon(
+                  onPressed: () async {
+                    final pdfBytes = await PdfInvoiceApi.generateInvoice(bookingDetails);
+                    await Printing.sharePdf(
+                      bytes: pdfBytes,
+                      filename: 'Invoice_${bookingType}_${DateTime.now().millisecondsSinceEpoch}.pdf',
+                    );
+                  },
+                  icon: const Icon(Icons.picture_as_pdf, color: Colors.white),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.indigo,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                  label: const Text(
+                    "Download Invoice PDF",
                     style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                 ),

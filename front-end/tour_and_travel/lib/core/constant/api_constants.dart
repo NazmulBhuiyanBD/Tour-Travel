@@ -30,6 +30,7 @@ class ApiConstants {
   static const String addFlight = '/Flight/add';
   static const String bookFlight = '/Flight/book';
   static const String flightsPopular = '/Flight/popular';
+  static String flightSeatClasses(int flightId) => '/Flight/$flightId/seat-classes';
 
   // Specific Featured Endpoints
   static const String toursTop = '/Tour/top';
@@ -88,4 +89,12 @@ class ApiConstants {
 
   // Password Change
   static const String changePassword = '/Auth/change-password';
+
+  // Review Endpoints
+  static const String addReview = '/Review';
+  static const String getReviews = '/Review'; // append /{itemType}/{itemId}
+  static const String userReviews = '/Review/user';
+
+  // Refund Endpoints
+  static const String refund = '/Refund';
 }

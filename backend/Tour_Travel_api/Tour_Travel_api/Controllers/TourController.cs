@@ -42,12 +42,12 @@ namespace TravelApp.Controllers
 
         [Authorize]
         [HttpPost("book")]
-        public IActionResult Book(BookTourDto dto)
+        public async Task<IActionResult> Book(BookTourDto dto)
         {
             try
             {
                 var userId = GetUserId();
-                _tourService.BookTour(userId, dto);
+                await _tourService.BookTour(userId, dto);
                 return Ok(new { message = "Tour booked successfully" });
             }
             catch (Exception ex)

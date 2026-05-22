@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tour_and_travel/routes/app_routes.dart';
-import '../../controllers/auth_controller.dart';
+import '../../view_models/auth_view_model.dart';
+import '../../data/services/storage_service.dart';
 import 'signup_screen.dart';
 
 class LoginScreen extends StatelessWidget {
-  final AuthController authController = Get.find<AuthController>();
+  final AuthViewModel authViewModel = Get.find<AuthViewModel>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
+  LoginScreen({super.key}) {
+    emailController.text = StorageService.to.getSavedEmail() ?? '';
+    passwordController.text = StorageService.to.getSavedPassword() ?? '';
+    authViewModel.isRememberMe.value = emailController.text.isNotEmpty;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +49,15 @@ class LoginScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(children: [Checkbox(value: false, onChanged: (v){}), const Text("Remember Me")]),
+                Row(children: [
+                  Obx(() => Checkbox(
+                    value: authViewModel.isRememberMe.value, 
+                    onChanged: (v) {
+                      authViewModel.isRememberMe.value = v ?? false;
+                    },
+                  )), 
+                  const Text("Remember Me")
+                ]),
                 TextButton(onPressed: () => Get.toNamed(Routes.FORGOT_PASSWORD), child: const Text("Forgot Password?", style: TextStyle(color: Colors.grey))),
               ],
             ),
@@ -55,10 +70,10 @@ class LoginScreen extends StatelessWidget {
                   backgroundColor: const Color(0xFF2F55D4), 
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))
                 ),
-                onPressed: authController.isLoading.value ? null : () {
-                   authController.login(emailController.text, passwordController.text);
+                onPressed: authViewModel.isLoading.value ? null : () {
+                   authViewModel.login(emailController.text, passwordController.text);
                 },
-                child: authController.isLoading.value 
+                child: authViewModel.isLoading.value 
                   ? const CircularProgressIndicator(color: Colors.white) 
                   : const Text("SIGN IN", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
               ),

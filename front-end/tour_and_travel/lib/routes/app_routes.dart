@@ -22,9 +22,16 @@ abstract class Routes {
   static const VERIFY_EMAIL = '/verify-email';
   static const FORGOT_PASSWORD = '/forgot-password';
   static const RESET_PASSWORD = '/reset-password';
+  static const CHANGE_PASSWORD = '/change-password';
   static const TOUR_DETAILS = '/tour-details';
   static const HOTEL_DETAILS = '/hotel-details';
   static const MY_FLIGHT_BOOKINGS = '/my-flight-bookings';
   static const FLIGHT_BOOKING_DETAILS = '/flight-booking-details';
+  static const MY_HOTEL_BOOKINGS = '/my-hotel-bookings';
+  static const HOTEL_BOOKING_DETAILS_VIEW = '/hotel-booking-details-view';
+  static const MY_TOUR_BOOKINGS = '/my-tour-bookings';
+  static const TOUR_BOOKING_DETAILS = '/tour-booking-details-view';
   static const BOOKING_SUCCESS = '/booking-success';
+  static const MY_REVIEWS = '/my-reviews';
+  static const NOTIFICATIONS = '/notifications';
 }

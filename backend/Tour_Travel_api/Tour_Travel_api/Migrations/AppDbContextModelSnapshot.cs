@@ -159,8 +159,16 @@ namespace Tour___Travel_api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("SeatClass")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<int>("SeatCount")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("numeric");
@@ -179,6 +187,34 @@ namespace Tour___Travel_api.Migrations
                     b.ToTable("FlightBookings");
                 });
 
+            modelBuilder.Entity("TravelApp.Models.FlightSeatClass", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AvailableSeats")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ClassName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("FlightId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FlightId");
+
+                    b.ToTable("FlightSeatClasses");
+                });
+
             modelBuilder.Entity("TravelApp.Models.Hotel", b =>
                 {
                     b.Property<int>("Id")
@@ -186,6 +222,12 @@ namespace Tour___Travel_api.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Amenities")
+                        .HasColumnType("text");
+
+                    b.Property<int>("AvailableRooms")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -238,8 +280,15 @@ namespace Tour___Travel_api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("RoomCount")
+                        .HasColumnType("integer");
+
                     b.Property<int>("RoomId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("numeric");
@@ -282,6 +331,108 @@ namespace Tour___Travel_api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("HotelReviews");
+                });
+
+            modelBuilder.Entity("TravelApp.Models.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Notifications");
+                });
+
+            modelBuilder.Entity("TravelApp.Models.RefundRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BookingId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ItemType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Reason")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("RequestedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RefundRequests");
+                });
+
+            modelBuilder.Entity("TravelApp.Models.Review", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ItemType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("TravelApp.Models.Room", b =>
@@ -358,6 +509,10 @@ namespace Tour___Travel_api.Migrations
                     b.Property<int>("DurationDays")
                         .HasColumnType("integer");
 
+                    b.Property<string>("EndPoint")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("GalleryImages")
                         .HasColumnType("text");
 
@@ -375,9 +530,19 @@ namespace Tour___Travel_api.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
 
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("StartPoint")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("Vacancy")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -395,6 +560,9 @@ namespace Tour___Travel_api.Migrations
                     b.Property<DateTime>("BookingDate")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<int>("ParticipantCount")
+                        .HasColumnType("integer");
+
                     b.Property<string>("PaymentMethod")
                         .IsRequired()
                         .HasColumnType("text");
@@ -402,6 +570,9 @@ namespace Tour___Travel_api.Migrations
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("numeric");
 
                     b.Property<int>("TourId")
                         .HasColumnType("integer");
@@ -426,11 +597,20 @@ namespace Tour___Travel_api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Address")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("DateOfBirth")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("EmailConfirmationToken")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Gender")
                         .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
@@ -449,6 +629,9 @@ namespace Tour___Travel_api.Migrations
 
                     b.Property<string>("Phone")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ProfilePicture")
                         .HasColumnType("text");
 
                     b.Property<string>("ResetPasswordToken")
@@ -487,6 +670,17 @@ namespace Tour___Travel_api.Migrations
                     b.Navigation("Flight");
                 });
 
+            modelBuilder.Entity("TravelApp.Models.FlightSeatClass", b =>
+                {
+                    b.HasOne("TravelApp.Models.Flight", "Flight")
+                        .WithMany("SeatClasses")
+                        .HasForeignKey("FlightId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Flight");
+                });
+
             modelBuilder.Entity("TravelApp.Models.HotelBooking", b =>
                 {
                     b.HasOne("TravelApp.Models.Room", "Room")
@@ -518,6 +712,11 @@ namespace Tour___Travel_api.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TravelApp.Models.Flight", b =>
+                {
+                    b.Navigation("SeatClasses");
                 });
 
             modelBuilder.Entity("TravelApp.Models.SupportTicket", b =>

@@ -25,6 +25,15 @@ class FlightRepository {
     }
   }
 
+  Future<dynamic> getSeatClasses(int flightId) async {
+    try {
+      return await _apiService.getGetApiResponse(
+          ApiConstants.baseUrl + ApiConstants.flightSeatClasses(flightId));
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<dynamic> bookFlight(dynamic data) async {
     try {
       dynamic response = await _apiService.getPostApiResponse(

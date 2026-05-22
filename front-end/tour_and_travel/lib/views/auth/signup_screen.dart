@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../controllers/auth_controller.dart';
+import '../../view_models/auth_view_model.dart';
 
 class SignupScreen extends StatelessWidget {
-  final AuthController authController = Get.find<AuthController>();
+  final AuthViewModel authViewModel = Get.find<AuthViewModel>();
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passController = TextEditingController();
@@ -33,19 +33,19 @@ class SignupScreen extends StatelessWidget {
               width: double.infinity, height: 55,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF2F55D4), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-                onPressed: authController.isLoading.value ? null : () {
+                onPressed: authViewModel.isLoading.value ? null : () {
                   if (passController.text != confirmPassController.text) {
                     Get.snackbar("Error", "Passwords do not match");
                     return;
                   }
-                  authController.register(
+                  authViewModel.register(
                     nameController.text, 
                     emailController.text, 
                     passController.text, 
                     "0000000000" // Default phone for now
                   );
                 },
-                child: authController.isLoading.value 
+                child: authViewModel.isLoading.value 
                   ? const CircularProgressIndicator(color: Colors.white)
                   : const Text("SIGN UP", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
               ),

@@ -5,7 +5,7 @@ import 'views/onboarding/onboarding_screen.dart';
 import 'views/auth/login_screen.dart';
 import 'views/main_screen.dart';
 import './data/services/storage_service.dart';
-import './controllers/auth_controller.dart';
+import './view_models/auth_view_model.dart';
 import './routes/app_pages.dart';
 import './routes/app_routes.dart';
 import './core/theme/app_theme.dart';
@@ -15,7 +15,7 @@ import './views/admin/admin_dashboard_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Get.putAsync(() => StorageService().init());
-  Get.put(AuthController()); // Initialize AuthController globally
+  Get.put(AuthViewModel()); // Initialize AuthViewModel globally
   runApp(const MyApp());
 }
 

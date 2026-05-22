@@ -13,12 +13,14 @@ namespace TravelApp.Controllers
         private readonly AppDbContext _context;
         private readonly JwtService _jwt;
         private readonly IEmailService _emailService;
+        private readonly NotificationService _notificationService;
 
-        public AuthController(AppDbContext context, JwtService jwt, IEmailService emailService)
+        public AuthController(AppDbContext context, JwtService jwt, IEmailService emailService, NotificationService notificationService)
         {
             _context = context;
             _jwt = jwt;
             _emailService = emailService;
+            _notificationService = notificationService;
         }
 
         [HttpPost("register")]
@@ -48,7 +50,7 @@ namespace TravelApp.Controllers
         }
 
         [HttpPost("login")]
-        public IActionResult Login(LoginDto dto)
+        public async Task<IActionResult> Login(LoginDto dto)
         {
             var pass = PasswordHasher.Hash(dto.Password);
 
@@ -58,10 +60,17 @@ namespace TravelApp.Controllers
             if (user == null) 
                 return Unauthorized(new { error = "Invalid email or password" });
 
+            if (!user.IsActive)
+                return Unauthorized(new { error = "BannedUser" });
+
             if (!user.IsEmailConfirmed)
                 return BadRequest(new { error = "EmailNotConfirmed" });
 
             var userToken = _jwt.GenerateToken(user);
+
+            // Record login activity notification
+            await _notificationService.CreateNotificationAsync(user.Id, "Login Detected", $"Successful login to your account from a new session.");
+
             return Ok(new 
             { 
                 token = userToken, 

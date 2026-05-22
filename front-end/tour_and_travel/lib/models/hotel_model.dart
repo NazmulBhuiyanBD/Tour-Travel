@@ -6,7 +6,9 @@ class HotelModel {
   double? rating;
   String? imageUrl;
   String? galleryImages;
+  String? amenities;
   double? pricePerNight;
+  int? availableRooms;
   bool? isFeatured;
 
   HotelModel({
@@ -17,7 +19,9 @@ class HotelModel {
     this.rating,
     this.imageUrl,
     this.galleryImages,
+    this.amenities,
     this.pricePerNight,
+    this.availableRooms,
     this.isFeatured,
   });
 
@@ -29,7 +33,9 @@ class HotelModel {
     rating = (json['rating'] as num?)?.toDouble();
     imageUrl = json['imageUrl'];
     galleryImages = json['galleryImages'];
+    amenities = json['amenities'];
     pricePerNight = (json['pricePerNight'] as num?)?.toDouble();
+    availableRooms = json['availableRooms'];
     isFeatured = json['isFeatured'];
   }
 
@@ -42,7 +48,9 @@ class HotelModel {
     data['rating'] = rating;
     data['imageUrl'] = imageUrl;
     data['galleryImages'] = galleryImages;
+    data['amenities'] = amenities;
     data['pricePerNight'] = pricePerNight;
+    data['availableRooms'] = availableRooms;
     data['isFeatured'] = isFeatured;
     return data;
   }
@@ -52,5 +60,12 @@ class HotelModel {
       return imageUrl != null ? [imageUrl!] : [];
     }
     return galleryImages!.split(',').map((e) => e.trim()).toList();
+  }
+
+  List<String> get amenitiesList {
+    if (amenities == null || amenities!.isEmpty) {
+      return [];
+    }
+    return amenities!.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
   }
 }

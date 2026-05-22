@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../controllers/auth_controller.dart';
+import '../../view_models/auth_view_model.dart';
 
 class ForgotPasswordScreen extends StatelessWidget {
-  final AuthController authController = Get.find<AuthController>();
+  final AuthViewModel authViewModel = Get.find<AuthViewModel>();
   final TextEditingController emailController = TextEditingController();
 
   @override
@@ -27,10 +27,10 @@ class ForgotPasswordScreen extends StatelessWidget {
               width: double.infinity, height: 55,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF2F55D4), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-                onPressed: authController.isLoading.value ? null : () {
-                  authController.forgotPassword(emailController.text);
+                onPressed: authViewModel.isLoading.value ? null : () {
+                  authViewModel.forgotPassword(emailController.text);
                 },
-                child: authController.isLoading.value 
+                child: authViewModel.isLoading.value 
                   ? const CircularProgressIndicator(color: Colors.white)
                   : const Text("SEND CODE", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
               ),

@@ -14,6 +14,8 @@ class HotelDetailsScreen extends StatefulWidget {
 }
 
 class _HotelDetailsScreenState extends State<HotelDetailsScreen> {
+  static const int _maxNights = 7;
+
   late HotelModel hotel;
   int _currentImageIndex = 0;
   int _nights = 1;
@@ -39,11 +41,12 @@ class _HotelDetailsScreenState extends State<HotelDetailsScreen> {
           SliverAppBar(
             expandedHeight: 350,
             pinned: true,
+            backgroundColor: Colors.white,
             leading: IconButton(
               icon: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.3),
+                  color: Colors.black.withValues(alpha: 0.3),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(Icons.arrow_back, color: Colors.white),
@@ -83,8 +86,8 @@ class _HotelDetailsScreenState extends State<HotelDetailsScreen> {
                             margin: const EdgeInsets.symmetric(horizontal: 4.0),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: Colors.white.withOpacity(
-                                _currentImageIndex == entry.key ? 0.9 : 0.4,
+                              color: Colors.white.withValues(
+                                alpha: _currentImageIndex == entry.key ? 0.9 : 0.4,
                               ),
                             ),
                           );
@@ -121,11 +124,8 @@ class _HotelDetailsScreenState extends State<HotelDetailsScreen> {
                           const Icon(Icons.star, color: AppColors.accentGold, size: 20),
                           const SizedBox(width: 4),
                           Text(
-                            hotel.rating?.toString() ?? "5.0",
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            (hotel.rating ?? 0) > 0 ? hotel.rating!.toStringAsFixed(1) : "New",
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
@@ -158,25 +158,21 @@ class _HotelDetailsScreenState extends State<HotelDetailsScreen> {
                   ),
                   const SizedBox(height: 25),
 
-                  // Amenities
-                  const Text(
-                    "Amenities",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 15),
-                  Wrap(
-                    spacing: 20,
-                    runSpacing: 15,
-                    children: [
-                      _buildAmenity(Icons.wifi, "Free WiFi"),
-                      _buildAmenity(Icons.pool, "Swimming Pool"),
-                      _buildAmenity(Icons.fitness_center, "Gym"),
-                      _buildAmenity(Icons.restaurant, "Restaurant"),
-                      _buildAmenity(Icons.local_parking, "Parking"),
-                      _buildAmenity(Icons.ac_unit, "Air Conditioning"),
-                    ],
-                  ),
-                  const SizedBox(height: 30),
+                  if (hotel.amenitiesList.isNotEmpty) ...[
+                    const Text(
+                      "Amenities",
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 15),
+                    Wrap(
+                      spacing: 20,
+                      runSpacing: 15,
+                      children: hotel.amenitiesList.map((amenity) {
+                        return _buildAmenity(_getIconForAmenity(amenity), amenity);
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 30),
+                  ],
 
                   // Stay Duration
                   Container(
@@ -189,14 +185,25 @@ class _HotelDetailsScreenState extends State<HotelDetailsScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          "Stay Duration",
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Stay Duration",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              "Maximum $_maxNights nights",
+                              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                            ),
+                          ],
                         ),
                         Row(
                           children: [
                             IconButton(
-                              onPressed: () => setState(() => _nights > 1 ? _nights-- : null),
+                              onPressed: _nights > 1
+                                  ? () => setState(() => _nights--)
+                                  : null,
                               icon: const Icon(Icons.remove_circle_outline, color: AppColors.primaryBlue),
                             ),
                             Text(
@@ -204,14 +211,41 @@ class _HotelDetailsScreenState extends State<HotelDetailsScreen> {
                               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                             ),
                             IconButton(
-                              onPressed: () => setState(() => _nights++),
-                              icon: const Icon(Icons.add_circle_outline, color: AppColors.primaryBlue),
+                              onPressed: _nights < _maxNights
+                                  ? () => setState(() => _nights++)
+                                  : null,
+                              icon: Icon(
+                                Icons.add_circle_outline,
+                                color: _nights < _maxNights
+                                    ? AppColors.primaryBlue
+                                    : Colors.grey.shade400,
+                              ),
                             ),
                           ],
                         ),
                       ],
                     ),
                   ),
+                  const SizedBox(height: 16),
+                  if ((hotel.availableRooms ?? 0) > 0)
+                    Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: Colors.teal.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.meeting_room, color: AppColors.primaryBlue),
+                          const SizedBox(width: 10),
+                          Text(
+                            "${hotel.availableRooms} rooms available (max 4 per booking)",
+                            style: const TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                        ],
+                      ),
+                    ),
+
                   const SizedBox(height: 100),
                 ],
               ),
@@ -234,12 +268,29 @@ class _HotelDetailsScreenState extends State<HotelDetailsScreen> {
     );
   }
 
+  IconData _getIconForAmenity(String amenity) {
+    final lower = amenity.toLowerCase();
+    if (lower.contains('wifi')) return Icons.wifi;
+    if (lower.contains('pool')) return Icons.pool;
+    if (lower.contains('gym') || lower.contains('fitness')) return Icons.fitness_center;
+    if (lower.contains('restaurant') || lower.contains('food') || lower.contains('dining')) return Icons.restaurant;
+    if (lower.contains('parking')) return Icons.local_parking;
+    if (lower.contains('air condition') || lower.contains('ac')) return Icons.ac_unit;
+    if (lower.contains('bar')) return Icons.local_bar;
+    if (lower.contains('spa') || lower.contains('massage')) return Icons.spa;
+    if (lower.contains('pet')) return Icons.pets;
+    if (lower.contains('room service')) return Icons.room_service;
+    if (lower.contains('laundry')) return Icons.local_laundry_service;
+    if (lower.contains('breakfast')) return Icons.breakfast_dining;
+    return Icons.check_circle_outline;
+  }
+
   Widget _buildBottomBar(double perNight, double total) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       decoration: BoxDecoration(
         color: Colors.white,
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, -5))],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, -5))],
       ),
       child: SafeArea(
         child: Row(
@@ -261,8 +312,11 @@ class _HotelDetailsScreenState extends State<HotelDetailsScreen> {
             const Spacer(),
             ElevatedButton(
               onPressed: () => Get.to(() => HotelBookingScreen(
+                hotelId: hotel.id ?? 0,
                 hotelName: hotel.name ?? "Hotel",
                 price: perNight,
+                availableRooms: hotel.availableRooms ?? 10,
+                initialNights: _nights,
               )),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primaryBlue,

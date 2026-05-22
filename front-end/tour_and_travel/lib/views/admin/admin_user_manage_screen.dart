@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../controllers/admin_management_controller.dart';
+import '../../view_models/admin_management_view_model.dart';
 import '../../core/constant/app_colors.dart';
 
 class AdminUserManageScreen extends StatefulWidget {
@@ -11,7 +11,7 @@ class AdminUserManageScreen extends StatefulWidget {
 }
 
 class _AdminUserManageScreenState extends State<AdminUserManageScreen> {
-  final controller = Get.find<AdminManagementController>();
+  final controller = Get.find<AdminManagementViewModel>();
   final TextEditingController _searchController = TextEditingController();
   var filteredUsers = <dynamic>[].obs;
 

@@ -11,7 +11,9 @@ namespace TravelApp.Models
         public double Rating { get; set; } = 0;
         public string ImageUrl { get; set; } = "";
         public string? GalleryImages { get; set; } // Comma-separated image URLs
+        public string? Amenities { get; set; } // Comma-separated amenities list
         public decimal PricePerNight { get; set; }
+        public int AvailableRooms { get; set; } = 0;
         public bool IsFeatured { get; set; } = false;
     }
 }

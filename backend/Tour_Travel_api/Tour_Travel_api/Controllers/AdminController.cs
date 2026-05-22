@@ -65,9 +65,13 @@ namespace TravelApp.Controllers
                 Description = dto.Description,
                 DurationDays = dto.DurationDays,
                 Price = dto.Price,
+                StartPoint = dto.StartPoint ?? "Dhaka",
+                EndPoint = dto.EndPoint ?? "",
                 Itinerary = dto.Itinerary,
                 IsTopDestination = dto.IsTopDestination,
-                ImageUrl = dto.ImageUrl ?? ""
+                ImageUrl = dto.ImageUrl ?? "",
+                StartDate = dto.StartDate == default ? DateTime.UtcNow.AddDays(7) : dto.StartDate,
+                Vacancy = dto.Vacancy > 0 ? dto.Vacancy : 20
             };
             _context.Tours.Add(tour);
             _context.SaveChanges();
@@ -84,9 +88,13 @@ namespace TravelApp.Controllers
             tour.Description = dto.Description;
             tour.DurationDays = dto.DurationDays;
             tour.Price = dto.Price;
+            tour.StartPoint = dto.StartPoint ?? tour.StartPoint;
+            tour.EndPoint = dto.EndPoint ?? tour.EndPoint;
             tour.Itinerary = dto.Itinerary;
             tour.IsTopDestination = dto.IsTopDestination;
             tour.ImageUrl = dto.ImageUrl ?? tour.ImageUrl;
+            tour.StartDate = dto.StartDate;
+            tour.Vacancy = dto.Vacancy;
             
             _context.SaveChanges();
             return Ok(tour);
@@ -126,10 +134,21 @@ namespace TravelApp.Controllers
                 Location = dto.Location,
                 Description = dto.Description,
                 ImageUrl = dto.ImageUrl ?? "",
+                Amenities = dto.Amenities,
                 PricePerNight = dto.PricePerNight,
+                AvailableRooms = dto.AvailableRooms,
                 IsFeatured = dto.IsFeatured
             };
             _context.Hotels.Add(hotel);
+            _context.SaveChanges();
+
+            _context.Rooms.Add(new Room
+            {
+                HotelId = hotel.Id,
+                Type = "Standard Room",
+                Price = dto.PricePerNight,
+                AvailableRooms = dto.AvailableRooms
+            });
             _context.SaveChanges();
             return Ok(hotel);
         }
@@ -145,7 +164,26 @@ namespace TravelApp.Controllers
             hotel.Description = dto.Description;
             hotel.PricePerNight = dto.PricePerNight;
             hotel.ImageUrl = dto.ImageUrl ?? hotel.ImageUrl;
+            hotel.Amenities = dto.Amenities ?? hotel.Amenities;
             hotel.IsFeatured = dto.IsFeatured;
+            hotel.AvailableRooms = dto.AvailableRooms;
+
+            var room = _context.Rooms.FirstOrDefault(r => r.HotelId == id);
+            if (room != null)
+            {
+                room.AvailableRooms = dto.AvailableRooms;
+                room.Price = dto.PricePerNight;
+            }
+            else
+            {
+                _context.Rooms.Add(new Room
+                {
+                    HotelId = hotel.Id,
+                    Type = "Standard Room",
+                    Price = dto.PricePerNight,
+                    AvailableRooms = dto.AvailableRooms
+                });
+            }
 
             _context.SaveChanges();
             return Ok(hotel);
@@ -174,44 +212,78 @@ namespace TravelApp.Controllers
 
         #region Flight Management
         [HttpGet("flights")]
-        public IActionResult GetFlights() => Ok(_context.Flights.ToList());
+        public IActionResult GetFlights() =>
+            Ok(_context.Flights
+                .Select(f => new
+                {
+                    f.Id,
+                    f.Airline,
+                    f.From,
+                    f.To,
+                    f.DepartureTime,
+                    f.ArrivalTime,
+                    f.Price,
+                    f.AvailableSeats,
+                    f.IsPopular,
+                    SeatClasses = f.SeatClasses
+                        .Select(s => new { s.Id, s.ClassName, s.AvailableSeats, s.Price })
+                        .ToList()
+                })
+                .ToList());
 
         [HttpPost("flight")]
-        public IActionResult CreateFlight(CreateFlightDto dto)
+        public IActionResult CreateFlight(CreateFlightDto dto, [FromServices] FlightService flightService)
         {
-            var flight = new Flight
-            {
-                Airline = dto.Airline,
-                From = dto.From,
-                To = dto.To,
-                DepartureTime = dto.DepartureTime,
-                ArrivalTime = dto.ArrivalTime,
-                Price = dto.Price,
-                AvailableSeats = dto.AvailableSeats,
-                IsPopular = dto.IsPopular
-            };
-            _context.Flights.Add(flight);
-            _context.SaveChanges();
-            return Ok(flight);
+            if (dto.SeatClasses == null || dto.SeatClasses.Count == 0)
+                return BadRequest(new { error = "Add at least one seat class with seats and price." });
+
+            flightService.AddFlight(dto);
+            var flightId = _context.Flights.OrderByDescending(f => f.Id).Select(f => f.Id).First();
+            return Ok(BuildFlightResponse(flightId));
         }
 
         [HttpPut("flight/{id}")]
-        public IActionResult UpdateFlight(int id, CreateFlightDto dto)
+        public IActionResult UpdateFlight(int id, CreateFlightDto dto, [FromServices] FlightService flightService)
         {
             var flight = _context.Flights.Find(id);
             if (flight == null) return NotFound();
+
+            if (dto.SeatClasses == null || dto.SeatClasses.Count == 0)
+                return BadRequest(new { error = "Add at least one seat class with seats and price." });
 
             flight.Airline = dto.Airline;
             flight.From = dto.From;
             flight.To = dto.To;
             flight.DepartureTime = dto.DepartureTime;
             flight.ArrivalTime = dto.ArrivalTime;
-            flight.Price = dto.Price;
-            flight.AvailableSeats = dto.AvailableSeats;
             flight.IsPopular = dto.IsPopular;
 
+            flightService.UpsertSeatClasses(id, dto.SeatClasses);
             _context.SaveChanges();
-            return Ok(flight);
+            return Ok(BuildFlightResponse(id));
+        }
+
+        private object BuildFlightResponse(int flightId)
+        {
+            var f = _context.Flights.First(x => x.Id == flightId);
+            var classes = _context.FlightSeatClasses
+                .Where(s => s.FlightId == flightId)
+                .Select(s => new { s.Id, s.ClassName, s.AvailableSeats, s.Price })
+                .ToList();
+
+            return new
+            {
+                f.Id,
+                f.Airline,
+                f.From,
+                f.To,
+                f.DepartureTime,
+                f.ArrivalTime,
+                f.Price,
+                f.AvailableSeats,
+                f.IsPopular,
+                SeatClasses = classes
+            };
         }
 
         [HttpDelete("flight/{id}")]
@@ -257,9 +329,7 @@ namespace TravelApp.Controllers
             var hotelRevenue = _context.HotelBookings.Sum(b => (decimal?)b.TotalPrice) ?? 0;
             
             // Join with Tours to get the price for each tour booking
-            var tourRevenue = (from tb in _context.TourBookings
-                              join t in _context.Tours on tb.TourId equals t.Id
-                              select (decimal?)t.Price).Sum() ?? 0;
+            var tourRevenue = _context.TourBookings.Sum(b => (decimal?)b.TotalPrice) ?? 0;
 
             var totalRevenue = flightRevenue + hotelRevenue + tourRevenue;
 

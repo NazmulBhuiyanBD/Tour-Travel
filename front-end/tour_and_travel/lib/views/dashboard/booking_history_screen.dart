@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../controllers/booking_controller.dart';
+import '../../view_models/booking_view_model.dart';
 import '../common_widgets/payment_gateway_screen.dart';
 
 class BookingHistoryScreen extends StatelessWidget {
-  final BookingController _bookingController = Get.put(BookingController());
+  final BookingViewModel _bookingViewModel = Get.put(BookingViewModel());
 
   BookingHistoryScreen({super.key});
 
@@ -22,12 +22,12 @@ class BookingHistoryScreen extends StatelessWidget {
         iconTheme: const IconThemeData(color: Colors.black87),
       ),
       body: Obx(() {
-        if (_bookingController.isLoading.value &&
-            _bookingController.bookingHistory.isEmpty) {
+        if (_bookingViewModel.isLoading.value &&
+            _bookingViewModel.bookingHistory.isEmpty) {
           return const Center(child: CircularProgressIndicator());
         }
 
-        if (_bookingController.bookingHistory.isEmpty) {
+        if (_bookingViewModel.bookingHistory.isEmpty) {
           return const Center(
             child: Text(
               "You have no booking history.",
@@ -38,12 +38,11 @@ class BookingHistoryScreen extends StatelessWidget {
 
         return ListView.builder(
           padding: const EdgeInsets.all(16.0),
-          itemCount: _bookingController.bookingHistory.length,
+          itemCount: _bookingViewModel.bookingHistory.length,
           itemBuilder: (context, index) {
-            var item = _bookingController.bookingHistory[index];
+            var item = _bookingViewModel.bookingHistory[index];
             bool requiresPayment =
-                item['status'] == 'Pending' ||
-                item['status'] == 'Confirmed'; // Mock logic
+                item['status'] == 'Pending';
 
             return Card(
               margin: const EdgeInsets.only(bottom: 15),

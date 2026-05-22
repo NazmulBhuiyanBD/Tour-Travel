@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../controllers/auth_controller.dart';
+import '../../view_models/auth_view_model.dart';
 
 class ResetPasswordScreen extends StatelessWidget {
-  final AuthController authController = Get.find<AuthController>();
+  final AuthViewModel authViewModel = Get.find<AuthViewModel>();
   final TextEditingController codeController = TextEditingController();
   final TextEditingController passController = TextEditingController();
   final TextEditingController confirmPassController = TextEditingController();
@@ -32,14 +32,14 @@ class ResetPasswordScreen extends StatelessWidget {
               width: double.infinity, height: 55,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF2F55D4), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-                onPressed: authController.isLoading.value ? null : () {
+                onPressed: authViewModel.isLoading.value ? null : () {
                   if (passController.text != confirmPassController.text) {
                     Get.snackbar("Error", "Passwords do not match");
                     return;
                   }
-                  authController.resetPassword(email, codeController.text, passController.text);
+                  authViewModel.resetPassword(email, codeController.text, passController.text);
                 },
-                child: authController.isLoading.value 
+                child: authViewModel.isLoading.value 
                   ? const CircularProgressIndicator(color: Colors.white)
                   : const Text("RESET PASSWORD", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
               ),

@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../controllers/tour_controller.dart';
+import '../../view_models/tour_view_model.dart';
 import '../../core/constant/api_constants.dart';
 import '../../core/constant/app_colors.dart';
-import 'tour_booking_screen.dart';
-import 'tour_details_screen.dart';
 import '../../routes/app_routes.dart';
 
 class TourListScreen extends StatelessWidget {
   final GlobalKey<ScaffoldState>? scaffoldKey;
-  final TourController _tourController = Get.put(TourController());
+  final TourViewModel _tourViewModel = Get.put(TourViewModel());
+  final TextEditingController _searchController = TextEditingController();
 
   TourListScreen({super.key, this.scaffoldKey});
 
@@ -28,13 +27,15 @@ class TourListScreen extends StatelessWidget {
           // Tour List
           Expanded(
             child: Obx(() {
-              if (_tourController.isLoading.value && _tourController.tourList.isEmpty) {
+              if (_tourViewModel.isLoading.value && _tourViewModel.tourList.isEmpty) {
                 return const Center(
                   child: CircularProgressIndicator(color: AppColors.cardGreen),
                 );
               }
 
-              if (_tourController.tourList.isEmpty) {
+              final tours = _tourViewModel.searchResults;
+
+              if (tours.isEmpty) {
                 return Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -56,7 +57,7 @@ class TourListScreen extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: Text(
-                      "Showing ${_tourController.tourList.length} Tours",
+                      "Showing ${tours.length} Tours",
                       style: const TextStyle(color: AppColors.textPrimary, fontSize: 13),
                     ),
                   ),
@@ -64,9 +65,9 @@ class TourListScreen extends StatelessWidget {
                     child: ListView.builder(
                       physics: const BouncingScrollPhysics(),
                       padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
-                      itemCount: _tourController.tourList.length,
+                      itemCount: tours.length,
                       itemBuilder: (context, index) {
-                        var tour = _tourController.tourList[index];
+                        var tour = tours[index];
                         return _buildTourCard(tour, context);
                       },
                     ),
@@ -90,45 +91,72 @@ class TourListScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               height: 50,
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2))
-                ]
-              ),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2))
+                  ]),
               child: Row(
                 children: [
                   Icon(Icons.search, color: Colors.grey.shade400, size: 20),
                   const SizedBox(width: 10),
-                  const Expanded(
+                  Expanded(
                     child: TextField(
-                      decoration: InputDecoration(
+                      controller: _searchController,
+                      onChanged: (value) => _tourViewModel.searchTours(value),
+                      decoration: const InputDecoration(
                         hintText: "Search tours...",
                         border: InputBorder.none,
                         hintStyle: TextStyle(color: Colors.grey),
                       ),
                     ),
                   ),
+                  Obx(() => _tourViewModel.searchQuery.value.isNotEmpty
+                      ? GestureDetector(
+                          onTap: () {
+                            _searchController.clear();
+                            _tourViewModel.searchTours('');
+                            _tourViewModel.sortTours('default');
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade200,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(Icons.close, size: 16, color: Colors.grey),
+                          ),
+                        )
+                      : const SizedBox.shrink()),
                 ],
               ),
             ),
           ),
           const SizedBox(width: 12),
-          Container(
-            height: 50,
-            width: 50,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2))
-              ]
-            ),
-            child: IconButton(
-              icon: const Icon(Icons.tune, color: AppColors.textPrimary),
-              onPressed: () {},
-            ),
-          )
+          Obx(() {
+            return PopupMenuButton<String>(
+              onSelected: (String value) => _tourViewModel.sortTours(value),
+              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                const PopupMenuItem<String>(value: 'default', child: Text('Default')),
+                const PopupMenuItem<String>(value: 'low', child: Text('Price: Low to High')),
+                const PopupMenuItem<String>(value: 'high', child: Text('Price: High to Low')),
+              ],
+              child: Container(
+                height: 50,
+                width: 50,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2))
+                    ]),
+                child: Icon(
+                  Icons.sort,
+                  color: _tourViewModel.selectedSortType.value == 'default' ? AppColors.textPrimary : AppColors.primaryBlue,
+                ),
+              ),
+            );
+          })
         ],
       ),
     );
@@ -245,6 +273,7 @@ class TourListScreen extends StatelessWidget {
                   Positioned(
                     top: 12,
                     left: 12,
+                    right: 80,
                     child: Row(
                       children: [
                         Container(
@@ -254,6 +283,7 @@ class TourListScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Row(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               const Icon(Icons.calendar_month, size: 14, color: AppColors.primaryBlue),
                               const SizedBox(width: 4),
@@ -262,18 +292,27 @@ class TourListScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.9),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Row(
-                            children: [
-                              const Icon(Icons.location_on, size: 14, color: Colors.redAccent),
-                              const SizedBox(width: 4),
-                              Text(tour['location'] ?? (tour['title'] != null ? tour['title'].toString().split(' ').take(2).join(' ') : 'Destination'), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
-                            ],
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.9),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.location_on, size: 14, color: Colors.redAccent),
+                                const SizedBox(width: 4),
+                                Expanded(
+                                  child: Text(
+                                    tour['endPoint'] ?? (tour['title'] != null ? tour['title'].toString().split(' ').take(2).join(' ') : 'Destination'),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],
@@ -312,31 +351,29 @@ class TourListScreen extends StatelessWidget {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 12),
-
                   Row(
                     children: [
-                      const Icon(Icons.calendar_today, size: 14, color: AppColors.primaryBlue),
+                      const Icon(Icons.flight_takeoff, size: 14, color: AppColors.primaryBlue),
                       const SizedBox(width: 6),
-                      Text("Starts: 1 Oct 2025", style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
+                      Text("Start Point: ${tour['startPoint'] ?? 'Dhaka'}", style: const TextStyle(color: AppColors.textSecondary, fontSize: 13)),
                     ],
                   ),
                   const SizedBox(height: 6),
                   
                   Row(
                     children: [
-                      const Icon(Icons.event_available, size: 14, color: AppColors.primaryBlue),
+                      const Icon(Icons.flight_land, size: 14, color: AppColors.primaryBlue),
                       const SizedBox(width: 6),
-                      Text("Ends: 10 Sep 2025", style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
+                      Text("End Point: ${tour['endPoint'] ?? 'Destination'}", style: const TextStyle(color: AppColors.textSecondary, fontSize: 13)),
                     ],
                   ),
                   const SizedBox(height: 6),
 
                   Row(
                     children: [
-                      const Icon(Icons.nights_stay, size: 14, color: AppColors.primaryBlue),
+                      const Icon(Icons.timer, size: 14, color: AppColors.primaryBlue),
                       const SizedBox(width: 6),
-                      Text("${(tour['durationDays'] ?? 10) - 1} Nights", style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
+                      Text("Duration: ${tour['durationDays'] ?? 1} Days / ${(tour['durationDays'] ?? 1) > 1 ? (tour['durationDays']! - 1) : 0} Nights", style: const TextStyle(color: AppColors.textSecondary, fontSize: 13)),
                     ],
                   ),
                 ],

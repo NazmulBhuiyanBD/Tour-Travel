@@ -21,11 +21,18 @@ import '../views/admin/admin_popular_airlines_screen.dart';
 import '../views/auth/verify_email_screen.dart';
 import '../views/auth/forgot_password_screen.dart';
 import '../views/auth/reset_password_screen.dart';
+import '../views/profile/change_password_screen.dart';
 import '../views/tour/tour_details_screen.dart';
 import '../views/hotel/hotel_details_screen.dart';
 import '../views/dashboard/my_flight_bookings_screen.dart';
 import '../views/dashboard/flight_booking_details_screen.dart';
+import '../views/dashboard/my_hotel_bookings_screen.dart';
+import '../views/dashboard/hotel_booking_details_screen.dart';
+import '../views/dashboard/my_tour_bookings_screen.dart';
+import '../views/dashboard/tour_booking_details_screen.dart';
 import '../views/hotel/booking_success_screen.dart';
+import '../views/profile/my_reviews_screen.dart';
+import '../views/dashboard/notification_screen.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -139,8 +146,36 @@ class AppPages {
       page: () => ResetPasswordScreen(),
     ),
     GetPage(
+      name: Routes.MY_HOTEL_BOOKINGS,
+      page: () => MyHotelBookingsScreen(),
+    ),
+    GetPage(
+      name: Routes.HOTEL_BOOKING_DETAILS_VIEW,
+      page: () => HotelBookingDetailsScreen(booking: Get.arguments),
+    ),
+    GetPage(
+      name: Routes.MY_TOUR_BOOKINGS,
+      page: () => MyTourBookingsScreen(),
+    ),
+    GetPage(
+      name: Routes.TOUR_BOOKING_DETAILS,
+      page: () => TourBookingDetailsScreen(booking: Get.arguments),
+    ),
+    GetPage(
+      name: Routes.CHANGE_PASSWORD,
+      page: () => const ChangePasswordScreen(),
+    ),
+    GetPage(
       name: Routes.BOOKING_SUCCESS,
       page: () => const BookingSuccessScreen(),
+    ),
+    GetPage(
+      name: Routes.MY_REVIEWS,
+      page: () => const MyReviewsScreen(),
+    ),
+    GetPage(
+      name: Routes.NOTIFICATIONS,
+      page: () => NotificationScreen(),
     ),
   ];
 }

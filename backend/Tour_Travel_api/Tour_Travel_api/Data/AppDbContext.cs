@@ -12,6 +12,7 @@ namespace TravelApp.Data
         public DbSet<Admin> Admins { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Flight> Flights { get; set; }
+        public DbSet<FlightSeatClass> FlightSeatClasses { get; set; }
         public DbSet<FlightBooking> FlightBookings { get; set; }
 
         public DbSet<Hotel> Hotels { get; set; }
@@ -23,6 +24,11 @@ namespace TravelApp.Data
         public DbSet<Tour> Tours { get; set; }
         public DbSet<TourBooking> TourBookings { get; set; }
         
+        public DbSet<Review> Reviews { get; set; }
+        
+        public DbSet<RefundRequest> RefundRequests { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+
         public DbSet<ChatMessage> ChatMessages { get; set; }
         public DbSet<SupportTicket> SupportTickets { get; set; }
 
@@ -35,6 +41,12 @@ namespace TravelApp.Data
                 .HasOne(m => m.Ticket)
                 .WithMany(t => t.Messages)
                 .HasForeignKey(m => m.TicketId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<FlightSeatClass>()
+                .HasOne(s => s.Flight)
+                .WithMany(f => f.SeatClasses)
+                .HasForeignKey(s => s.FlightId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

@@ -12,5 +12,6 @@ namespace TravelApp.DTOs.Flight
         public decimal Price { get; set; }
         public int AvailableSeats { get; set; }
         public bool IsPopular { get; set; }
+        public List<FlightSeatClassDto>? SeatClasses { get; set; }
     }
 }

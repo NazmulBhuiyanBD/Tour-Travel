@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/auth_controller.dart';
+import '../view_models/auth_view_model.dart';
 import '../core/constant/app_colors.dart';
 import 'common_widgets/app_drawer.dart';
 import 'dashboard/dashboard_screen.dart';
@@ -25,7 +25,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final AuthController authController = Get.find<AuthController>();
+  final AuthViewModel authViewModel = Get.find<AuthViewModel>();
   final MainNavigationController navController = Get.put(MainNavigationController());
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -71,7 +71,7 @@ class _MainScreenState extends State<MainScreen> {
           elevation: 0,
           onTap: (index) {
             if (index == 4) {
-              authController.logout();
+              authViewModel.logout();
             } else {
               navController.changeTabIndex(index);
             }

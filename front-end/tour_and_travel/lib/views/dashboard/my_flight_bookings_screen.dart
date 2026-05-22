@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../controllers/booking_controller.dart';
+import '../../view_models/booking_view_model.dart';
 import '../../core/constant/app_colors.dart';
 import '../../routes/app_routes.dart';
 import 'flight_booking_details_screen.dart';
 
 class MyFlightBookingsScreen extends StatelessWidget {
-  final BookingController _bookingController = Get.put(BookingController());
+  final BookingViewModel _bookingViewModel = Get.put(BookingViewModel());
 
   MyFlightBookingsScreen({super.key});
 
@@ -14,59 +14,30 @@ class MyFlightBookingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF4F6F9),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0.5,
+        shadowColor: Colors.black.withOpacity(0.1),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.textPrimary, size: 20),
+          onPressed: () => Get.back(),
+        ),
+        centerTitle: true,
+        title: const Text(
+          "My Flight Bookings",
+          style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold, fontSize: 18),
+        ),
+      ),
       body: CustomScrollView(
         slivers: [
-          // Header with Plane Image
-          SliverAppBar(
-            expandedHeight: 220,
-            pinned: true,
-            backgroundColor: AppColors.primaryBlue,
-            elevation: 0,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () => Get.back(),
-            ),
-            flexibleSpace: FlexibleSpaceBar(
-              centerTitle: true,
-              title: const Text(
-                "My Flights Bookings",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-              ),
-              background: Stack(
-                fit: StackFit.expand,
-                children: [
-                  Image.network(
-                    'https://www.savethestudent.org/uploads/flights.jpg',
-                    fit: BoxFit.cover,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.black.withOpacity(0.4),
-                          Colors.transparent,
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
 
           // Bookings List
           Obx(() {
-            final flightBookings = _bookingController.bookingHistory
+            final flightBookings = _bookingViewModel.bookingHistory
                 .where((item) => item['type'] == 'Flight')
                 .toList();
 
-            if (_bookingController.isLoading.value && flightBookings.isEmpty) {
+            if (_bookingViewModel.isLoading.value && flightBookings.isEmpty) {
               return const SliverFillRemaining(
                 child: Center(child: CircularProgressIndicator()),
               );
@@ -101,9 +72,32 @@ class MyFlightBookingsScreen extends StatelessWidget {
     );
   }
 
+  String _formatTime(DateTime? dateTime) {
+    if (dateTime == null) return "N/A";
+    final hour = dateTime.hour > 12 ? dateTime.hour - 12 : (dateTime.hour == 0 ? 12 : dateTime.hour);
+    final period = dateTime.hour >= 12 ? "pm" : "am";
+    final minute = dateTime.minute.toString().padLeft(2, '0');
+    return "$hour:$minute $period";
+  }
+
+  String _formatDate(DateTime? dateTime) {
+    if (dateTime == null) return "N/A";
+    final weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return "${weekDays[dateTime.weekday - 1]} ${months[dateTime.month - 1]} ${dateTime.day} ${dateTime.year}";
+  }
+
   Widget _buildFlightCard(dynamic booking) {
     final String status = booking['status'] ?? 'Confirmed';
     final bool isConfirmed = status.toLowerCase() == 'confirmed';
+
+    final String fromCity = booking['from'] ?? 'Islamabad';
+    final String toCity = booking['to'] ?? 'Dubai';
+    final String fromCode = fromCity.length >= 3 ? fromCity.substring(0, 3).toUpperCase() : fromCity.toUpperCase();
+    final String toCode = toCity.length >= 3 ? toCity.substring(0, 3).toUpperCase() : toCity.toUpperCase();
+
+    DateTime? departDateTime = booking['bookingDate'] != null ? DateTime.tryParse(booking['bookingDate'].toString()) : null;
+    DateTime? arriveDateTime = booking['arrivalTime'] != null ? DateTime.tryParse(booking['arrivalTime'].toString()) : null;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 25),
@@ -168,7 +162,7 @@ class MyFlightBookingsScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildAirportInfo("ISB", "Islamabad", const Color(0xFF2D9CDB)),
+                _buildAirportInfo(fromCode, fromCity, const Color(0xFF2D9CDB)),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -191,7 +185,7 @@ class MyFlightBookingsScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                _buildAirportInfo("DXB", "Dubai", const Color(0xFFF2994A)),
+                _buildAirportInfo(toCode, toCity, const Color(0xFFF2994A)),
               ],
             ),
             const SizedBox(height: 15),
@@ -200,8 +194,8 @@ class MyFlightBookingsScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildTimeInfo("9:00 am", "Fri Oct 31 2025", const Color(0xFF2D9CDB), CrossAxisAlignment.start),
-                _buildTimeInfo("11:35 am", "Fri Oct 31 2025", const Color(0xFFF2994A), CrossAxisAlignment.end),
+                _buildTimeInfo(_formatTime(departDateTime), _formatDate(departDateTime), const Color(0xFF2D9CDB), CrossAxisAlignment.start),
+                _buildTimeInfo(_formatTime(arriveDateTime), _formatDate(arriveDateTime), const Color(0xFFF2994A), CrossAxisAlignment.end),
               ],
             ),
             const SizedBox(height: 20),
@@ -241,16 +235,23 @@ class MyFlightBookingsScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    const Icon(Icons.person, color: Color(0xFFF2994A), size: 20),
-                    const SizedBox(width: 10),
-                    Text(
-                      booking['userName'] ?? "Sharjeel Anjum",
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.black87),
-                    ),
-                  ],
+                Expanded(
+                  child: Row(
+                    children: [
+                      const Icon(Icons.person, color: Color(0xFFF2994A), size: 20),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          booking['userName'] ?? "Sharjeel Anjum",
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.black87),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
+                const SizedBox(width: 10),
                 ElevatedButton(
                   onPressed: () => Get.toNamed(Routes.FLIGHT_BOOKING_DETAILS, arguments: booking),
                   style: ElevatedButton.styleFrom(

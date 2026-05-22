@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tour_and_travel/core/constant/api_constants.dart';
-import '../../controllers/admin_management_controller.dart';
+import '../../view_models/admin_management_view_model.dart';
 import '../../core/constant/app_colors.dart';
 
 class AdminTourManageScreen extends StatelessWidget {
@@ -9,7 +9,7 @@ class AdminTourManageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(AdminManagementController());
+    final controller = Get.put(AdminManagementViewModel());
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FE),
@@ -191,13 +191,17 @@ class AdminTourManageScreen extends StatelessWidget {
     );
   }
 
-  void _showTourForm(BuildContext context, AdminManagementController controller, {dynamic tour}) {
+  void _showTourForm(BuildContext context, AdminManagementViewModel controller, {dynamic tour}) {
     final isEdit = tour != null;
     final titleController = TextEditingController(text: isEdit ? (tour['title'] ?? '') : '');
     final descController = TextEditingController(text: isEdit ? (tour['description'] ?? '') : '');
     final durController = TextEditingController(text: isEdit ? (tour['durationDays'].toString()) : '');
     final priceController = TextEditingController(text: isEdit ? (tour['price'].toString()) : '');
+    final startPointController = TextEditingController(text: isEdit ? (tour['startPoint'] ?? 'Dhaka') : 'Dhaka');
+    final endPointController = TextEditingController(text: isEdit ? (tour['endPoint'] ?? '') : '');
+    final vacancyController = TextEditingController(text: isEdit ? (tour['vacancy']?.toString() ?? '20') : '20');
     bool isTop = isEdit ? (tour['isTopDestination'] ?? false) : false;
+    DateTime startDate = _safeTourStartDate(isEdit ? tour['startDate'] : null);
     
     // Reset or set initial image path
     controller.selectedTourImagePath.value = isEdit ? (tour['imageUrl'] ?? '') : '';
@@ -210,7 +214,8 @@ class AdminTourManageScreen extends StatelessWidget {
           borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
         ),
         child: SingleChildScrollView(
-          child: Column(
+          child: StatefulBuilder(
+            builder: (context, setModalState) => Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -237,6 +242,38 @@ class AdminTourManageScreen extends StatelessWidget {
                    const SizedBox(width: 16),
                    Expanded(child: _buildField(priceController, 'Price (\$)', Icons.attach_money_rounded, isNum: true)),
                 ],
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                   Expanded(child: _buildField(startPointController, 'Start Point', Icons.flight_takeoff)),
+                   const SizedBox(width: 16),
+                   Expanded(child: _buildField(endPointController, 'End Point', Icons.flight_land)),
+                ],
+              ),
+              const SizedBox(height: 16),
+              _buildField(vacancyController, 'Available Vacancy', Icons.people_rounded, isNum: true),
+              const SizedBox(height: 16),
+              InkWell(
+                onTap: () async {
+                  final today = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+                  final initial = startDate.isBefore(today) ? today.add(const Duration(days: 14)) : startDate;
+                  final picked = await showDatePicker(
+                    context: context,
+                    initialDate: initial,
+                    firstDate: today,
+                    lastDate: today.add(const Duration(days: 365 * 2)),
+                  );
+                  if (picked != null) setModalState(() => startDate = picked);
+                },
+                child: InputDecorator(
+                  decoration: InputDecoration(
+                    labelText: 'Tour Start Date',
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    prefixIcon: const Icon(Icons.calendar_today_rounded),
+                  ),
+                  child: Text(startDate.toLocal().toString().substring(0, 10)),
+                ),
               ),
               const SizedBox(height: 16),
               
@@ -302,9 +339,13 @@ class AdminTourManageScreen extends StatelessWidget {
                     'description': descController.text,
                     'durationDays': int.parse(durController.text),
                     'price': double.parse(priceController.text),
+                    'startPoint': startPointController.text,
+                    'endPoint': endPointController.text,
                     'itinerary': tour?['itinerary'] ?? "Day 1: Arrival, Day 2: Sightseeing, Day 3: Departure",
                     'isTopDestination': isTop,
                     'imageUrl': controller.selectedTourImagePath.value,
+                    'vacancy': int.tryParse(vacancyController.text) ?? 20,
+                    'startDate': startDate.toIso8601String(),
                   };
                   if (isEdit) {
                     controller.updateTour(tour['id'], data);
@@ -323,11 +364,26 @@ class AdminTourManageScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
             ],
-          ),
+          )),
         ),
       ),
       isScrollControlled: true,
     );
+  }
+
+  /// Tours created before StartDate existed may have 0001-01-01 from the API/DB default.
+  DateTime _safeTourStartDate(dynamic value) {
+    final fallback = DateTime.now().add(const Duration(days: 14));
+    if (value == null) return fallback;
+    try {
+      final parsed = DateTime.parse(value.toString()).toLocal();
+      if (parsed.year < 2000) return fallback;
+      final today = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+      if (parsed.isBefore(today)) return fallback;
+      return DateTime(parsed.year, parsed.month, parsed.day);
+    } catch (_) {
+      return fallback;
+    }
   }
 
   Widget _buildField(TextEditingController controller, String label, IconData icon, {bool isNum = false, int maxLines = 1}) {

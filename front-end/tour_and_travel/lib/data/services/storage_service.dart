@@ -36,6 +36,30 @@ class StorageService extends GetxService {
 
   // Clear Storage
   Future<void> clear() async {
-    await _prefs.clear();
+    // Only clear auth data, preserve saved credentials if any
+    await _prefs.remove('jwt_token');
+    await _prefs.remove('user_data');
+  }
+
+  // Remember Me Credentials
+  Future<bool> setSavedEmail(String email) async {
+    return await _prefs.setString('saved_email', email);
+  }
+
+  String? getSavedEmail() {
+    return _prefs.getString('saved_email');
+  }
+
+  Future<bool> setSavedPassword(String password) async {
+    return await _prefs.setString('saved_password', password);
+  }
+
+  String? getSavedPassword() {
+    return _prefs.getString('saved_password');
+  }
+
+  Future<void> clearSavedCredentials() async {
+    await _prefs.remove('saved_email');
+    await _prefs.remove('saved_password');
   }
 }

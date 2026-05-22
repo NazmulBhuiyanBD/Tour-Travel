@@ -16,6 +16,8 @@ PODS:
   - image_picker_ios (0.0.1):
     - Flutter
   - OrderedSet (6.0.3)
+  - printing (1.0.0):
+    - Flutter
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -27,6 +29,7 @@ DEPENDENCIES:
   - flutter_secure_storage_darwin (from `.symlinks/plugins/flutter_secure_storage_darwin/darwin`)
   - flutter_sslcommerz (from `.symlinks/plugins/flutter_sslcommerz/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
+  - printing (from `.symlinks/plugins/printing/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
 
 SPEC REPOS:
@@ -45,6 +48,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_sslcommerz/ios"
   image_picker_ios:
     :path: ".symlinks/plugins/image_picker_ios/ios"
+  printing:
+    :path: ".symlinks/plugins/printing/ios"
   shared_preferences_foundation:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
 
@@ -55,6 +60,7 @@ SPEC CHECKSUMS:
   flutter_sslcommerz: 904df70169b64483c4d43bec3cec6fd5af303a46
   image_picker_ios: e0ece4aa2a75771a7de3fa735d26d90817041326
   OrderedSet: e539b66b644ff081c73a262d24ad552a69be3a94
+  printing: 54ff03f28fe9ba3aa93358afb80a8595a071dd07
   shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
   SSLCommerzSDK: 19ed6ac3bef1164a03ed18e2ee584708ba776da4
 

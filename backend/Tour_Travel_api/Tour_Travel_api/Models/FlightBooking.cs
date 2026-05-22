@@ -8,10 +8,12 @@ namespace TravelApp.Models
         public int FlightId { get; set; }
 
         public int SeatCount { get; set; }
+        public string SeatClass { get; set; } = "Economy";
         public decimal TotalPrice { get; set; }
         
         public string PaymentMethod { get; set; }
         public string TransactionId { get; set; }
+        public string Status { get; set; } = "Confirmed";
 
         public DateTime BookingDate { get; set; } = DateTime.Now;
 

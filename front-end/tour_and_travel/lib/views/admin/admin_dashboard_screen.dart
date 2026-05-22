@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../controllers/auth_controller.dart';
-import '../../controllers/admin_management_controller.dart';
+import 'dart:ui';
+import '../../view_models/auth_view_model.dart';
+import '../../view_models/admin_management_view_model.dart';
 import '../../core/constant/app_colors.dart';
 import '../../routes/app_routes.dart';
 import '../support/admin_ticket_list_view.dart' as tour_and_travel_support;
@@ -12,8 +13,8 @@ class AdminDashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-    final AuthController authController = Get.find<AuthController>();
-    final AdminManagementController adminController = Get.put(AdminManagementController());
+    final AuthViewModel authViewModel = Get.find<AuthViewModel>();
+    final AdminManagementViewModel adminController = Get.put(AdminManagementViewModel());
     
     // Refresh data on build to ensure it's dynamic
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -22,114 +23,146 @@ class AdminDashboardScreen extends StatelessWidget {
 
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: const Color(0xFFF8F9FE),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Top Bar
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      backgroundColor: const Color(0xFFF4F7FC), // Softer premium background
+      body: Stack(
+        children: [
+          // Background Gradient decoration
+          Positioned(
+            top: -100,
+            right: -100,
+            child: Container(
+              width: 300,
+              height: 300,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: const Color(0xFF3F51B5).withOpacity(0.05),
+                boxShadow: [
+                  BoxShadow(color: const Color(0xFF3F51B5).withOpacity(0.1), blurRadius: 100, spreadRadius: 50)
+                ],
+              ),
+            ),
+          ),
+          SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Theme(
-                    data: Theme.of(context).copyWith(
-                      hoverColor: Colors.transparent,
-                      splashColor: Colors.transparent,
-                    ),
-                    child: PopupMenuButton<String>(
-                      onSelected: (value) {
-                        if (value == 'logout') {
-                          authController.logout();
-                        } else if (value == 'change_password') {
-                          _showChangePasswordDialog(context, authController);
-                        }
-                      },
-                      offset: const Offset(0, 50),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      itemBuilder: (context) => [
-                        const PopupMenuItem(
-                          value: 'change_password',
-                          child: Row(
-                            children: [
-                              Icon(Icons.lock_reset, size: 20, color: Color(0xFF4F566B)),
-                              SizedBox(width: 12),
-                              Text("Change Password"),
-                            ],
-                          ),
+                  // Top Bar wrapped in glassmorphism
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.7),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: Colors.white.withOpacity(0.5)),
                         ),
-                        const PopupMenuItem(
-                          value: 'logout',
-                          child: Row(
-                            children: [
-                              Icon(Icons.logout_rounded, size: 20, color: Color(0xFFE53935)),
-                              SizedBox(width: 12),
-                              Text("Logout", style: TextStyle(color: Color(0xFFE53935))),
-                            ],
-                          ),
-                        ),
-                      ],
-                      child: Row(
-                        children: [
-                          const CircleAvatar(
-                            radius: 20,
-                            backgroundImage: NetworkImage('https://ui-avatars.com/api/?name=Admin&background=3F51B5&color=fff'),
-                          ),
-                          const SizedBox(width: 12),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                authController.user.value.name ?? "Admin",
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF1A1F36),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Theme(
+                              data: Theme.of(context).copyWith(
+                                hoverColor: Colors.transparent,
+                                splashColor: Colors.transparent,
+                              ),
+                              child: PopupMenuButton<String>(
+                                onSelected: (value) {
+                                  if (value == 'logout') {
+                                    authViewModel.logout();
+                                  } else if (value == 'change_password') {
+                                    _showChangePasswordDialog(context, authViewModel);
+                                  }
+                                },
+                                offset: const Offset(0, 50),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                itemBuilder: (context) => [
+                                  const PopupMenuItem(
+                                    value: 'change_password',
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.lock_reset, size: 20, color: Color(0xFF4F566B)),
+                                        SizedBox(width: 12),
+                                        Text("Change Password"),
+                                      ],
+                                    ),
+                                  ),
+                                  const PopupMenuItem(
+                                    value: 'logout',
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.logout_rounded, size: 20, color: Color(0xFFE53935)),
+                                        SizedBox(width: 12),
+                                        Text("Logout", style: TextStyle(color: Color(0xFFE53935))),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                                child: Row(
+                                  children: [
+                                    const CircleAvatar(
+                                      radius: 20,
+                                      backgroundImage: NetworkImage('https://ui-avatars.com/api/?name=Admin&background=3F51B5&color=fff'),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          authViewModel.user.value.name ?? "Admin",
+                                          style: const TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            color: Color(0xFF1A1F36),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
-                        ],
+                            ),
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    blurRadius: 10,
+                                  )
+                                ]
+                              ),
+                              child: const Icon(Icons.notifications_none, color: Color(0xFF3F51B5)),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          blurRadius: 10,
-                        )
-                      ]
+                  
+                  const SizedBox(height: 32),
+                  
+                  // Console Header
+                  const Text(
+                    "Admin Console",
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xFF1A1F36),
                     ),
-                    child: const Icon(Icons.notifications_none, color: Color(0xFF3F51B5)),
                   ),
-                ],
-              ),
-
-              const SizedBox(height: 32),
-
-              // Console Header
-              const Text(
-                "Admin Console",
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w800,
-                  color: Color(0xFF1A1F36),
-                ),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                "Welcome back. Here's what's happening today.",
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Color(0xFF697386),
-                ),
-              ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    "Welcome back. Here's what's happening today.",
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Color(0xFF697386),
+                    ),
+                  ),
 
               const SizedBox(height: 28),
 
@@ -250,7 +283,7 @@ class AdminDashboardScreen extends StatelessWidget {
                       iconColor: const Color(0xFF43A047),
                       onTap: () => Get.toNamed(Routes.ADMIN_FEATURED_HOTELS),
                     ),
-                    if (authController.user.value.role == 'SuperAdmin')
+                    if (authViewModel.user.value.role == 'SuperAdmin')
                       _ActionCard(
                         title: "Admin Management",
                         subtitle: "System access",
@@ -266,11 +299,13 @@ class AdminDashboardScreen extends StatelessWidget {
           ),
         ),
       ),
+      ],
+      ),
     );
   }
 }
 
-void _showChangePasswordDialog(BuildContext context, AuthController authController) {
+void _showChangePasswordDialog(BuildContext context, AuthViewModel authViewModel) {
   final oldPasswordController = TextEditingController();
   final newPasswordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
@@ -328,8 +363,8 @@ void _showChangePasswordDialog(BuildContext context, AuthController authControll
                   colorText: Colors.white);
               return;
             }
-            authController.changePassword(
-              authController.user.value.email!,
+            authViewModel.changePassword(
+              authViewModel.user.value.email!,
               oldPasswordController.text,
               newPasswordController.text,
             );
@@ -461,7 +496,11 @@ class _ActionCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: iconColor.withOpacity(0.08),
+                  gradient: LinearGradient(
+                    colors: [iconColor.withOpacity(0.15), iconColor.withOpacity(0.05)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(icon, color: iconColor, size: 28),

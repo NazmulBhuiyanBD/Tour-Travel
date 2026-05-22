@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../controllers/payment_controller.dart';
+import '../../view_models/payment_view_model.dart';
 
 class PaymentGatewayScreen extends StatelessWidget {
   final num amount;
-  final PaymentController _paymentController = Get.put(PaymentController());
+  final PaymentViewModel _paymentViewModel = Get.put(PaymentViewModel());
 
   PaymentGatewayScreen({super.key, required this.amount}) {
-    _paymentController.initializePayment(amount);
+    _paymentViewModel.initializePayment(amount);
   }
 
   @override
@@ -21,7 +21,7 @@ class PaymentGatewayScreen extends StatelessWidget {
         iconTheme: const IconThemeData(color: Colors.black87),
       ),
       body: Obx(() {
-        if (_paymentController.isLoading.value) {
+        if (_paymentViewModel.isLoading.value) {
           return const Center(child: CircularProgressIndicator(color: Colors.green));
         }
 
@@ -52,7 +52,7 @@ class PaymentGatewayScreen extends StatelessWidget {
                         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.grey),
                       ),
                       const SizedBox(height: 10),
-                      Text("Redirecting to: ${_paymentController.gatewayUrl.value}", textAlign: TextAlign.center, style: const TextStyle(color: Colors.blue)),
+                      Text("Redirecting to: ${_paymentViewModel.gatewayUrl.value}", textAlign: TextAlign.center, style: const TextStyle(color: Colors.blue)),
                     ],
                   ),
                 ),

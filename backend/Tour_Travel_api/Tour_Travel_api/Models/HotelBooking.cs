@@ -9,11 +9,13 @@ namespace TravelApp.Models
 
         public DateTime CheckIn { get; set; }
         public DateTime CheckOut { get; set; }
+        public int RoomCount { get; set; } = 1;
 
         public decimal TotalPrice { get; set; }
 
         public string PaymentMethod { get; set; }
         public string TransactionId { get; set; }
+        public string Status { get; set; } = "Confirmed";
 
         public Room Room { get; set; }
     }

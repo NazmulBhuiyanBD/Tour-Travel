@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using TravelApp.Data;
@@ -26,6 +26,9 @@ namespace TravelApp.Controllers
         public IActionResult Profile()
         {
             var user = _context.Users.Find(GetUserId());
+            if (user == null) return NotFound();
+            if (!user.IsActive)
+                return Unauthorized(new { error = "BannedUser" });
             return Ok(user);
         }
 
@@ -33,9 +36,15 @@ namespace TravelApp.Controllers
         public IActionResult Update(UpdateProfileDto dto)
         {
             var user = _context.Users.Find(GetUserId());
+            
+            if (user == null) return NotFound("User not found");
 
             user.Name = dto.Name;
             user.Phone = dto.Phone;
+            user.Gender = dto.Gender;
+            user.DateOfBirth = dto.DateOfBirth;
+            user.Address = dto.Address;
+            user.ProfilePicture = dto.ProfilePicture;
 
             _context.SaveChanges();
             return Ok("Updated");

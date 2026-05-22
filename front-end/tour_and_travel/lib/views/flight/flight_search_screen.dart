@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../controllers/flight_controller.dart';
+import '../../view_models/flight_view_model.dart';
 import '../../core/constant/app_colors.dart';
 import 'flight_list_screen.dart';
 
@@ -14,7 +14,7 @@ class FlightSearchScreen extends StatefulWidget {
 }
 
 class _FlightSearchScreenState extends State<FlightSearchScreen> {
-  final FlightController _flightController = Get.put(FlightController());
+  final FlightViewModel _flightViewModel = Get.put(FlightViewModel());
   final TextEditingController _fromController = TextEditingController();
   final TextEditingController _toController = TextEditingController();
 
@@ -109,8 +109,8 @@ class _FlightSearchScreenState extends State<FlightSearchScreen> {
                       ),
                       onPressed: () {
                         if (_fromController.text.isNotEmpty && _toController.text.isNotEmpty) {
-                          _flightController.searchFlights(_fromController.text, _toController.text);
-                          Get.to(() => FlightListScreen());
+                          _flightViewModel.searchFlights(_fromController.text, _toController.text);
+                          Get.back();
                         } else {
                           Get.snackbar("Validation", "Please enter both cities",
                               snackPosition: SnackPosition.BOTTOM,
@@ -121,6 +121,35 @@ class _FlightSearchScreenState extends State<FlightSearchScreen> {
                       child: const Text(
                         "Search Flights",
                         style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Clear All Button
+                  SizedBox(
+                    width: double.infinity,
+                    height: 48,
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        setState(() {
+                          _fromController.clear();
+                          _toController.clear();
+                          _selectedTripType = 1;
+                          _departureDate = DateTime.now();
+                          _returnDate = DateTime.now();
+                          _adults = 1;
+                          _children = 0;
+                          _cabinClass = 'Economy';
+                        });
+                        _flightViewModel.searchFlights('', '');
+                      },
+                      icon: const Icon(Icons.refresh, size: 18),
+                      label: const Text("Clear All", style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: AppColors.textSecondary,
+                        side: BorderSide(color: Colors.grey.shade300),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                       ),
                     ),
                   ),

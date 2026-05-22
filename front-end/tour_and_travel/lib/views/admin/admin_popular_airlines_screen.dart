@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../controllers/admin_management_controller.dart';
+import '../../view_models/admin_management_view_model.dart';
 
 class AdminPopularAirlinesScreen extends StatelessWidget {
   const AdminPopularAirlinesScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<AdminManagementController>();
+    final controller = Get.find<AdminManagementViewModel>();
     controller.fetchFlights();
 
     return Scaffold(

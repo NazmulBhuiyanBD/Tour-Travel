@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../controllers/chat_controller.dart';
-import '../../controllers/auth_controller.dart';
+import '../../view_models/chat_view_model.dart';
+import '../../view_models/auth_view_model.dart';
 import '../../core/constant/app_colors.dart';
 
 class ChatScreen extends StatelessWidget {
@@ -9,11 +9,11 @@ class ChatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ChatController chatController = Get.put(ChatController());
-    final AuthController authController = Get.find<AuthController>();
+    final ChatViewModel chatViewModel = Get.put(ChatViewModel());
+    final AuthViewModel authViewModel = Get.find<AuthViewModel>();
     final TextEditingController textController = TextEditingController();
 
-    bool isAdmin = authController.user.value.role == 'Admin';
+    bool isAdmin = authViewModel.user.value.role == 'Admin';
 
     // Get the target user id from arguments if passed (admin replying to a specific user)
     final args = Get.arguments;
@@ -22,26 +22,23 @@ class ChatScreen extends StatelessWidget {
 
     // Fetch history
     if (isAdmin && targetUserId != null) {
-      chatController.fetchChatHistory(targetUserId);
+      chatViewModel.fetchChatHistory(targetUserId);
     } else if (!isAdmin) {
       // Fetch current user's own history
-      final currentUserId = authController.user.value.userId;
+      final currentUserId = authViewModel.user.value.userId;
       if (currentUserId != null) {
-        chatController.fetchChatHistory(int.tryParse(currentUserId) ?? 0);
+        chatViewModel.fetchChatHistory(int.tryParse(currentUserId) ?? 0);
       }
     }
 
     return Scaffold(
       backgroundColor: const Color(0xFFF0F2F5),
       appBar: AppBar(
-        elevation: 0,
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: AppColors.headerGradient,
-          ),
-        ),
+        backgroundColor: Colors.white,
+        elevation: 0.5,
+        shadowColor: Colors.black.withOpacity(0.1),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+          icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.textPrimary, size: 20),
           onPressed: () => Get.back(),
         ),
         title: Column(
@@ -50,18 +47,18 @@ class ChatScreen extends StatelessWidget {
             Text(
               isAdmin ? (targetUserName ?? 'User Chat') : 'Help & Support',
               style: const TextStyle(
-                  color: Colors.white,
+                  color: AppColors.textPrimary,
                   fontSize: 18,
                   fontWeight: FontWeight.bold),
             ),
             Obx(() => Text(
-                  chatController.isConnected.value
+                  chatViewModel.isConnected.value
                       ? '● Online'
                       : '○ Connecting...',
                   style: TextStyle(
-                    color: chatController.isConnected.value
-                        ? Colors.greenAccent
-                        : Colors.white70,
+                    color: chatViewModel.isConnected.value
+                        ? Colors.green
+                        : AppColors.textSecondary,
                     fontSize: 12,
                   ),
                 )),
@@ -69,8 +66,8 @@ class ChatScreen extends StatelessWidget {
         ),
         actions: [
           CircleAvatar(
-            backgroundColor: Colors.white.withOpacity(0.2),
-            child: const Icon(Icons.support_agent, color: Colors.white),
+            backgroundColor: AppColors.primaryBlue.withOpacity(0.1),
+            child: const Icon(Icons.support_agent, color: AppColors.primaryBlue),
           ),
           const SizedBox(width: 12),
         ],
@@ -80,12 +77,12 @@ class ChatScreen extends StatelessWidget {
           // Messages
           Expanded(
             child: Obx(() {
-              if (chatController.isLoadingHistory.value &&
-                  chatController.messages.isEmpty) {
+              if (chatViewModel.isLoadingHistory.value &&
+                  chatViewModel.messages.isEmpty) {
                 return const Center(
                     child: CircularProgressIndicator(color: AppColors.primaryBlue));
               }
-              if (chatController.messages.isEmpty) {
+              if (chatViewModel.messages.isEmpty) {
                 return Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -108,9 +105,9 @@ class ChatScreen extends StatelessWidget {
               return ListView.builder(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-                itemCount: chatController.messages.length,
+                itemCount: chatViewModel.messages.length,
                 itemBuilder: (context, index) {
-                  final msg = chatController.messages[index];
+                  final msg = chatViewModel.messages[index];
                   bool isMe = (isAdmin && msg.isAdminMessage) ||
                       (!isAdmin && !msg.isAdminMessage);
 
@@ -169,10 +166,10 @@ class ChatScreen extends StatelessWidget {
                       onPressed: () {
                         if (textController.text.trim().isNotEmpty) {
                           if (isAdmin && targetUserId != null) {
-                            chatController.sendMessageToUser(
+                            chatViewModel.sendMessageToUser(
                                 targetUserId, textController.text.trim());
                           } else {
-                            chatController.sendMessageToAdmin(
+                            chatViewModel.sendMessageToAdmin(
                                 textController.text.trim());
                           }
                           textController.clear();
