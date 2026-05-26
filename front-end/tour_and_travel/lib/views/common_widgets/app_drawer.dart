@@ -100,7 +100,7 @@ class AppDrawer extends StatelessWidget {
               title: 'Dashboard',
               onTap: () {
                 Navigator.of(context).pop();
-                if (authViewModel.user.value.role == 'Admin' || authViewModel.user.value.role == 'SuperAdmin') {
+                if (authViewModel.user.value.role == 'Admin') {
                    // If we're already on admin dashboard, just pop
                    if (Get.currentRoute == Routes.ADMIN_DASHBOARD) return;
                    Get.offAllNamed(Routes.ADMIN_DASHBOARD);

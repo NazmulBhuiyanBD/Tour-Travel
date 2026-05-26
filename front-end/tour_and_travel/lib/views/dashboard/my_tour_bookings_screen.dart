@@ -18,18 +18,25 @@ class MyTourBookingsScreen extends StatelessWidget {
         elevation: 0.5,
         shadowColor: Colors.black.withOpacity(0.1),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.textPrimary, size: 20),
+          icon: const Icon(
+            Icons.arrow_back_ios_new,
+            color: AppColors.textPrimary,
+            size: 20,
+          ),
           onPressed: () => Get.back(),
         ),
         centerTitle: true,
         title: const Text(
           "My Tour Bookings",
-          style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold, fontSize: 18),
+          style: TextStyle(
+            color: AppColors.textPrimary,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
         ),
       ),
       body: CustomScrollView(
         slivers: [
-
           // Bookings List
           Obx(() {
             final tourBookings = _bookingViewModel.bookingHistory
@@ -48,7 +55,11 @@ class MyTourBookingsScreen extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.tour_outlined, size: 80, color: Colors.grey.shade300),
+                      Icon(
+                        Icons.tour_outlined,
+                        size: 80,
+                        color: Colors.grey.shade300,
+                      ),
                       const SizedBox(height: 16),
                       const Text(
                         "No tour bookings found",
@@ -63,13 +74,10 @@ class MyTourBookingsScreen extends StatelessWidget {
             return SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
               sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final booking = tourBookings[index];
-                    return _buildTourCard(booking);
-                  },
-                  childCount: tourBookings.length,
-                ),
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final booking = tourBookings[index];
+                  return _buildTourCard(booking);
+                }, childCount: tourBookings.length),
               ),
             );
           }),
@@ -81,7 +89,8 @@ class MyTourBookingsScreen extends StatelessWidget {
   Widget _buildTourCard(dynamic booking) {
     final String status = booking['status'] ?? 'Confirmed';
     final bool isConfirmed = status.toLowerCase() == 'confirmed';
-    final String tourName = booking['detailTitle'] ?? booking['tourName'] ?? 'Tour Package';
+    final String tourName =
+        booking['detailTitle'] ?? booking['tourName'] ?? 'Tour Package';
     final String destination = booking['destination'] ?? 'Destination';
 
     return Container(
@@ -111,11 +120,19 @@ class MyTourBookingsScreen extends StatelessWidget {
                   children: [
                     const Text(
                       "Booked:",
-                      style: TextStyle(color: Colors.grey, fontSize: 13, fontWeight: FontWeight.w500),
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      booking['bookingDate']?.toString().replaceAll('T', ' ').substring(0, 16) ?? "N/A",
+                      booking['bookingDate']
+                              ?.toString()
+                              .replaceAll('T', ' ')
+                              .substring(0, 16) ??
+                          "N/A",
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 15,
@@ -125,9 +142,14 @@ class MyTourBookingsScreen extends StatelessWidget {
                   ],
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 8,
+                  ),
                   decoration: BoxDecoration(
-                    color: isConfirmed ? const Color(0xFF27AE60) : const Color(0xFFF2994A),
+                    color: isConfirmed
+                        ? const Color(0xFF27AE60)
+                        : const Color(0xFFF2994A),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
@@ -159,8 +181,12 @@ class MyTourBookingsScreen extends StatelessWidget {
                             return Expanded(
                               child: Container(
                                 height: 1.5,
-                                margin: const EdgeInsets.symmetric(horizontal: 1),
-                                color: index % 2 == 0 ? Colors.grey.shade200 : Colors.transparent,
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 1,
+                                ),
+                                color: index % 2 == 0
+                                    ? Colors.grey.shade200
+                                    : Colors.transparent,
                               ),
                             );
                           }),
@@ -171,7 +197,11 @@ class MyTourBookingsScreen extends StatelessWidget {
                             color: Colors.orange.withOpacity(0.1),
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(Icons.tour, color: Colors.orange, size: 22),
+                          child: const Icon(
+                            Icons.tour,
+                            color: Colors.orange,
+                            size: 22,
+                          ),
                         ),
                       ],
                     ),
@@ -211,11 +241,19 @@ class MyTourBookingsScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.person, color: Color(0xFFF2994A), size: 20),
+                    const Icon(
+                      Icons.person,
+                      color: Color(0xFFF2994A),
+                      size: 20,
+                    ),
                     const SizedBox(width: 10),
                     Text(
                       booking['userName'] ?? "Traveler",
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.black87),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        color: Colors.black87,
+                      ),
                     ),
                   ],
                 ),
@@ -223,7 +261,7 @@ class MyTourBookingsScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      "\$${booking['totalPrice'] ?? '0.00'}",
+                      "৳${booking['totalPrice'] ?? '0.00'}",
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
@@ -232,7 +270,11 @@ class MyTourBookingsScreen extends StatelessWidget {
                     ),
                     const Text(
                       "Total Fare",
-                      style: TextStyle(color: Colors.grey, fontSize: 11, fontWeight: FontWeight.w500),
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ],
                 ),
@@ -244,7 +286,10 @@ class MyTourBookingsScreen extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () => Get.toNamed(Routes.TOUR_BOOKING_DETAILS, arguments: booking),
+                onPressed: () => Get.toNamed(
+                  Routes.TOUR_BOOKING_DETAILS,
+                  arguments: booking,
+                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.orange.shade700,
                   shape: RoundedRectangleBorder(
@@ -255,7 +300,11 @@ class MyTourBookingsScreen extends StatelessWidget {
                 ),
                 child: const Text(
                   "View Details",
-                  style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
@@ -267,7 +316,9 @@ class MyTourBookingsScreen extends StatelessWidget {
 
   Widget _buildLocationInfo(String label, String place, Color color) {
     return Column(
-      crossAxisAlignment: label == "FROM" ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+      crossAxisAlignment: label == "FROM"
+          ? CrossAxisAlignment.start
+          : CrossAxisAlignment.end,
       children: [
         Text(
           label,

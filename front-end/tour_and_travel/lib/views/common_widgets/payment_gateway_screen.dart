@@ -15,14 +15,19 @@ class PaymentGatewayScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("Secure Checkout", style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
+        title: const Text(
+          "Secure Checkout",
+          style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.white,
         elevation: 1,
         iconTheme: const IconThemeData(color: Colors.black87),
       ),
       body: Obx(() {
         if (_paymentViewModel.isLoading.value) {
-          return const Center(child: CircularProgressIndicator(color: Colors.green));
+          return const Center(
+            child: CircularProgressIndicator(color: Colors.green),
+          );
         }
 
         return Center(
@@ -34,8 +39,11 @@ class PaymentGatewayScreen extends StatelessWidget {
                 const Icon(Icons.security, size: 80, color: Colors.green),
                 const SizedBox(height: 20),
                 Text(
-                  "Total amount due: \$${amount.toStringAsFixed(2)}",
-                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  "Total amount due: ৳${amount.toStringAsFixed(2)}",
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 20),
                 Container(
@@ -43,16 +51,24 @@ class PaymentGatewayScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.grey[100],
                     borderRadius: BorderRadius.circular(15),
-                    border: Border.all(color: Colors.grey[300]!)
+                    border: Border.all(color: Colors.grey[300]!),
                   ),
                   child: Column(
                     children: [
                       const Text(
                         "SSLCOMMERZ SANDBOX",
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.grey),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Colors.grey,
+                        ),
                       ),
                       const SizedBox(height: 10),
-                      Text("Redirecting to: ${_paymentViewModel.gatewayUrl.value}", textAlign: TextAlign.center, style: const TextStyle(color: Colors.blue)),
+                      Text(
+                        "Redirecting to: ${_paymentViewModel.gatewayUrl.value}",
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(color: Colors.blue),
+                      ),
                     ],
                   ),
                 ),
@@ -63,17 +79,29 @@ class PaymentGatewayScreen extends StatelessWidget {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
                     ),
                     onPressed: () {
-                      Get.snackbar("Payment Success", "Simulated mock payment completed via SSLCommerz!");
+                      Get.snackbar(
+                        "Payment Success",
+                        "Simulated mock payment completed via SSLCommerz!",
+                      );
                       Future.delayed(const Duration(seconds: 2), () {
                         Get.until((route) => route.isFirst);
                       });
                     },
-                    child: const Text("Simulate Payment Details", style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold)),
+                    child: const Text(
+                      "Simulate Payment Details",
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
-                )
+                ),
               ],
             ),
           ),

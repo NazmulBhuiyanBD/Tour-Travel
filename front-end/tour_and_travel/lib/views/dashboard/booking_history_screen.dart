@@ -41,8 +41,7 @@ class BookingHistoryScreen extends StatelessWidget {
           itemCount: _bookingViewModel.bookingHistory.length,
           itemBuilder: (context, index) {
             var item = _bookingViewModel.bookingHistory[index];
-            bool requiresPayment =
-                item['status'] == 'Pending';
+            bool requiresPayment = item['status'] == 'Pending';
 
             return Card(
               margin: const EdgeInsets.only(bottom: 15),
@@ -68,7 +67,7 @@ class BookingHistoryScreen extends StatelessWidget {
                   children: [
                     const SizedBox(height: 5),
                     Text('Type: ${item['type']}'),
-                    Text('Status: ${item['status']} - \$${item['totalPrice']}'),
+                    Text('Status: ${item['status']} - ৳${item['totalPrice']}'),
                     Text('Date: ${item['bookingDate']?.substring(0, 10)}'),
                   ],
                 ),

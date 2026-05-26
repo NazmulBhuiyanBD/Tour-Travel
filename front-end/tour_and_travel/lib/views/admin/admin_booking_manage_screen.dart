@@ -2,16 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../../view_models/admin_management_view_model.dart';
-import '../../core/constant/app_colors.dart';
 
 class AdminBookingManageScreen extends StatefulWidget {
   const AdminBookingManageScreen({Key? key}) : super(key: key);
 
   @override
-  State<AdminBookingManageScreen> createState() => _AdminBookingManageScreenState();
+  State<AdminBookingManageScreen> createState() =>
+      _AdminBookingManageScreenState();
 }
 
-class _AdminBookingManageScreenState extends State<AdminBookingManageScreen> with SingleTickerProviderStateMixin {
+class _AdminBookingManageScreenState extends State<AdminBookingManageScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final controller = Get.find<AdminManagementViewModel>();
 
@@ -39,7 +40,11 @@ class _AdminBookingManageScreenState extends State<AdminBookingManageScreen> wit
                     children: [
                       IconButton(
                         onPressed: () => Get.back(),
-                        icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF1A1F36), size: 20),
+                        icon: const Icon(
+                          Icons.arrow_back_ios_new_rounded,
+                          color: Color(0xFF1A1F36),
+                          size: 20,
+                        ),
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints(),
                       ),
@@ -57,13 +62,10 @@ class _AdminBookingManageScreenState extends State<AdminBookingManageScreen> wit
                   const SizedBox(height: 8),
                   const Text(
                     "Manage and review active itineraries.",
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Color(0xFF697386),
-                    ),
+                    style: TextStyle(fontSize: 14, color: Color(0xFF697386)),
                   ),
                   const SizedBox(height: 24),
-                  
+
                   // Custom Tab Bar
                   Container(
                     height: 50,
@@ -87,7 +89,7 @@ class _AdminBookingManageScreenState extends State<AdminBookingManageScreen> wit
                       ),
                       labelColor: const Color(0xFF3F51B5),
                       unselectedLabelColor: const Color(0xFF697386),
-                      labelStyle: const TextStyle(fontWeight: FontWeight.bold,),
+                      labelStyle: const TextStyle(fontWeight: FontWeight.bold),
                       tabs: const [
                         Tab(text: "Hotels"),
                         Tab(text: "Flights"),
@@ -99,7 +101,7 @@ class _AdminBookingManageScreenState extends State<AdminBookingManageScreen> wit
                 ],
               ),
             ),
-            
+
             Expanded(
               child: TabBarView(
                 controller: _tabController,
@@ -129,7 +131,7 @@ class _BookingList extends StatelessWidget {
       final List bookings;
       IconData icon;
       Color tintColor;
-      
+
       if (type == 'hotel') {
         bookings = controller.hotelBookings;
         icon = Icons.hotel_rounded;
@@ -160,7 +162,11 @@ class _BookingList extends StatelessWidget {
               const SizedBox(height: 24),
               Text(
                 "No ${type} bookings found",
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF1A1F36)),
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF1A1F36),
+                ),
               ),
               const SizedBox(height: 8),
               const Padding(
@@ -205,43 +211,114 @@ class _BookingList extends StatelessWidget {
                   children: [
                     Text(
                       '#ID-${booking['id']}',
-                      style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF3F51B5), fontSize: 13),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF3F51B5),
+                        fontSize: 13,
+                      ),
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFE8F5E9),
+                        color: booking['status'] == 'Pending' 
+                            ? Colors.orange.withOpacity(0.1)
+                            : booking['status'] == 'Cancelled'
+                                ? Colors.red.withOpacity(0.1)
+                                : const Color(0xFFE8F5E9),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Text(
-                        'Confirmed',
-                        style: TextStyle(color: Color(0xFF43A047), fontSize: 11, fontWeight: FontWeight.w700),
+                      child: Text(
+                        booking['status'] ?? 'Confirmed',
+                        style: TextStyle(
+                          color: booking['status'] == 'Pending'
+                              ? Colors.orange
+                              : booking['status'] == 'Cancelled'
+                                  ? Colors.red
+                                  : const Color(0xFF43A047),
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 16),
                 if (type == 'hotel') ...[
-                  _DetailRow(Icons.business_rounded, 'Hotel', booking['hotelName'] ?? 'N/A'),
-                  _DetailRow(Icons.calendar_today_rounded, 'Date', '${_formatDate(booking['checkInDate'])} - ${_formatDate(booking['checkOutDate'])}'),
+                  _DetailRow(
+                    Icons.business_rounded,
+                    'Hotel',
+                    booking['hotel']?['name'] ?? 'N/A',
+                  ),
+                  _DetailRow(
+                    Icons.calendar_today_rounded,
+                    'Check In - Out',
+                    '${_formatDate(booking['checkIn'])} - ${_formatDate(booking['checkOut'])}',
+                  ),
+                  _DetailRow(
+                    Icons.king_bed_rounded,
+                    'Rooms',
+                    '${booking['roomCount'] ?? 1}',
+                  ),
                 ] else if (type == 'flight') ...[
-                  _DetailRow(Icons.flight_rounded, 'Route', '${booking['from']} → ${booking['to']}'),
-                  _DetailRow(Icons.access_time_rounded, 'Departure', _formatDate(booking['departureTime'])),
+                  _DetailRow(
+                    Icons.flight_rounded,
+                    'Route',
+                    '${booking['flight']?['from'] ?? 'N/A'} → ${booking['flight']?['to'] ?? 'N/A'}',
+                  ),
+                  _DetailRow(
+                    Icons.access_time_rounded,
+                    'Departure',
+                    _formatDate(booking['flight']?['departureTime']),
+                  ),
+                  _DetailRow(
+                    Icons.event_seat_rounded,
+                    'Seats',
+                    '${booking['seatCount'] ?? 1} (${booking['seatClass'] ?? 'Economy'})',
+                  ),
                 ] else ...[
-                  _DetailRow(Icons.explore_rounded, 'Tour', booking['tourTitle'] ?? 'N/A'),
-                  _DetailRow(Icons.calendar_month_rounded, 'Date', _formatDate(booking['bookingDate'])),
+                  _DetailRow(
+                    Icons.explore_rounded,
+                    'Tour',
+                    booking['tour']?['title'] ?? 'N/A', // Assuming backend joins tour, otherwise use tourId
+                  ),
+                  _DetailRow(
+                    Icons.calendar_month_rounded,
+                    'Booking Date',
+                    _formatDate(booking['bookingDate']),
+                  ),
+                  _DetailRow(
+                    Icons.people_rounded,
+                    'Participants',
+                    '${booking['participantCount'] ?? 1}',
+                  ),
                 ],
+                _DetailRow(
+                  Icons.payment_rounded,
+                  'Payment',
+                  '${booking['paymentMethod'] ?? 'N/A'} (${booking['transactionId'] ?? 'N/A'})',
+                ),
                 const Divider(height: 24, color: Color(0xFFF0F1F4)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       'User ID: ${booking['userId']}',
-                      style: const TextStyle(fontSize: 12, color: Color(0xFF697386), fontWeight: FontWeight.w500),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Color(0xFF697386),
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                     Text(
-                      '\$${booking['totalPrice'] ?? 0}',
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: Color(0xFF1A1F36)),
+                      '৳${booking['totalPrice'] ?? 0}',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFF1A1F36),
+                      ),
                     ),
                   ],
                 ),
@@ -260,8 +337,20 @@ class _BookingList extends StatelessWidget {
         children: [
           Icon(icon, size: 16, color: const Color(0xFF697386)),
           const SizedBox(width: 8),
-          Text('$label: ', style: const TextStyle(fontSize: 13, color: Color(0xFF697386))),
-          Expanded(child: Text(value, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF1A1F36)))),
+          Text(
+            '$label: ',
+            style: const TextStyle(fontSize: 13, color: Color(0xFF697386)),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF1A1F36),
+              ),
+            ),
+          ),
         ],
       ),
     );

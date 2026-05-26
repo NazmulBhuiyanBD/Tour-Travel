@@ -42,13 +42,13 @@ class FlightViewModel extends GetxController {
       isLoading(true);
       fromCity.value = from;
       toCity.value = to;
-      
+
       if (from.isEmpty || to.isEmpty) {
         searchResults.value = List.from(flightList);
         _originalSearchResults = List.from(flightList);
         return;
       }
-      
+
       final response = await _flightRepository.searchFlights(from, to);
       searchResults.value = response;
       _originalSearchResults = List.from(response);
@@ -74,7 +74,13 @@ class FlightViewModel extends GetxController {
     }
   }
 
-  Future<bool> bookFlight(int flightId, int seats, String transactionId, String paymentMethod, {String? seatClass}) async {
+  Future<bool> bookFlight(
+    int flightId,
+    int seats,
+    String transactionId,
+    String paymentMethod, {
+    String? seatClass,
+  }) async {
     try {
       isLoading(true);
       Map<String, dynamic> data = {
@@ -86,7 +92,7 @@ class FlightViewModel extends GetxController {
       };
 
       await _flightRepository.bookFlight(data);
-
+      await refreshCurrentFlights();
 
       Get.snackbar("Success", "Flight booked successfully!");
       return true;
@@ -98,13 +104,46 @@ class FlightViewModel extends GetxController {
     }
   }
 
+  Future<void> refreshCurrentFlights() async {
+    final currentFrom = fromCity.value;
+    final currentTo = toCity.value;
+    final currentSort = selectedSortType.value;
+
+    final response = await _flightRepository.getAllFlights();
+    flightList.value = response;
+    _originalFlightList = List.from(response);
+
+    if (currentFrom.isNotEmpty && currentTo.isNotEmpty) {
+      final searchResponse = await _flightRepository.searchFlights(
+        currentFrom,
+        currentTo,
+      );
+      searchResults.value = searchResponse;
+      _originalSearchResults = List.from(searchResponse);
+    } else {
+      searchResults.value = List.from(response);
+      _originalSearchResults = List.from(response);
+    }
+
+    if (currentSort != 'default') {
+      sortFlights(currentSort);
+    } else {
+      flightList.refresh();
+      searchResults.refresh();
+    }
+  }
+
   void sortFlights(String type) {
     selectedSortType.value = type;
     if (type == 'low') {
-      searchResults.sort((a, b) => (a['price'] ?? 0).compareTo(b['price'] ?? 0));
+      searchResults.sort(
+        (a, b) => (a['price'] ?? 0).compareTo(b['price'] ?? 0),
+      );
       flightList.sort((a, b) => (a['price'] ?? 0).compareTo(b['price'] ?? 0));
     } else if (type == 'high') {
-      searchResults.sort((a, b) => (b['price'] ?? 0).compareTo(a['price'] ?? 0));
+      searchResults.sort(
+        (a, b) => (b['price'] ?? 0).compareTo(a['price'] ?? 0),
+      );
       flightList.sort((a, b) => (b['price'] ?? 0).compareTo(a['price'] ?? 0));
     } else {
       // Default: Restore original lists

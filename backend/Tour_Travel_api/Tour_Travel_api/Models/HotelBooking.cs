@@ -16,6 +16,7 @@ namespace TravelApp.Models
         public string PaymentMethod { get; set; }
         public string TransactionId { get; set; }
         public string Status { get; set; } = "Confirmed";
+        public DateTime BookingDate { get; set; } = DateTime.UtcNow;
 
         public Room Room { get; set; }
     }

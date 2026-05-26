@@ -19,7 +19,9 @@ namespace TravelApp.Services
 
         public void AddFlight(CreateFlightDto dto)
         {
-            var seatClasses = dto.SeatClasses?.Where(s => s.AvailableSeats > 0).ToList();
+            var seatClasses = dto.SeatClasses?.ToList();
+            ValidateSeatClasses(seatClasses);
+
             var totalSeats = seatClasses?.Sum(s => s.AvailableSeats) ?? dto.AvailableSeats;
             var minPrice = seatClasses?.Min(s => s.Price) ?? dto.Price;
 
@@ -133,7 +135,7 @@ namespace TravelApp.Services
             try
             {
                 await _notificationService.CreateNotificationAsync(userId, "Flight Booked Successfully",
-                    $"Flight {f.From} → {f.To} ({f.Airline}), {dto.SeatCount} × {seatClass.ClassName}. Total: ${totalPrice}.");
+                    $"Flight {f.From} → {f.To} ({f.Airline}), {dto.SeatCount} × {seatClass.ClassName}. Total: ৳{totalPrice}.");
             }
             catch (Exception ex)
             {
@@ -143,7 +145,7 @@ namespace TravelApp.Services
 
         public void UpsertSeatClasses(int flightId, List<FlightSeatClassDto>? seatClasses)
         {
-            if (seatClasses == null || seatClasses.Count == 0) return;
+            ValidateSeatClasses(seatClasses);
 
             var existing = _context.FlightSeatClasses.Where(s => s.FlightId == flightId).ToList();
             _context.FlightSeatClasses.RemoveRange(existing);
@@ -165,6 +167,16 @@ namespace TravelApp.Services
                 var updated = _context.FlightSeatClasses.Where(s => s.FlightId == flightId).ToList();
                 SyncFlightTotals(flight, updated);
             }
+        }
+
+        private static void ValidateSeatClasses(List<FlightSeatClassDto>? seatClasses)
+        {
+            if (seatClasses == null || seatClasses.Count == 0)
+                throw new ArgumentException("Add at least one seat class with seats and price.");
+            if (seatClasses.Any(s => s.AvailableSeats <= 0))
+                throw new ArgumentException("Available seats must be greater than zero.");
+            if (seatClasses.Any(s => s.Price <= 0))
+                throw new ArgumentException("Seat class price must be greater than zero.");
         }
     }
 }

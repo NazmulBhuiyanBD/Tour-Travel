@@ -18,6 +18,13 @@ namespace TravelApp.Services
 
         public void AddTour(CreateTourDto dto)
         {
+            if (dto.DurationDays <= 0)
+                throw new ArgumentException("Duration must be greater than zero.");
+            if (dto.Price <= 0)
+                throw new ArgumentException("Tour price must be greater than zero.");
+            if (dto.Vacancy <= 0)
+                throw new ArgumentException("Vacancy must be greater than zero.");
+
             _context.Tours.Add(new Tour
             {
                 Title = dto.Title,
@@ -73,7 +80,7 @@ namespace TravelApp.Services
             try
             {
                 await _notificationService.CreateNotificationAsync(userId, "Tour Booked Successfully",
-                    $"Your tour '{tour.Title}' is confirmed for {dto.ParticipantCount} participant(s). Start date: {tour.StartDate:yyyy-MM-dd}. Total: ${totalPrice}.");
+                    $"Your tour '{tour.Title}' is confirmed for {dto.ParticipantCount} participant(s). Start date: {tour.StartDate:yyyy-MM-dd}. Total: ৳{totalPrice}.");
             }
             catch (Exception ex)
             {

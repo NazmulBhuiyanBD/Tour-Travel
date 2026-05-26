@@ -58,20 +58,42 @@ namespace TravelApp.Services
                 .OrderByDescending(r => r.RequestedAt)
                 .ToListAsync();
 
-        public async Task<bool> UpdateRefundStatusAsync(int id, string status)
+        public async Task<bool> UpdateRefundStatusAsync(int id, string status, int refundPercentage, string? adminFeedback)
         {
             var request = await _context.RefundRequests.FirstOrDefaultAsync(r => r.Id == id);
             if (request == null) return false;
 
             request.Status = status;
+            request.RefundPercentage = refundPercentage;
+            request.AdminFeedback = adminFeedback;
 
             if (status.Equals("Approved", StringComparison.OrdinalIgnoreCase))
             {
+                decimal originalPrice = 0;
+                if (string.Equals(request.ItemType, "Flight", StringComparison.OrdinalIgnoreCase))
+                {
+                    var booking = await _context.FlightBookings.FirstOrDefaultAsync(b => b.Id == request.BookingId);
+                    originalPrice = booking?.TotalPrice ?? 0;
+                }
+                else if (string.Equals(request.ItemType, "Hotel", StringComparison.OrdinalIgnoreCase))
+                {
+                    var booking = await _context.HotelBookings.FirstOrDefaultAsync(b => b.Id == request.BookingId);
+                    originalPrice = booking?.TotalPrice ?? 0;
+                }
+                else if (string.Equals(request.ItemType, "Tour", StringComparison.OrdinalIgnoreCase))
+                {
+                    var booking = await _context.TourBookings.FirstOrDefaultAsync(b => b.Id == request.BookingId);
+                    originalPrice = booking?.TotalPrice ?? 0;
+                }
+
+                request.RefundAmount = originalPrice * (refundPercentage / 100.0m);
+
                 await RestoreInventoryAsync(request);
                 await SetBookingStatusAsync(request.ItemType, request.BookingId, "Refunded");
             }
             else if (status.Equals("Rejected", StringComparison.OrdinalIgnoreCase))
             {
+                request.RefundAmount = 0;
                 await SetBookingStatusAsync(request.ItemType, request.BookingId, "Confirmed");
             }
             else
@@ -83,8 +105,12 @@ namespace TravelApp.Services
 
             try
             {
+                string statusMsg = status.Equals("Approved", StringComparison.OrdinalIgnoreCase)
+                    ? $"approved ({refundPercentage}% back: ৳{request.RefundAmount})"
+                    : status.ToLower();
+
                 await _notificationService.CreateNotificationAsync(request.UserId, $"Refund Request {status}",
-                    $"Your refund request for {request.ItemType} Booking #{request.BookingId} has been {status.ToLower()}.");
+                    $"Your refund request for {request.ItemType} Booking #{request.BookingId} has been {statusMsg}.");
             }
             catch (Exception ex)
             {
@@ -98,32 +124,47 @@ namespace TravelApp.Services
         {
             if (string.Equals(request.ItemType, "Flight", StringComparison.OrdinalIgnoreCase))
             {
-                var booking = await _context.FlightBookings.FirstOrDefaultAsync(b => b.Id == request.BookingId);
+                var booking = await _context.FlightBookings
+                    .Include(b => b.Flight)
+                    .FirstOrDefaultAsync(b => b.Id == request.BookingId);
                 if (booking == null) throw new Exception("Booking not found.");
                 if (booking.UserId != request.UserId) throw new Exception("Unauthorized booking access.");
-                if (booking.Status is "Refunded" or "Cancelled")
-                    throw new Exception("This booking is already cancelled or refunded.");
+                if (booking.Flight == null) throw new Exception("Flight not found.");
+                ValidateRefundWindow(booking.Status, booking.Flight.DepartureTime);
+                request.BookingPrice = booking.TotalPrice;
             }
             else if (string.Equals(request.ItemType, "Hotel", StringComparison.OrdinalIgnoreCase))
             {
                 var booking = await _context.HotelBookings.FirstOrDefaultAsync(b => b.Id == request.BookingId);
                 if (booking == null) throw new Exception("Booking not found.");
                 if (booking.UserId != request.UserId) throw new Exception("Unauthorized booking access.");
-                if (booking.Status is "Refunded" or "Cancelled")
-                    throw new Exception("This booking is already cancelled or refunded.");
+                ValidateRefundWindow(booking.Status, booking.CheckIn);
+                request.BookingPrice = booking.TotalPrice;
             }
             else if (string.Equals(request.ItemType, "Tour", StringComparison.OrdinalIgnoreCase))
             {
                 var booking = await _context.TourBookings.FirstOrDefaultAsync(b => b.Id == request.BookingId);
                 if (booking == null) throw new Exception("Booking not found.");
                 if (booking.UserId != request.UserId) throw new Exception("Unauthorized booking access.");
-                if (booking.Status is "Refunded" or "Cancelled")
-                    throw new Exception("This booking is already cancelled or refunded.");
+
+                var tour = await _context.Tours.FirstOrDefaultAsync(t => t.Id == booking.TourId);
+                if (tour == null) throw new Exception("Tour not found.");
+                ValidateRefundWindow(booking.Status, tour.StartDate);
+                request.BookingPrice = booking.TotalPrice > 0 ? booking.TotalPrice : tour.Price * booking.ParticipantCount;
             }
             else
             {
                 throw new Exception("Invalid item type.");
             }
+        }
+
+        private static void ValidateRefundWindow(string status, DateTime serviceStartDate)
+        {
+            if (!status.Equals("Confirmed", StringComparison.OrdinalIgnoreCase))
+                throw new Exception("Refund requests are only allowed for confirmed bookings.");
+
+            if (serviceStartDate.Date <= DateTime.UtcNow.Date)
+                throw new Exception("Refund requests are only allowed before the service start or check-in date.");
         }
 
         private async Task SetBookingStatusAsync(string itemType, int bookingId, string status)
@@ -169,10 +210,6 @@ namespace TravelApp.Services
                     .Include(b => b.Room)
                     .FirstOrDefaultAsync(b => b.Id == request.BookingId);
                 if (booking?.Room == null) return;
-
-                booking.Room.AvailableRooms += booking.RoomCount;
-                var hotel = await _context.Hotels.FindAsync(booking.Room.HotelId);
-                if (hotel != null) hotel.AvailableRooms += booking.RoomCount;
             }
             else if (string.Equals(request.ItemType, "Tour", StringComparison.OrdinalIgnoreCase))
             {

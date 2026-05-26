@@ -61,13 +61,17 @@ class _TourDetailsScreenState extends State<TourDetailsScreen> {
                     },
                     itemBuilder: (context, index) {
                       return Image.network(
-                        images[index].startsWith('http') 
-                          ? images[index] 
-                          : "${ApiConstants.mediaBaseUrl}${images[index]}",
+                        images[index].startsWith('http')
+                            ? images[index]
+                            : "${ApiConstants.mediaBaseUrl}${images[index]}",
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) => Container(
                           color: Colors.grey[200],
-                          child: const Icon(Icons.tour, size: 50, color: Colors.grey),
+                          child: const Icon(
+                            Icons.tour,
+                            size: 50,
+                            color: Colors.grey,
+                          ),
                         ),
                       );
                     },
@@ -88,7 +92,9 @@ class _TourDetailsScreenState extends State<TourDetailsScreen> {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: Colors.white.withValues(
-                                alpha: _currentImageIndex == entry.key ? 0.9 : 0.4,
+                                alpha: _currentImageIndex == entry.key
+                                    ? 0.9
+                                    : 0.4,
                               ),
                             ),
                           );
@@ -123,30 +129,48 @@ class _TourDetailsScreenState extends State<TourDetailsScreen> {
                       ),
                       if (tour.startDate != null)
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 5,
+                          ),
                           decoration: BoxDecoration(
                             color: AppColors.primaryBlue.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Text(
-                            tour.startDate!.toLocal().toString().substring(0, 10),
-                            style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.primaryBlue),
+                            tour.startDate!.toLocal().toString().substring(
+                              0,
+                              10,
+                            ),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.primaryBlue,
+                            ),
                           ),
                         ),
                     ],
                   ),
                   const SizedBox(height: 15),
 
-                   // Duration and Location
+                  // Duration and Location
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children: [
-                        _buildInfoIcon(Icons.flight_takeoff, "Start: ${tour.startPoint ?? 'Dhaka'}"),
+                        _buildInfoIcon(
+                          Icons.flight_takeoff,
+                          "Start: ${tour.startPoint ?? 'Dhaka'}",
+                        ),
                         const SizedBox(width: 16),
-                        _buildInfoIcon(Icons.flight_land, "End: ${tour.endPoint ?? 'Destination'}"),
+                        _buildInfoIcon(
+                          Icons.flight_land,
+                          "End: ${tour.endPoint ?? 'Destination'}",
+                        ),
                         const SizedBox(width: 16),
-                        _buildInfoIcon(Icons.timer, "${tour.durationDays ?? 1}D / ${(tour.durationDays ?? 1) > 1 ? (tour.durationDays! - 1) : 0}N"),
+                        _buildInfoIcon(
+                          Icons.timer,
+                          "${tour.durationDays ?? 1}D / ${(tour.durationDays ?? 1) > 1 ? (tour.durationDays! - 1) : 0}N",
+                        ),
                       ],
                     ),
                   ),
@@ -163,7 +187,8 @@ class _TourDetailsScreenState extends State<TourDetailsScreen> {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    tour.description ?? "Experience the beauty of nature with our exclusive tour package. Explore exotic locations and enjoy top-notch services.",
+                    tour.description ??
+                        "Experience the beauty of nature with our exclusive tour package. Explore exotic locations and enjoy top-notch services.",
                     style: const TextStyle(
                       fontSize: 15,
                       color: AppColors.textSecondary,
@@ -292,10 +317,13 @@ class _TourDetailsScreenState extends State<TourDetailsScreen> {
               children: [
                 const Text(
                   "Total Price",
-                  style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                  style: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 12,
+                  ),
                 ),
                 Text(
-                  "\$${tour.price ?? 1200}",
+                  "৳${tour.price ?? 1200}",
                   style: const TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
@@ -307,21 +335,29 @@ class _TourDetailsScreenState extends State<TourDetailsScreen> {
             const SizedBox(width: 30),
             Expanded(
               child: ElevatedButton(
-                onPressed: () => Get.to(() => TourBookingScreen(
-                  tourId: tour.id ?? 0,
-                  title: tour.title ?? "Tour",
-                  price: tour.price ?? 1200,
-                  vacancy: tour.vacancy ?? 20,
-                  startDate: tour.startDate,
-                )),
+                onPressed: () => Get.to(
+                  () => TourBookingScreen(
+                    tourId: tour.id ?? 0,
+                    title: tour.title ?? "Tour",
+                    price: tour.price ?? 1200,
+                    vacancy: tour.vacancy ?? 20,
+                    startDate: tour.startDate,
+                  ),
+                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primaryBlue,
                   padding: const EdgeInsets.symmetric(vertical: 15),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
                 ),
                 child: const Text(
                   "Book Now",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),

@@ -17,6 +17,7 @@ namespace TravelApp.Services
             var history = new List<BookingHistoryDto>();
             var user = _context.Users.Find(userId);
             var userName = user?.Name ?? "Traveler";
+            var today = DateTime.UtcNow.Date;
             var now = DateTime.UtcNow;
 
             var flights = _context.FlightBookings
@@ -45,7 +46,7 @@ namespace TravelApp.Services
                         PaymentMethod = b.PaymentMethod,
                         TransactionId = b.TransactionId,
                         CanReview = b.Status == "Confirmed" && f.ArrivalTime <= now,
-                        CanRefund = b.Status == "Confirmed" || b.Status == "RefundPending"
+                        CanRefund = CanRequestRefund(b.Status, f.DepartureTime, today)
                     }).ToList();
 
             var hotels = _context.HotelBookings
@@ -75,7 +76,7 @@ namespace TravelApp.Services
                         PaymentMethod = br.b.PaymentMethod,
                         TransactionId = br.b.TransactionId,
                         CanReview = br.b.Status == "Confirmed" && br.b.CheckIn <= now,
-                        CanRefund = br.b.Status == "Confirmed" || br.b.Status == "RefundPending"
+                        CanRefund = CanRequestRefund(br.b.Status, br.b.CheckIn, today)
                     }).ToList();
 
             var tours = _context.TourBookings
@@ -99,7 +100,7 @@ namespace TravelApp.Services
                         PaymentMethod = b.PaymentMethod,
                         TransactionId = b.TransactionId,
                         CanReview = b.Status == "Confirmed" && t.StartDate.AddDays(t.DurationDays) <= now,
-                        CanRefund = b.Status == "Confirmed" || b.Status == "RefundPending"
+                        CanRefund = CanRequestRefund(b.Status, t.StartDate, today)
                     }).ToList();
 
             history.AddRange(flights);
@@ -107,6 +108,12 @@ namespace TravelApp.Services
             history.AddRange(tours);
 
             return history.OrderByDescending(x => x.BookingDate).ToList();
+        }
+
+        private static bool CanRequestRefund(string status, DateTime serviceStartDate, DateTime today)
+        {
+            return status.Equals("Confirmed", StringComparison.OrdinalIgnoreCase)
+                && serviceStartDate.Date > today;
         }
     }
 }

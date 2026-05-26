@@ -16,6 +16,7 @@ class AdminManagementViewModel extends GetxController {
   var hotelBookings = <dynamic>[].obs;
   var flightBookings = <dynamic>[].obs;
   var tourBookings = <dynamic>[].obs;
+  var hotelRooms = <dynamic>[].obs;
   
   var isLoading = false.obs;
   var selectedHotelImagePath = ''.obs;
@@ -95,41 +96,7 @@ class AdminManagementViewModel extends GetxController {
     }
   }
 
-  // Super Admins
-  var adminsList = <dynamic>[].obs;
-  
-  Future<void> fetchAdmins() async {
-    isLoading.value = true;
-    try {
-      dynamic response = await _repository.getAdmins();
-      adminsList.value = response;
-    } catch (e) {
-      _showError(e.toString());
-    } finally {
-      isLoading.value = false;
-    }
-  }
 
-  Future<void> createAdmin(dynamic data) async {
-    try {
-      await _repository.createAdmin(data);
-      fetchAdmins();
-      Get.back();
-      _showSuccess('Admin account created');
-    } catch (e) {
-      _showError(e.toString());
-    }
-  }
-
-  Future<void> deleteAdmin(int id) async {
-    try {
-      await _repository.deleteAdmin(id);
-      fetchAdmins();
-      _showSuccess('Admin deleted');
-    } catch (e) {
-      _showError(e.toString());
-    }
-  }
 
   // Tours
   Future<void> fetchTours() async {
@@ -362,6 +329,71 @@ class AdminManagementViewModel extends GetxController {
       if (response != null) {
         dashboardData.value = Map<String, dynamic>.from(response);
       }
+    } catch (e) {
+      _showError(e.toString());
+    }
+  }
+
+  var revenueReportData = <String, dynamic>{}.obs;
+  var isReportLoading = false.obs;
+
+  Future<void> fetchRevenueReport(String startDate, String endDate) async {
+    isReportLoading.value = true;
+    try {
+      dynamic response = await _repository.getRevenueReport(startDate, endDate);
+      if (response != null) {
+        revenueReportData.value = Map<String, dynamic>.from(response);
+      }
+    } catch (e) {
+      _showError(e.toString());
+    } finally {
+      isReportLoading.value = false;
+    }
+  }
+
+  // Room Management CRUD
+  Future<void> fetchHotelRooms(int hotelId) async {
+    isLoading.value = true;
+    try {
+      dynamic response = await _repository.getHotelRooms(hotelId);
+      hotelRooms.value = response is List ? response : [];
+    } catch (e) {
+      _showError(e.toString());
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> addHotelRoom(int hotelId, dynamic data) async {
+    try {
+      await _repository.createHotelRoom(hotelId, data);
+      fetchHotelRooms(hotelId);
+      fetchHotels(); // Refresh hotel list to show updated total rooms and starting price
+      Get.back();
+      _showSuccess('Room Category added successfully');
+    } catch (e) {
+      _showError(e.toString());
+    }
+  }
+
+  Future<void> updateHotelRoom(int hotelId, int roomId, dynamic data) async {
+    try {
+      await _repository.updateHotelRoom(roomId, data);
+      fetchHotelRooms(hotelId);
+      fetchHotels(); // Refresh hotel list
+      Get.back();
+      _showSuccess('Room Category updated successfully');
+    } catch (e) {
+      _showError(e.toString());
+    }
+  }
+
+  Future<void> deleteHotelRoom(int hotelId, int roomId) async {
+    try {
+      await _repository.deleteHotelRoom(roomId);
+      fetchHotelRooms(hotelId);
+      fetchHotels(); // Refresh hotel list
+      _showSuccess('Room Category deleted successfully');
     } catch (e) {
       _showError(e.toString());
     }

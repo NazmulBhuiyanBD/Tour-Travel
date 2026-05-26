@@ -61,7 +61,7 @@ namespace TravelApp.Controllers
             return Ok(requests);
         }
 
-        [Authorize(Roles = "Admin,SuperAdmin")]
+        [Authorize(Roles = "Admin")]
         [HttpGet("admin")]
         public async Task<IActionResult> GetAllRefundRequests()
         {
@@ -69,11 +69,11 @@ namespace TravelApp.Controllers
             return Ok(requests);
         }
 
-        [Authorize(Roles = "Admin,SuperAdmin")]
+        [Authorize(Roles = "Admin")]
         [HttpPut("admin/{id}/status")]
         public async Task<IActionResult> UpdateRefundStatus(int id, [FromBody] StatusUpdateRequest update)
         {
-            var success = await _refundService.UpdateRefundStatusAsync(id, update.Status);
+            var success = await _refundService.UpdateRefundStatusAsync(id, update.Status, update.RefundPercentage, update.AdminFeedback);
             if (!success)
             {
                 return NotFound(new { message = "Refund request not found." });
@@ -85,5 +85,7 @@ namespace TravelApp.Controllers
     public class StatusUpdateRequest
     {
         public string Status { get; set; } = string.Empty;
+        public int RefundPercentage { get; set; } = 100;
+        public string? AdminFeedback { get; set; }
     }
 }

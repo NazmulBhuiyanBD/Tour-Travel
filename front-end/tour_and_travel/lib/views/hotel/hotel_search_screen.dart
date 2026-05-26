@@ -85,7 +85,13 @@ class _HotelSearchScreenState extends State<HotelSearchScreen> {
                         elevation: 4,
                       ),
                       onPressed: () {
-                        _hotelViewModel.searchHotels(_searchController.text);
+                        _hotelViewModel.searchHotelsWithParams(
+                          query: _searchController.text,
+                          checkIn: _checkInDate,
+                          checkOut: _checkOutDate,
+                          guests: _guests,
+                          rooms: _rooms,
+                        );
                         Get.back();
                       },
                       child: const Text(

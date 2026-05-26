@@ -26,4 +26,27 @@ class RefundRepository {
       rethrow;
     }
   }
+
+  Future<dynamic> getAllRefundRequests() async {
+    try {
+      dynamic response = await _apiService.getGetApiResponse(
+        ApiConstants.baseUrl + ApiConstants.refund + '/admin',
+      );
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> updateRefundStatus(int id, Map<String, dynamic> data) async {
+    try {
+      dynamic response = await _apiService.getPutApiResponse(
+        ApiConstants.baseUrl + ApiConstants.refund + '/admin/$id/status',
+        data,
+      );
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

@@ -4,9 +4,11 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:intl/intl.dart';
 
 class PdfInvoiceApi {
-  static Future<Uint8List> generateInvoice(Map<String, dynamic> bookingDetails) async {
+  static Future<Uint8List> generateInvoice(
+    Map<String, dynamic> bookingDetails,
+  ) async {
     final pdf = pw.Document();
-    
+
     final String bookingType = bookingDetails['type'] ?? 'Booking';
 
     pdf.addPage(
@@ -88,16 +90,25 @@ class PdfInvoiceApi {
   static pw.Widget _buildInvoiceDetails(Map<String, dynamic> bookingDetails) {
     final now = DateTime.now();
     final formatter = DateFormat('MMM dd, yyyy');
-    final String transactionId = bookingDetails['transactionId'] ?? bookingDetails['TransactionId'] ?? 'INV-${now.millisecondsSinceEpoch.toString().substring(5)}';
-    final String paymentMethod = bookingDetails['paymentMethod'] ?? bookingDetails['PaymentMethod'] ?? 'Credit/Debit Card';
-    
+    final String transactionId =
+        bookingDetails['transactionId'] ??
+        bookingDetails['TransactionId'] ??
+        'INV-${now.millisecondsSinceEpoch.toString().substring(5)}';
+    final String paymentMethod =
+        bookingDetails['paymentMethod'] ??
+        bookingDetails['PaymentMethod'] ??
+        'Credit/Debit Card';
+
     return pw.Row(
       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
       children: [
         pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
-            pw.Text('Billed To:', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+            pw.Text(
+              'Billed To:',
+              style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+            ),
             pw.Text(bookingDetails['userName'] ?? 'Valued Customer'),
             pw.Text('customer@example.com'),
           ],
@@ -115,12 +126,13 @@ class PdfInvoiceApi {
   }
 
   static pw.Widget _buildBookingTable(Map<String, dynamic> bookingDetails) {
-    final String title = bookingDetails['title'] ?? '${bookingDetails['type']} Reservation';
+    final String title =
+        bookingDetails['title'] ?? '${bookingDetails['type']} Reservation';
     final String type = bookingDetails['type'] ?? 'Booking';
     final int quantity = bookingDetails['quantity'] ?? 1;
     final double totalPrice = bookingDetails['price'] ?? 0.0;
     final double unitPrice = quantity > 0 ? totalPrice / quantity : totalPrice;
-    
+
     return pw.Table(
       border: pw.TableBorder.all(color: PdfColors.grey400, width: 0.5),
       children: [
@@ -130,23 +142,39 @@ class PdfInvoiceApi {
           children: [
             pw.Padding(
               padding: const pw.EdgeInsets.all(8.0),
-              child: pw.Text('Description', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+              child: pw.Text(
+                'Description',
+                style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+              ),
             ),
             pw.Padding(
               padding: const pw.EdgeInsets.all(8.0),
-              child: pw.Text('Type', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+              child: pw.Text(
+                'Type',
+                style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+              ),
             ),
             pw.Padding(
               padding: const pw.EdgeInsets.all(8.0),
-              child: pw.Text('Qty', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+              child: pw.Text(
+                'Qty',
+                style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+              ),
             ),
             pw.Padding(
               padding: const pw.EdgeInsets.all(8.0),
-              child: pw.Text('Unit Price', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+              child: pw.Text(
+                'Unit Price',
+                style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+              ),
             ),
             pw.Padding(
               padding: const pw.EdgeInsets.all(8.0),
-              child: pw.Text('Amount', style: pw.TextStyle(fontWeight: pw.FontWeight.bold), textAlign: pw.TextAlign.right),
+              child: pw.Text(
+                'Amount',
+                style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                textAlign: pw.TextAlign.right,
+              ),
             ),
           ],
         ),
@@ -167,11 +195,14 @@ class PdfInvoiceApi {
             ),
             pw.Padding(
               padding: const pw.EdgeInsets.all(8.0),
-              child: pw.Text('\$${unitPrice.toStringAsFixed(2)}'),
+              child: pw.Text('৳${unitPrice.toStringAsFixed(2)}'),
             ),
             pw.Padding(
               padding: const pw.EdgeInsets.all(8.0),
-              child: pw.Text('\$${totalPrice.toStringAsFixed(2)}', textAlign: pw.TextAlign.right),
+              child: pw.Text(
+                '৳${totalPrice.toStringAsFixed(2)}',
+                textAlign: pw.TextAlign.right,
+              ),
             ),
           ],
         ),
@@ -181,7 +212,7 @@ class PdfInvoiceApi {
 
   static pw.Widget _buildTotalSection(Map<String, dynamic> bookingDetails) {
     final double totalPrice = bookingDetails['price'] ?? 0.0;
-    
+
     return pw.Row(
       mainAxisAlignment: pw.MainAxisAlignment.end,
       children: [
@@ -192,16 +223,32 @@ class PdfInvoiceApi {
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pw.Text('Subtotal:', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                  pw.Text('\$${totalPrice.toStringAsFixed(2)}'),
+                  pw.Text(
+                    'Subtotal:',
+                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                  ),
+                  pw.Text('৳${totalPrice.toStringAsFixed(2)}'),
                 ],
               ),
               pw.Divider(),
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pw.Text('Total Paid:', style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 16)),
-                  pw.Text('\$${totalPrice.toStringAsFixed(2)}', style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 16, color: PdfColors.indigo)),
+                  pw.Text(
+                    'Total Paid:',
+                    style: pw.TextStyle(
+                      fontWeight: pw.FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  pw.Text(
+                    '৳${totalPrice.toStringAsFixed(2)}',
+                    style: pw.TextStyle(
+                      fontWeight: pw.FontWeight.bold,
+                      fontSize: 16,
+                      color: PdfColors.indigo,
+                    ),
+                  ),
                 ],
               ),
             ],
@@ -219,7 +266,11 @@ class PdfInvoiceApi {
         pw.SizedBox(height: 10),
         pw.Text(
           'Thank you for booking with Tour & Travel!',
-          style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold, color: PdfColors.indigo),
+          style: pw.TextStyle(
+            fontSize: 14,
+            fontWeight: pw.FontWeight.bold,
+            color: PdfColors.indigo,
+          ),
           textAlign: pw.TextAlign.center,
         ),
         pw.SizedBox(height: 4),

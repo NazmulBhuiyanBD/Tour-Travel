@@ -3,7 +3,7 @@ import '../data/repositories/tour_repository.dart';
 
 class TourViewModel extends GetxController {
   final TourRepository _tourRepository = TourRepository();
-  
+
   var isLoading = false.obs;
   var tourList = [].obs;
   var searchResults = [].obs;
@@ -42,9 +42,15 @@ class TourViewModel extends GetxController {
       _originalSearchResults = List.from(tourList);
     } else {
       final results = tourList
-          .where((tour) =>
-              (tour['title'] ?? '').toString().toLowerCase().contains(query.toLowerCase()) ||
-              (tour['location'] ?? '').toString().toLowerCase().contains(query.toLowerCase()))
+          .where(
+            (tour) =>
+                (tour['title'] ?? '').toString().toLowerCase().contains(
+                  query.toLowerCase(),
+                ) ||
+                (tour['location'] ?? '').toString().toLowerCase().contains(
+                  query.toLowerCase(),
+                ),
+          )
           .toList();
       searchResults.value = results;
       _originalSearchResults = List.from(results);
@@ -54,10 +60,14 @@ class TourViewModel extends GetxController {
   void sortTours(String type) {
     selectedSortType.value = type;
     if (type == 'low') {
-      searchResults.sort((a, b) => (a['price'] ?? 0).compareTo(b['price'] ?? 0));
+      searchResults.sort(
+        (a, b) => (a['price'] ?? 0).compareTo(b['price'] ?? 0),
+      );
       tourList.sort((a, b) => (a['price'] ?? 0).compareTo(b['price'] ?? 0));
     } else if (type == 'high') {
-      searchResults.sort((a, b) => (b['price'] ?? 0).compareTo(a['price'] ?? 0));
+      searchResults.sort(
+        (a, b) => (b['price'] ?? 0).compareTo(a['price'] ?? 0),
+      );
       tourList.sort((a, b) => (b['price'] ?? 0).compareTo(a['price'] ?? 0));
     } else {
       tourList.value = List.from(_originalTourList);
@@ -67,7 +77,12 @@ class TourViewModel extends GetxController {
     tourList.refresh();
   }
 
-  Future<bool> bookTour(int tourId, String transactionId, String paymentMethod, {int participantCount = 1}) async {
+  Future<bool> bookTour(
+    int tourId,
+    String transactionId,
+    String paymentMethod, {
+    int participantCount = 1,
+  }) async {
     try {
       isLoading(true);
       Map<String, dynamic> data = {
@@ -78,7 +93,7 @@ class TourViewModel extends GetxController {
       };
 
       await _tourRepository.bookTour(data);
-
+      await refreshCurrentTours();
 
       Get.snackbar("Success", "Tour booked successfully!");
       return true;
@@ -87,6 +102,24 @@ class TourViewModel extends GetxController {
       return false;
     } finally {
       isLoading(false);
+    }
+  }
+
+  Future<void> refreshCurrentTours() async {
+    final currentSearch = searchQuery.value;
+    final currentSort = selectedSortType.value;
+
+    final response = await _tourRepository.getAllTours();
+    tourList.value = response;
+    _originalTourList = List.from(response);
+
+    searchTours(currentSearch);
+
+    if (currentSort != 'default') {
+      sortTours(currentSort);
+    } else {
+      tourList.refresh();
+      searchResults.refresh();
     }
   }
 }

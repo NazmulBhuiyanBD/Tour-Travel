@@ -13,7 +13,7 @@ namespace TravelApp.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Admin,SuperAdmin")]
+    [Authorize(Roles = "Admin")]
     public class AdminController : ControllerBase
 
     {
@@ -59,6 +59,9 @@ namespace TravelApp.Controllers
         [HttpPost("tour")]
         public IActionResult CreateTour(CreateTourDto dto)
         {
+            var validationError = ValidateTourInput(dto);
+            if (validationError != null) return BadRequest(new { error = validationError });
+
             var tour = new Tour
             {
                 Title = dto.Title,
@@ -71,7 +74,7 @@ namespace TravelApp.Controllers
                 IsTopDestination = dto.IsTopDestination,
                 ImageUrl = dto.ImageUrl ?? "",
                 StartDate = dto.StartDate == default ? DateTime.UtcNow.AddDays(7) : dto.StartDate,
-                Vacancy = dto.Vacancy > 0 ? dto.Vacancy : 20
+                Vacancy = dto.Vacancy
             };
             _context.Tours.Add(tour);
             _context.SaveChanges();
@@ -83,6 +86,9 @@ namespace TravelApp.Controllers
         {
             var tour = _context.Tours.Find(id);
             if (tour == null) return NotFound();
+
+            var validationError = ValidateTourInput(dto);
+            if (validationError != null) return BadRequest(new { error = validationError });
             
             tour.Title = dto.Title;
             tour.Description = dto.Description;
@@ -123,11 +129,14 @@ namespace TravelApp.Controllers
 
         #region Hotel Management
         [HttpGet("hotels")]
-        public IActionResult GetHotels() => Ok(_context.Hotels.ToList());
+        public IActionResult GetHotels() => Ok(_context.Hotels.Include(h => h.Rooms).ToList());
 
         [HttpPost("hotel")]
         public IActionResult CreateHotel(CreateHotelDto dto)
         {
+            var validationError = ValidateHotelInput(dto);
+            if (validationError != null) return BadRequest(new { error = validationError });
+
             var hotel = new Hotel
             {
                 Name = dto.Name,
@@ -137,7 +146,8 @@ namespace TravelApp.Controllers
                 Amenities = dto.Amenities,
                 PricePerNight = dto.PricePerNight,
                 AvailableRooms = dto.AvailableRooms,
-                IsFeatured = dto.IsFeatured
+                IsFeatured = dto.IsFeatured,
+                ContactInfo = dto.ContactInfo ?? ""
             };
             _context.Hotels.Add(hotel);
             _context.SaveChanges();
@@ -145,7 +155,10 @@ namespace TravelApp.Controllers
             _context.Rooms.Add(new Room
             {
                 HotelId = hotel.Id,
-                Type = "Standard Room",
+                Type = dto.RoomType,
+                BedType = dto.BedType,
+                ViewType = dto.ViewType,
+                IsAc = dto.IsAc,
                 Price = dto.PricePerNight,
                 AvailableRooms = dto.AvailableRooms
             });
@@ -159,6 +172,9 @@ namespace TravelApp.Controllers
             var hotel = _context.Hotels.Find(id);
             if (hotel == null) return NotFound();
 
+            var validationError = ValidateHotelInput(dto);
+            if (validationError != null) return BadRequest(new { error = validationError });
+
             hotel.Name = dto.Name;
             hotel.Location = dto.Location;
             hotel.Description = dto.Description;
@@ -167,19 +183,27 @@ namespace TravelApp.Controllers
             hotel.Amenities = dto.Amenities ?? hotel.Amenities;
             hotel.IsFeatured = dto.IsFeatured;
             hotel.AvailableRooms = dto.AvailableRooms;
+            hotel.ContactInfo = dto.ContactInfo ?? hotel.ContactInfo;
 
             var room = _context.Rooms.FirstOrDefault(r => r.HotelId == id);
             if (room != null)
             {
                 room.AvailableRooms = dto.AvailableRooms;
                 room.Price = dto.PricePerNight;
+                room.Type = dto.RoomType;
+                room.BedType = dto.BedType;
+                room.ViewType = dto.ViewType;
+                room.IsAc = dto.IsAc;
             }
             else
             {
                 _context.Rooms.Add(new Room
                 {
                     HotelId = hotel.Id,
-                    Type = "Standard Room",
+                    Type = dto.RoomType,
+                    BedType = dto.BedType,
+                    ViewType = dto.ViewType,
+                    IsAc = dto.IsAc,
                     Price = dto.PricePerNight,
                     AvailableRooms = dto.AvailableRooms
                 });
@@ -208,6 +232,95 @@ namespace TravelApp.Controllers
             _context.SaveChanges();
             return Ok(new { isFeatured = hotel.IsFeatured });
         }
+
+        // Room management endpoints for Admin
+        [HttpGet("hotels/{hotelId}/rooms")]
+        public IActionResult GetHotelRooms(int hotelId)
+        {
+            var rooms = _context.Rooms.Where(r => r.HotelId == hotelId).ToList();
+            return Ok(rooms);
+        }
+
+        [HttpPost("hotels/{hotelId}/rooms")]
+        public IActionResult AddHotelRoom(int hotelId, CreateRoomDto dto)
+        {
+            var hotel = _context.Hotels.Find(hotelId);
+            if (hotel == null) return NotFound("Hotel not found");
+
+            var validationError = ValidateRoomInput(dto);
+            if (validationError != null) return BadRequest(new { error = validationError });
+
+            var room = new Room
+            {
+                HotelId = hotelId,
+                Type = dto.Type,
+                BedType = dto.BedType,
+                ViewType = dto.ViewType,
+                IsAc = dto.IsAc,
+                Price = dto.Price,
+                AvailableRooms = dto.AvailableRooms
+            };
+            _context.Rooms.Add(room);
+            _context.SaveChanges();
+
+            RecalculateHotelStats(hotelId);
+            return Ok(room);
+        }
+
+        [HttpPut("hotels/rooms/{roomId}")]
+        public IActionResult UpdateHotelRoom(int roomId, CreateRoomDto dto)
+        {
+            var room = _context.Rooms.Find(roomId);
+            if (room == null) return NotFound("Room not found");
+
+            var validationError = ValidateRoomInput(dto);
+            if (validationError != null) return BadRequest(new { error = validationError });
+
+            room.Type = dto.Type;
+            room.BedType = dto.BedType;
+            room.ViewType = dto.ViewType;
+            room.IsAc = dto.IsAc;
+            room.Price = dto.Price;
+            room.AvailableRooms = dto.AvailableRooms;
+
+            _context.SaveChanges();
+
+            RecalculateHotelStats(room.HotelId);
+            return Ok(room);
+        }
+
+        [HttpDelete("hotels/rooms/{roomId}")]
+        public IActionResult DeleteHotelRoom(int roomId)
+        {
+            var room = _context.Rooms.Find(roomId);
+            if (room == null) return NotFound("Room not found");
+
+            int hotelId = room.HotelId;
+            _context.Rooms.Remove(room);
+            _context.SaveChanges();
+
+            RecalculateHotelStats(hotelId);
+            return Ok();
+        }
+
+        private void RecalculateHotelStats(int hotelId)
+        {
+            var hotel = _context.Hotels.Include(h => h.Rooms).FirstOrDefault(h => h.Id == hotelId);
+            if (hotel != null)
+            {
+                if (hotel.Rooms.Any())
+                {
+                    hotel.AvailableRooms = hotel.Rooms.Sum(r => r.AvailableRooms);
+                    hotel.PricePerNight = hotel.Rooms.Min(r => r.Price);
+                }
+                else
+                {
+                    hotel.AvailableRooms = 0;
+                    hotel.PricePerNight = 0;
+                }
+                _context.SaveChanges();
+            }
+        }
         #endregion
 
         #region Flight Management
@@ -234,8 +347,8 @@ namespace TravelApp.Controllers
         [HttpPost("flight")]
         public IActionResult CreateFlight(CreateFlightDto dto, [FromServices] FlightService flightService)
         {
-            if (dto.SeatClasses == null || dto.SeatClasses.Count == 0)
-                return BadRequest(new { error = "Add at least one seat class with seats and price." });
+            var validationError = ValidateFlightInput(dto);
+            if (validationError != null) return BadRequest(new { error = validationError });
 
             flightService.AddFlight(dto);
             var flightId = _context.Flights.OrderByDescending(f => f.Id).Select(f => f.Id).First();
@@ -248,8 +361,8 @@ namespace TravelApp.Controllers
             var flight = _context.Flights.Find(id);
             if (flight == null) return NotFound();
 
-            if (dto.SeatClasses == null || dto.SeatClasses.Count == 0)
-                return BadRequest(new { error = "Add at least one seat class with seats and price." });
+            var validationError = ValidateFlightInput(dto);
+            if (validationError != null) return BadRequest(new { error = validationError });
 
             flight.Airline = dto.Airline;
             flight.From = dto.From;
@@ -284,6 +397,42 @@ namespace TravelApp.Controllers
                 f.IsPopular,
                 SeatClasses = classes
             };
+        }
+
+        private static string? ValidateTourInput(CreateTourDto dto)
+        {
+            if (dto.DurationDays <= 0) return "Duration must be greater than zero.";
+            if (dto.Price <= 0) return "Tour price must be greater than zero.";
+            if (dto.Vacancy <= 0) return "Vacancy must be greater than zero.";
+            return null;
+        }
+
+        private static string? ValidateHotelInput(CreateHotelDto dto)
+        {
+            if (dto.PricePerNight <= 0) return "Hotel price must be greater than zero.";
+            if (dto.AvailableRooms <= 0) return "Available rooms must be greater than zero.";
+            return null;
+        }
+
+        private static string? ValidateRoomInput(CreateRoomDto dto)
+        {
+            if (dto.Price <= 0) return "Room price must be greater than zero.";
+            if (dto.AvailableRooms <= 0) return "Room quantity must be greater than zero.";
+            return null;
+        }
+
+        private static string? ValidateFlightInput(CreateFlightDto dto)
+        {
+            if (dto.SeatClasses == null || dto.SeatClasses.Count == 0)
+                return "Add at least one seat class with seats and price.";
+
+            if (dto.SeatClasses.Any(s => s.AvailableSeats <= 0))
+                return "Available seats must be greater than zero.";
+
+            if (dto.SeatClasses.Any(s => s.Price <= 0))
+                return "Seat class price must be greater than zero.";
+
+            return null;
         }
 
         [HttpDelete("flight/{id}")]
@@ -333,6 +482,8 @@ namespace TravelApp.Controllers
 
             var totalRevenue = flightRevenue + hotelRevenue + tourRevenue;
 
+            var pendingRefunds = _context.RefundRequests.Count(r => r.Status == "Pending");
+
             return Ok(new
             {
                 users = _context.Users.Count(),
@@ -340,7 +491,69 @@ namespace TravelApp.Controllers
                 hotels = _context.Hotels.Count(),
                 tours = _context.Tours.Count(),
                 totalBookings,
-                totalRevenue
+                totalRevenue,
+                pendingRefunds
+            });
+        }
+
+        [HttpGet("revenue-report")]
+        public IActionResult GetRevenueReport([FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
+        {
+            var flightBookings = _context.FlightBookings
+                .Where(b => b.BookingDate >= startDate && b.BookingDate <= endDate)
+                .ToList();
+
+            var hotelBookings = _context.HotelBookings
+                .Where(b => b.BookingDate >= startDate && b.BookingDate <= endDate)
+                .ToList();
+
+            var tourBookings = _context.TourBookings
+                .Where(b => b.BookingDate >= startDate && b.BookingDate <= endDate)
+                .ToList();
+
+            var refunds = _context.RefundRequests
+                .Where(r => r.RequestedAt >= startDate && r.RequestedAt <= endDate && r.Status == "Approved")
+                .ToList();
+
+            var dailyData = new Dictionary<string, dynamic>();
+
+            var currDate = startDate.Date;
+            while (currDate <= endDate.Date)
+            {
+                var nextDate = currDate.AddDays(1);
+                
+                var fb = flightBookings.Where(b => b.BookingDate >= currDate && b.BookingDate < nextDate).ToList();
+                var hb = hotelBookings.Where(b => b.BookingDate >= currDate && b.BookingDate < nextDate).ToList();
+                var tb = tourBookings.Where(b => b.BookingDate >= currDate && b.BookingDate < nextDate).ToList();
+                var rf = refunds.Where(r => r.RequestedAt >= currDate && r.RequestedAt < nextDate).ToList();
+
+                var confirmedCount = fb.Count + hb.Count + tb.Count;
+                var dailyGross = fb.Sum(b => b.TotalPrice) + hb.Sum(b => b.TotalPrice) + tb.Sum(b => b.TotalPrice);
+                var dailyRefunds = rf.Sum(r => r.RefundAmount);
+                var dailyNet = dailyGross - dailyRefunds;
+
+                dailyData[currDate.ToString("yyyy-MM-dd")] = new
+                {
+                    bookingsCount = confirmedCount,
+                    grossRevenue = dailyGross,
+                    refunds = dailyRefunds,
+                    netRevenue = dailyNet
+                };
+
+                currDate = nextDate;
+            }
+
+            var totalGross = flightBookings.Sum(b => b.TotalPrice) + hotelBookings.Sum(b => b.TotalPrice) + tourBookings.Sum(b => b.TotalPrice);
+            var totalRefunds = refunds.Sum(r => r.RefundAmount);
+            var netRevenue = totalGross - totalRefunds;
+
+            return Ok(new
+            {
+                totalBookings = flightBookings.Count + hotelBookings.Count + tourBookings.Count,
+                grossRevenue = totalGross,
+                totalRefunds = totalRefunds,
+                netRevenue = netRevenue,
+                dailyData = dailyData
             });
         }
 
@@ -358,43 +571,6 @@ namespace TravelApp.Controllers
             Ok(_context.TourBookings.ToList());
         #endregion
 
-        #region Super Admin Management
-        [HttpGet("admins")]
-        [Authorize(Roles = "SuperAdmin")]
-        public IActionResult GetAdmins() => Ok(_context.Admins.ToList());
 
-        [HttpPost("admins")]
-        [Authorize(Roles = "SuperAdmin")]
-        public IActionResult CreateAdmin(TravelApp.DTOs.Auth.CreateAdminDto dto)
-        {
-            if (_context.Admins.Any(a => a.Email.ToLower() == dto.Email.ToLower()))
-                return BadRequest(new { error = "Admin email already exists" });
-
-            var admin = new Admin
-            {
-                Name = dto.Name,
-                Email = dto.Email,
-                Phone = dto.Phone,
-                Password = TravelApp.Services.PasswordHasher.Hash(dto.Password),
-                Role = dto.Role ?? "Admin"
-            };
-            _context.Admins.Add(admin);
-            _context.SaveChanges();
-            return Ok(admin);
-        }
-
-        [HttpDelete("admins/{id}")]
-        [Authorize(Roles = "SuperAdmin")]
-        public IActionResult DeleteAdmin(int id)
-        {
-            var admin = _context.Admins.Find(id);
-            if (admin == null) return NotFound();
-            
-            // Prevent super admin from deleting themselves if needed, but for now just delete
-            _context.Admins.Remove(admin);
-            _context.SaveChanges();
-            return Ok();
-        }
-        #endregion
     }
 }

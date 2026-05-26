@@ -10,6 +10,8 @@ class HotelModel {
   double? pricePerNight;
   int? availableRooms;
   bool? isFeatured;
+  String? contactInfo;
+  List<dynamic> rooms = [];
 
   HotelModel({
     this.id,
@@ -23,6 +25,8 @@ class HotelModel {
     this.pricePerNight,
     this.availableRooms,
     this.isFeatured,
+    this.contactInfo,
+    this.rooms = const [],
   });
 
   HotelModel.fromJson(Map<String, dynamic> json) {
@@ -37,6 +41,8 @@ class HotelModel {
     pricePerNight = (json['pricePerNight'] as num?)?.toDouble();
     availableRooms = json['availableRooms'];
     isFeatured = json['isFeatured'];
+    contactInfo = json['contactInfo'];
+    rooms = json['rooms'] is List ? json['rooms'] : [];
   }
 
   Map<String, dynamic> toJson() {
@@ -52,6 +58,8 @@ class HotelModel {
     data['pricePerNight'] = pricePerNight;
     data['availableRooms'] = availableRooms;
     data['isFeatured'] = isFeatured;
+    data['contactInfo'] = contactInfo;
+    data['rooms'] = rooms;
     return data;
   }
 
@@ -66,6 +74,25 @@ class HotelModel {
     if (amenities == null || amenities!.isEmpty) {
       return [];
     }
-    return amenities!.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+    return amenities!
+        .split(',')
+        .map((e) => e.trim())
+        .where((e) => e.isNotEmpty)
+        .toList();
+  }
+
+  Map<String, dynamic>? get primaryRoom {
+    if (rooms.isEmpty) return null;
+    final room = rooms.first;
+    return room is Map<String, dynamic>
+        ? room
+        : Map<String, dynamic>.from(room as Map);
+  }
+
+  String get roomSummary {
+    final room = primaryRoom;
+    if (room == null) return "Single Room • King Bed • City View • AC";
+    final acLabel = room['isAc'] == false ? 'Non AC' : 'AC';
+    return "${room['type'] ?? 'Single Room'} • ${room['bedType'] ?? 'King Bed'} • ${room['viewType'] ?? 'City View'} • $acLabel";
   }
 }

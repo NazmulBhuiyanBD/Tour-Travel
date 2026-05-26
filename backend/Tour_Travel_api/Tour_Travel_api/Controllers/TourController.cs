@@ -24,8 +24,15 @@ namespace TravelApp.Controllers
         [HttpPost("add")]
         public IActionResult Add(CreateTourDto dto)
         {
-            _tourService.AddTour(dto);
-            return Ok(new { message = "Tour added successfully" });
+            try
+            {
+                _tourService.AddTour(dto);
+                return Ok(new { message = "Tour added successfully" });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpGet]

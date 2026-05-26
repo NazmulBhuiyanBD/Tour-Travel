@@ -52,4 +52,52 @@ class RefundViewModel extends GetxController {
       isLoading(false);
     }
   }
+
+  var allRefunds = <dynamic>[].obs;
+
+  Future<void> fetchAllRefundRequests() async {
+    try {
+      isLoading(true);
+      final response = await _refundRepository.getAllRefundRequests();
+      allRefunds.value = response;
+    } catch (e) {
+      allRefunds.value = [];
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<bool> updateRefundStatus(int id, String status, int refundPercentage, String? adminFeedback) async {
+    try {
+      isLoading(true);
+      
+      final data = {
+        "status": status,
+        "refundPercentage": refundPercentage,
+        "adminFeedback": adminFeedback
+      };
+
+      await _refundRepository.updateRefundStatus(id, data);
+      
+      Get.snackbar(
+        "Success",
+        "Refund request status updated to $status.",
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+      
+      await fetchAllRefundRequests(); // Refresh the list
+      return true;
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        "Failed to update refund status.",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return false;
+    } finally {
+      isLoading(false);
+    }
+  }
 }

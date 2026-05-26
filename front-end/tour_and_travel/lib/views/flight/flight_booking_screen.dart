@@ -24,7 +24,9 @@ class FlightBookingScreen extends StatefulWidget {
 class _FlightBookingScreenState extends State<FlightBookingScreen> {
   final FlightViewModel _flightViewModel = Get.find<FlightViewModel>();
   final PaymentViewModel _paymentViewModel = Get.put(PaymentViewModel());
-  final TextEditingController _passengersController = TextEditingController(text: '1');
+  final TextEditingController _passengersController = TextEditingController(
+    text: '1',
+  );
 
   int _seatCount = 1;
   int _maxSeats = 4;
@@ -41,7 +43,8 @@ class _FlightBookingScreenState extends State<FlightBookingScreen> {
     await _flightViewModel.fetchSeatClasses(widget.flightId);
     if (_flightViewModel.seatClasses.isNotEmpty) {
       final first = _flightViewModel.seatClasses.first;
-      _flightViewModel.selectedSeatClass.value = first['className'] ?? 'Economy';
+      _flightViewModel.selectedSeatClass.value =
+          first['className'] ?? 'Economy';
       _classPrice = (first['price'] as num?)?.toDouble() ?? widget.price;
       _maxSeats = (first['availableSeats'] as num?)?.toInt() ?? 4;
       if (_maxSeats > 4) _maxSeats = 4;
@@ -70,7 +73,10 @@ class _FlightBookingScreenState extends State<FlightBookingScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("Confirm Booking", style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
+        title: const Text(
+          "Confirm Booking",
+          style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black87),
@@ -84,29 +90,56 @@ class _FlightBookingScreenState extends State<FlightBookingScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text("Passenger Details", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.indigo)),
+                    const Text(
+                      "Passenger Details",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.indigo,
+                      ),
+                    ),
                     const SizedBox(height: 10),
-                    Text("Airline: ${widget.airline}", style: const TextStyle(fontSize: 16, color: Colors.grey)),
+                    Text(
+                      "Airline: ${widget.airline}",
+                      style: const TextStyle(fontSize: 16, color: Colors.grey),
+                    ),
                     const SizedBox(height: 20),
-                    const Text("Seat Class", style: TextStyle(fontWeight: FontWeight.bold)),
+                    const Text(
+                      "Seat Class",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                     const SizedBox(height: 8),
                     Obx(() {
                       if (_flightViewModel.seatClasses.isEmpty) {
-                        return const Text("Economy (default)", style: TextStyle(color: Colors.grey));
+                        return const Text(
+                          "Economy (default)",
+                          style: TextStyle(color: Colors.grey),
+                        );
                       }
                       return Column(
-                        children: _flightViewModel.seatClasses.map<Widget>((sc) {
+                        children: _flightViewModel.seatClasses.map<Widget>((
+                          sc,
+                        ) {
                           final name = sc['className'] ?? 'Economy';
                           final avail = sc['availableSeats'] ?? 0;
                           final price = sc['price'] ?? widget.price;
-                          return RadioListTile<String>(
+                          final selected =
+                              _flightViewModel.selectedSeatClass.value == name;
+                          return ListTile(
                             dense: true,
-                            visualDensity: VisualDensity.compact,
+                            enabled: avail > 0,
+                            contentPadding: EdgeInsets.zero,
+                            leading: Icon(
+                              selected
+                                  ? Icons.radio_button_checked_rounded
+                                  : Icons.radio_button_unchecked_rounded,
+                              color: selected ? Colors.indigo : Colors.grey,
+                            ),
                             title: Text(name),
-                            subtitle: Text("$avail seats • \$$price each"),
-                            value: name,
-                            groupValue: _flightViewModel.selectedSeatClass.value,
-                            onChanged: avail > 0 ? (v) => _onClassChanged(v!) : null,
+                            subtitle: Text("$avail seats • ৳$price each"),
+                            onTap: avail > 0
+                                ? () => _onClassChanged(name)
+                                : null,
                           );
                         }).toList(),
                       );
@@ -115,17 +148,44 @@ class _FlightBookingScreenState extends State<FlightBookingScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Seats (max $_maxSeats)", style: const TextStyle(fontWeight: FontWeight.bold)),
+                        Text(
+                          "Seats (max $_maxSeats)",
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
                         Row(
                           children: [
                             IconButton(
-                              onPressed: _seatCount > 1 ? () => setState(() { _seatCount--; _passengersController.text = '$_seatCount'; }) : null,
-                              icon: const Icon(Icons.remove_circle_outline, color: Colors.indigo),
+                              onPressed: _seatCount > 1
+                                  ? () => setState(() {
+                                      _seatCount--;
+                                      _passengersController.text =
+                                          '$_seatCount';
+                                    })
+                                  : null,
+                              icon: const Icon(
+                                Icons.remove_circle_outline,
+                                color: Colors.indigo,
+                              ),
                             ),
-                            Text("$_seatCount", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                            Text(
+                              "$_seatCount",
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                             IconButton(
-                              onPressed: _seatCount < _maxSeats ? () => setState(() { _seatCount++; _passengersController.text = '$_seatCount'; }) : null,
-                              icon: const Icon(Icons.add_circle_outline, color: Colors.indigo),
+                              onPressed: _seatCount < _maxSeats
+                                  ? () => setState(() {
+                                      _seatCount++;
+                                      _passengersController.text =
+                                          '$_seatCount';
+                                    })
+                                  : null,
+                              icon: const Icon(
+                                Icons.add_circle_outline,
+                                color: Colors.indigo,
+                              ),
                             ),
                           ],
                         ),
@@ -135,49 +195,58 @@ class _FlightBookingScreenState extends State<FlightBookingScreen> {
                     Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: Colors.indigo.withOpacity(0.05),
+                        color: Colors.indigo.withValues(alpha: 0.05),
                         borderRadius: BorderRadius.circular(15),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text("Total Price", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                          const Text(
+                            "Total Price",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                           Text(
-                            "\$${(_classPrice * _seatCount).toStringAsFixed(2)}",
-                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.indigo),
+                            "৳${(_classPrice * _seatCount).toStringAsFixed(2)}",
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.indigo,
+                            ),
                           ),
                         ],
                       ),
                     ),
                     const SizedBox(height: 30),
-                    const Text("Select Payment Method", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.indigo)),
+                    const Text(
+                      "Payment Method",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.indigo,
+                      ),
+                    ),
                     const SizedBox(height: 10),
-                    Obx(() => Container(
+                    Container(
                       decoration: BoxDecoration(
                         color: Colors.grey[50],
                         borderRadius: BorderRadius.circular(15),
                         border: Border.all(color: Colors.grey[200]!),
                       ),
-                      child: Column(
-                        children: [
-                          RadioListTile<String>(
-                            title: const Text("SSLCommerz", style: TextStyle(fontWeight: FontWeight.w600)),
-                            value: "sslcommerz",
-                            groupValue: _paymentViewModel.selectedPaymentMethod.value,
-                            activeColor: Colors.indigo,
-                            onChanged: (val) => _paymentViewModel.selectedPaymentMethod.value = val!,
-                          ),
-                          const Divider(height: 1),
-                          RadioListTile<String>(
-                            title: const Text("PayPal", style: TextStyle(fontWeight: FontWeight.w600)),
-                            value: "paypal",
-                            groupValue: _paymentViewModel.selectedPaymentMethod.value,
-                            activeColor: Colors.indigo,
-                            onChanged: (val) => _paymentViewModel.selectedPaymentMethod.value = val!,
-                          ),
-                        ],
+                      child: const ListTile(
+                        leading: Icon(
+                          Icons.check_circle_rounded,
+                          color: Colors.indigo,
+                        ),
+                        title: Text(
+                          "SSLCommerz",
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                        subtitle: Text("Pay via local cards or mobile banking"),
                       ),
-                    )),
+                    ),
                     const SizedBox(height: 8),
                   ],
                 ),
@@ -188,57 +257,70 @@ class _FlightBookingScreenState extends State<FlightBookingScreen> {
               child: SizedBox(
                 width: double.infinity,
                 height: 55,
-                child: Obx(() => ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.indigo,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                  ),
-                  onPressed: (_flightViewModel.isLoading.value || _paymentViewModel.isLoading.value)
-                      ? null
-                      : () async {
-                          double totalAmount = _classPrice * _seatCount;
-                          String transactionId = "FLIGHT_${DateTime.now().millisecondsSinceEpoch}";
-                          bool paymentSuccess = false;
+                child: Obx(
+                  () => ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.indigo,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                    onPressed:
+                        (_flightViewModel.isLoading.value ||
+                            _paymentViewModel.isLoading.value)
+                        ? null
+                        : () async {
+                            double totalAmount = _classPrice * _seatCount;
+                            String transactionId =
+                                "FLIGHT_${DateTime.now().millisecondsSinceEpoch}";
+                            final paymentSuccess = await _paymentViewModel
+                                .processSslCommerzPayment(
+                                  amount: totalAmount,
+                                  transactionId: transactionId,
+                                  productName: "Flight: ${widget.airline}",
+                                );
 
-                          if (_paymentViewModel.selectedPaymentMethod.value == "sslcommerz") {
-                            paymentSuccess = await _paymentViewModel.processSslCommerzPayment(
-                              amount: totalAmount,
-                              transactionId: transactionId,
-                              productName: "Flight: ${widget.airline}",
-                            );
-                          } else {
-                            paymentSuccess = await _paymentViewModel.processPaypalPayment(
-                              amount: totalAmount,
-                              transactionId: transactionId,
-                            );
-                          }
-
-                          if (paymentSuccess) {
-                            bool success = await _flightViewModel.bookFlight(
-                              widget.flightId,
-                              _seatCount,
-                              transactionId,
-                              _paymentViewModel.selectedPaymentMethod.value,
-                              seatClass: _flightViewModel.selectedSeatClass.value,
-                            );
-                            if (success) {
-                              if (Get.isRegistered<BookingViewModel>()) {
-                                Get.find<BookingViewModel>().fetchBookingHistory();
+                            if (paymentSuccess) {
+                              bool success = await _flightViewModel.bookFlight(
+                                widget.flightId,
+                                _seatCount,
+                                transactionId,
+                                _paymentViewModel.selectedPaymentMethod.value,
+                                seatClass:
+                                    _flightViewModel.selectedSeatClass.value,
+                              );
+                              if (success) {
+                                if (Get.isRegistered<BookingViewModel>()) {
+                                  Get.find<BookingViewModel>()
+                                      .fetchBookingHistory();
+                                }
+                                Get.toNamed(
+                                  Routes.BOOKING_SUCCESS,
+                                  arguments: {
+                                    'type': 'Flight',
+                                    'title': "Flight: ${widget.airline}",
+                                    'price': totalAmount,
+                                    'quantity': _seatCount,
+                                    'transactionId': transactionId,
+                                  },
+                                );
                               }
-                              Get.toNamed(Routes.BOOKING_SUCCESS, arguments: {
-                                'type': 'Flight',
-                                'title': "Flight: ${widget.airline}",
-                                'price': totalAmount,
-                                'quantity': _seatCount,
-                                'transactionId': transactionId,
-                              });
                             }
-                          }
-                        },
-                  child: (_flightViewModel.isLoading.value || _paymentViewModel.isLoading.value)
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text("Pay & Confirm Booking", style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold)),
-                )),
+                          },
+                    child:
+                        (_flightViewModel.isLoading.value ||
+                            _paymentViewModel.isLoading.value)
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : const Text(
+                            "Pay & Confirm Booking",
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                  ),
+                ),
               ),
             ),
           ],

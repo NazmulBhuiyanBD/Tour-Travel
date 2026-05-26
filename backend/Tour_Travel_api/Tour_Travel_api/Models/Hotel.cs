@@ -15,5 +15,7 @@ namespace TravelApp.Models
         public decimal PricePerNight { get; set; }
         public int AvailableRooms { get; set; } = 0;
         public bool IsFeatured { get; set; } = false;
+        public string ContactInfo { get; set; } = "";
+        public ICollection<Room> Rooms { get; set; } = new List<Room>();
     }
 }

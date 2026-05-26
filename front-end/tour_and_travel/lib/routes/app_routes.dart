@@ -15,10 +15,11 @@ abstract class Routes {
   static const ADMIN_HOTEL_MANAGE = '/admin-hotel-manage';
   static const ADMIN_TOUR_MANAGE = '/admin-tour-manage';
   static const ADMIN_BOOKINGS = '/admin-bookings';
-  static const SUPER_ADMIN_MANAGE = '/super-admin-manage';
+  static const ADMIN_REFUND_MANAGE = '/admin-refund-manage';
   static const ADMIN_TOP_DESTINATIONS = '/admin-top-destinations';
   static const ADMIN_POPULAR_AIRLINES = '/admin-popular-airlines';
   static const ADMIN_FEATURED_HOTELS = '/admin-featured-hotels';
+  static const ADMIN_REVENUE_REPORT = '/admin-revenue-report';
   static const VERIFY_EMAIL = '/verify-email';
   static const FORGOT_PASSWORD = '/forgot-password';
   static const RESET_PASSWORD = '/reset-password';

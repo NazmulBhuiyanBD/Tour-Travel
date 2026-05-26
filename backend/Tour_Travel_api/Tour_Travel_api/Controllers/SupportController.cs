@@ -94,7 +94,7 @@ namespace TravelApp.Controllers
             var currentUserId = GetCurrentUserId();
             var role = GetCurrentUserRole();
 
-            if (role != "Admin" && role != "SuperAdmin" && currentUserId != userId)
+            if (role != "Admin" && currentUserId != userId)
                 return Forbid();
 
             var tickets = await _context.SupportTickets
@@ -106,7 +106,7 @@ namespace TravelApp.Controllers
         }
 
         [HttpGet("tickets")]
-        [Authorize(Roles = "Admin,SuperAdmin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllTickets()
         {
             // We want to sort unread tickets first, then open tickets, then recently updated
@@ -147,11 +147,11 @@ namespace TravelApp.Controllers
             var currentUserId = GetCurrentUserId();
             var role = GetCurrentUserRole();
 
-            if (role != "Admin" && role != "SuperAdmin" && currentUserId != ticket.UserId)
+            if (role != "Admin" && currentUserId != ticket.UserId)
                 return Forbid();
 
             // Mark as read if admin is viewing user messages or user is viewing admin messages
-            bool isAdmin = role == "Admin" || role == "SuperAdmin";
+            bool isAdmin = role == "Admin";
             bool messagesUpdated = false;
             
             foreach (var msg in ticket.Messages)
@@ -176,7 +176,7 @@ namespace TravelApp.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            // Also join admin info to messages for SuperAdmin visibility
+            // Also join admin info to messages for Admin visibility
             var messagesWithAdminNames = ticket.Messages.Select(m => {
                 string adminName = null;
                 if (m.IsAdminMessage && m.AdminId.HasValue)
@@ -218,7 +218,7 @@ namespace TravelApp.Controllers
 
             var currentUserId = GetCurrentUserId();
             var role = GetCurrentUserRole();
-            bool isAdmin = role == "Admin" || role == "SuperAdmin";
+            bool isAdmin = role == "Admin";
 
             if (!isAdmin && currentUserId != ticket.UserId)
                 return Forbid();
@@ -277,7 +277,7 @@ namespace TravelApp.Controllers
         }
 
         [HttpPut("ticket/{ticketId}/close")]
-        [Authorize(Roles = "Admin,SuperAdmin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CloseTicket(int ticketId)
         {
             var ticket = await _context.SupportTickets.FindAsync(ticketId);

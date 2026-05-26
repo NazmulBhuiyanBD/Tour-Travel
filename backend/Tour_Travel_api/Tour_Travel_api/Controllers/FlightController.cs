@@ -30,8 +30,15 @@ namespace TravelApp.Controllers
         [HttpPost("add")]
         public IActionResult Add(CreateFlightDto dto)
         {
-            _flightService.AddFlight(dto);
-            return Ok(new { message = "Flight added safely" });
+            try
+            {
+                _flightService.AddFlight(dto);
+                return Ok(new { message = "Flight added safely" });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpGet("search")]

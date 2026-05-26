@@ -16,6 +16,11 @@ namespace TravelApp.Models
         
         public string Status { get; set; } = "Pending"; // "Pending", "Approved", "Rejected"
         
+        public int RefundPercentage { get; set; } = 100;
+        public decimal RefundAmount { get; set; } = 0;
+        public decimal BookingPrice { get; set; } = 0;
+        public string? AdminFeedback { get; set; }
+        
         public DateTime RequestedAt { get; set; } = DateTime.UtcNow;
     }
 }

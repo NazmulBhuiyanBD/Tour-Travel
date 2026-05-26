@@ -48,6 +48,12 @@ namespace TravelApp.Data
                 .WithMany(f => f.SeatClasses)
                 .HasForeignKey(s => s.FlightId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Room>()
+                .HasOne(r => r.Hotel)
+                .WithMany(h => h.Rooms)
+                .HasForeignKey(r => r.HotelId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

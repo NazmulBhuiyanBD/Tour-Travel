@@ -15,9 +15,10 @@ import '../views/admin/admin_flight_manage_screen.dart';
 import '../views/admin/admin_hotel_manage_screen.dart';
 import '../views/admin/admin_tour_manage_screen.dart';
 import '../views/admin/admin_booking_manage_screen.dart';
-import '../views/admin/super_admin_manage_screen.dart';
+import '../views/admin/admin_refund_manage_screen.dart';
 import '../views/admin/admin_top_destinations_screen.dart';
 import '../views/admin/admin_popular_airlines_screen.dart';
+import '../views/admin/admin_revenue_report_screen.dart';
 import '../views/auth/verify_email_screen.dart';
 import '../views/auth/forgot_password_screen.dart';
 import '../views/auth/reset_password_screen.dart';
@@ -118,8 +119,8 @@ class AppPages {
       page: () => const AdminBookingManageScreen(),
     ),
     GetPage(
-      name: Routes.SUPER_ADMIN_MANAGE,
-      page: () => const SuperAdminManageScreen(),
+      name: Routes.ADMIN_REFUND_MANAGE,
+      page: () => const AdminRefundManageScreen(),
     ),
     GetPage(
       name: Routes.ADMIN_TOP_DESTINATIONS,
@@ -132,6 +133,10 @@ class AppPages {
     GetPage(
       name: Routes.ADMIN_FEATURED_HOTELS,
       page: () => const AdminFeaturedHotelsScreen(),
+    ),
+    GetPage(
+      name: Routes.ADMIN_REVENUE_REPORT,
+      page: () => const AdminRevenueReportScreen(),
     ),
     GetPage(
       name: Routes.VERIFY_EMAIL,

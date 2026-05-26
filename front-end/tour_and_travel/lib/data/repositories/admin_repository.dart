@@ -16,33 +16,7 @@ class AdminRepository {
     }
   }
 
-  // SuperAdmins
-  Future<dynamic> getAdmins() async {
-    try {
-      return await _apiService.getGetApiResponse(
-          ApiConstants.baseUrl + ApiConstants.superAdmins);
-    } catch (e) {
-      rethrow;
-    }
-  }
 
-  Future<dynamic> createAdmin(dynamic data) async {
-    try {
-      return await _apiService.getPostApiResponse(
-          ApiConstants.baseUrl + ApiConstants.superAdmins, data);
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  Future<dynamic> deleteAdmin(int id) async {
-    try {
-      return await _apiService.getDeleteApiResponse(
-          "${ApiConstants.baseUrl}${ApiConstants.superAdmins}/$id");
-    } catch (e) {
-      rethrow;
-    }
-  }
 
   Future<dynamic> toggleUserStatus(int id) async {
     try {
@@ -243,6 +217,51 @@ class AdminRepository {
     try {
       return await _apiService.getGetApiResponse(
           ApiConstants.baseUrl + ApiConstants.adminDashboard);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> getRevenueReport(String startDate, String endDate) async {
+    try {
+      return await _apiService.getGetApiResponse(
+          "${ApiConstants.baseUrl}/Admin/revenue-report?startDate=$startDate&endDate=$endDate");
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> getHotelRooms(int hotelId) async {
+    try {
+      return await _apiService.getGetApiResponse(
+          "${ApiConstants.baseUrl}/Admin/hotels/$hotelId/rooms");
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> createHotelRoom(int hotelId, dynamic data) async {
+    try {
+      return await _apiService.getPostApiResponse(
+          "${ApiConstants.baseUrl}/Admin/hotels/$hotelId/rooms", data);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> updateHotelRoom(int roomId, dynamic data) async {
+    try {
+      return await _apiService.getPutApiResponse(
+          "${ApiConstants.baseUrl}/Admin/hotels/rooms/$roomId", data);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> deleteHotelRoom(int roomId) async {
+    try {
+      return await _apiService.getDeleteApiResponse(
+          "${ApiConstants.baseUrl}/Admin/hotels/rooms/$roomId");
     } catch (e) {
       rethrow;
     }

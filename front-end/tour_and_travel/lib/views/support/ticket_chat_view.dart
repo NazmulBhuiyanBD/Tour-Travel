@@ -135,10 +135,7 @@ class _TicketChatViewState extends State<TicketChatView> {
 
             if (ticket != null &&
                 !ticket.isClosed &&
-                (userRole ==
-                        'Admin' ||
-                    userRole ==
-                        'SuperAdmin')) {
+                userRole == 'Admin') {
               return IconButton(
                 icon: const Icon(
                   Icons
@@ -274,10 +271,7 @@ class _TicketChatViewState extends State<TicketChatView> {
                     final isAdminViewer =
                         currentUser
                                     ?.role ==
-                                'Admin' ||
-                            currentUser
-                                    ?.role ==
-                                'SuperAdmin';
+                                'Admin';
 
                     final isMe =
                         isAdminViewer
