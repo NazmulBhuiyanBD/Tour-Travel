@@ -191,9 +191,17 @@ using (var scope = app.Services.CreateScope())
 
 app.UseMiddleware<ExceptionMiddleware>();
 
-// Enable API docs
-app.MapOpenApi();
-app.MapScalarApiReference();
+app.MapOpenApi("/openapi/{documentName}.json");
+app.MapScalarApiReference("/scalar", options =>
+{
+    options
+        .WithTitle("Tour Travel API")
+        .WithOpenApiRoutePattern("/openapi/{documentName}.json")
+        .AddHttpAuthentication("Bearer", bearer =>
+        {
+            bearer.Token = string.Empty;
+        });
+});
 
 app.UseStaticFiles();
 

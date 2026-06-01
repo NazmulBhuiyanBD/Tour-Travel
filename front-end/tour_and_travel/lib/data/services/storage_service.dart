@@ -27,9 +27,13 @@ class StorageService extends GetxService {
   }
 
   UserModel? getUser() {
-    String? userData = _prefs.getString('user_data');
-    if (userData != null) {
-      return UserModel.fromJson(jsonDecode(userData));
+    try {
+      String? userData = _prefs.getString('user_data');
+      if (userData != null) {
+        return UserModel.fromJson(jsonDecode(userData));
+      }
+    } catch (e) {
+      print("Error parsing stored user data: $e");
     }
     return null;
   }

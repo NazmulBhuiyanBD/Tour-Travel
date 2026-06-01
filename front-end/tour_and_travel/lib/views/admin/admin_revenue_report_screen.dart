@@ -30,8 +30,22 @@ class _AdminRevenueReportScreenState extends State<AdminRevenueReportScreen> {
 
   void _fetchReport() {
     if (_startDate != null && _endDate != null) {
-      final startStr = DateFormat('yyyy-MM-dd').format(_startDate!);
-      final endStr = DateFormat('yyyy-MM-dd').format(_endDate!);
+      final startOfDay = DateTime(
+        _startDate!.year,
+        _startDate!.month,
+        _startDate!.day,
+      );
+      final endOfDay = DateTime(
+        _endDate!.year,
+        _endDate!.month,
+        _endDate!.day,
+        23,
+        59,
+        59,
+      );
+      final apiDateFormat = DateFormat("yyyy-MM-dd'T'HH:mm:ss");
+      final startStr = apiDateFormat.format(startOfDay);
+      final endStr = apiDateFormat.format(endOfDay);
       controller.fetchRevenueReport(startStr, endStr);
     }
   }

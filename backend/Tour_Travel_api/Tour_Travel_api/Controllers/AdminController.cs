@@ -499,25 +499,28 @@ namespace TravelApp.Controllers
         [HttpGet("revenue-report")]
         public IActionResult GetRevenueReport([FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
         {
+            var rangeStart = startDate.Date;
+            var rangeEndExclusive = endDate.Date.AddDays(1);
+
             var flightBookings = _context.FlightBookings
-                .Where(b => b.BookingDate >= startDate && b.BookingDate <= endDate)
+                .Where(b => b.BookingDate >= rangeStart && b.BookingDate < rangeEndExclusive)
                 .ToList();
 
             var hotelBookings = _context.HotelBookings
-                .Where(b => b.BookingDate >= startDate && b.BookingDate <= endDate)
+                .Where(b => b.BookingDate >= rangeStart && b.BookingDate < rangeEndExclusive)
                 .ToList();
 
             var tourBookings = _context.TourBookings
-                .Where(b => b.BookingDate >= startDate && b.BookingDate <= endDate)
+                .Where(b => b.BookingDate >= rangeStart && b.BookingDate < rangeEndExclusive)
                 .ToList();
 
             var refunds = _context.RefundRequests
-                .Where(r => r.RequestedAt >= startDate && r.RequestedAt <= endDate && r.Status == "Approved")
+                .Where(r => r.RequestedAt >= rangeStart && r.RequestedAt < rangeEndExclusive && r.Status == "Approved")
                 .ToList();
 
             var dailyData = new Dictionary<string, dynamic>();
 
-            var currDate = startDate.Date;
+            var currDate = rangeStart;
             while (currDate <= endDate.Date)
             {
                 var nextDate = currDate.AddDays(1);
@@ -559,16 +562,115 @@ namespace TravelApp.Controllers
 
         #region Booking Oversight
         [HttpGet("bookings/hotels")]
-        public IActionResult GetHotelBookings() => 
-            Ok(_context.HotelBookings.Include(b => b.Room).ToList());
+        public IActionResult GetHotelBookings() =>
+            Ok(_context.HotelBookings
+                .AsNoTracking()
+                .Include(b => b.Room)
+                .ThenInclude(r => r.Hotel)
+                .Select(b => new
+                {
+                    b.Id,
+                    b.UserId,
+                    UserName = _context.Users
+                        .Where(u => u.Id == b.UserId)
+                        .Select(u => u.Name)
+                        .FirstOrDefault(),
+                    b.RoomId,
+                    b.CheckIn,
+                    b.CheckOut,
+                    b.RoomCount,
+                    b.TotalPrice,
+                    b.PaymentMethod,
+                    b.TransactionId,
+                    b.Status,
+                    b.BookingDate,
+                    Room = b.Room == null ? null : new
+                    {
+                        b.Room.Id,
+                        b.Room.Type,
+                        b.Room.BedType,
+                        b.Room.ViewType,
+                        b.Room.IsAc,
+                        b.Room.Price,
+                        Hotel = b.Room.Hotel == null ? null : new
+                        {
+                            b.Room.Hotel.Id,
+                            b.Room.Hotel.Name,
+                            b.Room.Hotel.Location
+                        }
+                    }
+                })
+                .OrderByDescending(b => b.BookingDate)
+                .ToList());
 
         [HttpGet("bookings/flights")]
-        public IActionResult GetFlightBookings() => 
-            Ok(_context.FlightBookings.Include(b => b.Flight).ToList());
+        public IActionResult GetFlightBookings() =>
+            Ok(_context.FlightBookings
+                .AsNoTracking()
+                .Include(b => b.Flight)
+                .Select(b => new
+                {
+                    b.Id,
+                    b.UserId,
+                    UserName = _context.Users
+                        .Where(u => u.Id == b.UserId)
+                        .Select(u => u.Name)
+                        .FirstOrDefault(),
+                    b.FlightId,
+                    b.SeatCount,
+                    b.SeatClass,
+                    b.TotalPrice,
+                    b.PaymentMethod,
+                    b.TransactionId,
+                    b.Status,
+                    b.BookingDate,
+                    Flight = b.Flight == null ? null : new
+                    {
+                        b.Flight.Id,
+                        b.Flight.Airline,
+                        b.Flight.From,
+                        b.Flight.To,
+                        b.Flight.DepartureTime,
+                        b.Flight.ArrivalTime
+                    }
+                })
+                .OrderByDescending(b => b.BookingDate)
+                .ToList());
 
         [HttpGet("bookings/tours")]
-        public IActionResult GetTourBookings() => 
-            Ok(_context.TourBookings.ToList());
+        public IActionResult GetTourBookings() =>
+            Ok(_context.TourBookings
+                .AsNoTracking()
+                .Select(b => new
+                {
+                    b.Id,
+                    b.UserId,
+                    UserName = _context.Users
+                        .Where(u => u.Id == b.UserId)
+                        .Select(u => u.Name)
+                        .FirstOrDefault(),
+                    b.TourId,
+                    b.ParticipantCount,
+                    b.TotalPrice,
+                    b.PaymentMethod,
+                    b.TransactionId,
+                    b.Status,
+                    b.BookingDate,
+                    Tour = _context.Tours
+                        .Where(t => t.Id == b.TourId)
+                        .Select(t => new
+                        {
+                            t.Id,
+                            t.Title,
+                            t.StartPoint,
+                            t.EndPoint,
+                            t.StartDate,
+                            t.DurationDays
+                        })
+                        .FirstOrDefault()
+                })
+                .OrderByDescending(b => b.BookingDate)
+                .ToList());
         #endregion
 
 

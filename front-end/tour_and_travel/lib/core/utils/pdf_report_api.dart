@@ -4,6 +4,8 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:intl/intl.dart';
 
 class PdfReportApi {
+  static String _money(dynamic value) => 'BDT ${value ?? 0}';
+
   static Future<Uint8List> generateRevenueReport(
     Map<String, dynamic> reportData,
     DateTime startDate,
@@ -75,11 +77,11 @@ class PdfReportApi {
         mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
         children: [
           _summaryItem('Total Bookings', '${reportData['totalBookings'] ?? 0}'),
-          _summaryItem('Gross Revenue', '৳${reportData['grossRevenue'] ?? 0}'),
-          _summaryItem('Total Refunds', '৳${reportData['totalRefunds'] ?? 0}'),
+          _summaryItem('Gross Revenue', _money(reportData['grossRevenue'])),
+          _summaryItem('Total Refunds', _money(reportData['totalRefunds'])),
           _summaryItem(
             'Net Revenue',
-            '৳${reportData['netRevenue'] ?? 0}',
+            _money(reportData['netRevenue']),
             isHighlight: true,
           ),
         ],
@@ -132,7 +134,13 @@ class PdfReportApi {
       return pw.Text('No data available for this period.');
     }
 
-    final headers = ['Date', 'Bookings', 'Gross (৳)', 'Refunds (৳)', 'Net (৳)'];
+    final headers = [
+      'Date',
+      'Bookings',
+      'Gross (BDT)',
+      'Refunds (BDT)',
+      'Net (BDT)',
+    ];
 
     // Sort dates
     final dates = dailyData.keys.toList()..sort();
@@ -142,9 +150,9 @@ class PdfReportApi {
       return [
         date,
         '${d['bookingsCount']}',
-        '৳${d['grossRevenue']}',
-        '৳${d['refunds']}',
-        '৳${d['netRevenue']}',
+        _money(d['grossRevenue']),
+        _money(d['refunds']),
+        _money(d['netRevenue']),
       ];
     }).toList();
 

@@ -11,6 +11,10 @@ class NotificationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _viewModel.fetchNotifications(showLoader: false, showError: false);
+    });
+
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
       appBar: AppBar(
@@ -19,7 +23,11 @@ class NotificationScreen extends StatelessWidget {
         shadowColor: Colors.black.withOpacity(0.1),
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.textPrimary, size: 20),
+          icon: const Icon(
+            Icons.arrow_back_ios_new,
+            color: AppColors.textPrimary,
+            size: 20,
+          ),
           onPressed: () => Get.back(),
         ),
         title: const Text(
@@ -46,7 +54,7 @@ class NotificationScreen extends StatelessWidget {
               );
             }
             return const SizedBox.shrink();
-          })
+          }),
         ],
       ),
       body: Obx(() {
@@ -90,10 +98,7 @@ class NotificationScreen extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                   "You have no notifications at the moment.",
-                  style: TextStyle(
-                    color: Colors.grey.shade500,
-                    fontSize: 14,
-                  ),
+                  style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
                 ),
               ],
             ),
@@ -120,7 +125,8 @@ class NotificationScreen extends StatelessWidget {
     if (t.contains('login')) return Icons.login_rounded;
     if (t.contains('book')) return Icons.confirmation_number_outlined;
     if (t.contains('refund')) return Icons.monetization_on_outlined;
-    if (t.contains('support') || t.contains('ticket') || t.contains('chat')) return Icons.support_agent_outlined;
+    if (t.contains('support') || t.contains('ticket') || t.contains('chat'))
+      return Icons.support_agent_outlined;
     return Icons.notifications_active_outlined;
   }
 
@@ -129,7 +135,8 @@ class NotificationScreen extends StatelessWidget {
     if (t.contains('login')) return Colors.amber.shade800;
     if (t.contains('book')) return Colors.green.shade600;
     if (t.contains('refund')) return Colors.red.shade600;
-    if (t.contains('support') || t.contains('ticket') || t.contains('chat')) return Colors.blue.shade600;
+    if (t.contains('support') || t.contains('ticket') || t.contains('chat'))
+      return Colors.blue.shade600;
     return Colors.grey.shade600;
   }
 
@@ -139,7 +146,7 @@ class NotificationScreen extends StatelessWidget {
     final String title = notification['title'] ?? 'Notification';
     final String message = notification['message'] ?? '';
     final String createdAtStr = notification['createdAt'] ?? '';
-    
+
     String formattedTime = 'N/A';
     if (createdAtStr.isNotEmpty) {
       try {
@@ -173,9 +180,12 @@ class NotificationScreen extends StatelessWidget {
         decoration: BoxDecoration(
           color: isRead ? Colors.white : const Color(0xFFF3F5FC),
           borderRadius: BorderRadius.circular(16),
-          border: isRead 
+          border: isRead
               ? Border.all(color: Colors.grey.shade100, width: 1.5)
-              : Border.all(color: AppColors.primaryLight.withValues(alpha: 0.2), width: 1.5),
+              : Border.all(
+                  color: AppColors.primaryLight.withValues(alpha: 0.2),
+                  width: 1.5,
+                ),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.02),
@@ -203,11 +213,7 @@ class NotificationScreen extends StatelessWidget {
                     color: themeColor.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(
-                    themeIcon,
-                    color: themeColor,
-                    size: 22,
-                  ),
+                  child: Icon(themeIcon, color: themeColor, size: 22),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -225,7 +231,9 @@ class NotificationScreen extends StatelessWidget {
                                     title,
                                     style: TextStyle(
                                       fontSize: 15,
-                                      fontWeight: isRead ? FontWeight.w600 : FontWeight.bold,
+                                      fontWeight: isRead
+                                          ? FontWeight.w600
+                                          : FontWeight.bold,
                                       color: AppColors.textPrimary,
                                     ),
                                   ),

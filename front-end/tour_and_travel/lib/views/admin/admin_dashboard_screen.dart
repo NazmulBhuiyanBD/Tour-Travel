@@ -156,23 +156,7 @@ class AdminDashboardScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.05),
-                                    blurRadius: 10,
-                                  ),
-                                ],
-                              ),
-                              child: const Icon(
-                                Icons.notifications_none,
-                                color: Color(0xFF3F51B5),
-                              ),
-                            ),
+                            const SizedBox.shrink(),
                           ],
                         ),
                       ),
@@ -208,13 +192,12 @@ class AdminDashboardScreen extends StatelessWidget {
                       children: [
                         Expanded(
                           child: InkWell(
-                            onTap: () => Get.toNamed(Routes.ADMIN_REVENUE_REPORT),
+                            onTap: () =>
+                                Get.toNamed(Routes.ADMIN_REVENUE_REPORT),
                             borderRadius: BorderRadius.circular(16),
                             child: _StatCard(
                               title: "Total Revenue",
                               value: "৳${revenue.toStringAsFixed(2)}",
-                              trend: "+18%",
-                              isPositive: true,
                             ),
                           ),
                         ),
@@ -223,8 +206,6 @@ class AdminDashboardScreen extends StatelessWidget {
                           child: _StatCard(
                             title: "Total Bookings",
                             value: bookings.toString(),
-                            trend: "+12k",
-                            isPositive: true,
                           ),
                         ),
                       ],
@@ -332,7 +313,6 @@ class AdminDashboardScreen extends StatelessWidget {
                           onTap: () =>
                               Get.toNamed(Routes.ADMIN_FEATURED_HOTELS),
                         ),
-
                       ],
                     );
                   }),
@@ -432,14 +412,10 @@ void _showChangePasswordDialog(
 class _StatCard extends StatelessWidget {
   final String title;
   final String value;
-  final String trend;
-  final bool isPositive;
 
   const _StatCard({
     required this.title,
     required this.value,
-    required this.trend,
-    required this.isPositive,
   });
 
   @override
@@ -469,37 +445,14 @@ class _StatCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  value,
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF1A1F36),
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  color: (isPositive ? const Color(0xFF43A047) : Colors.red)
-                      .withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  trend,
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    color: isPositive ? const Color(0xFF43A047) : Colors.red,
-                  ),
-                ),
-              ),
-            ],
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1A1F36),
+            ),
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),

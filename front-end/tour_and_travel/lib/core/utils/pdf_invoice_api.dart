@@ -4,6 +4,8 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:intl/intl.dart';
 
 class PdfInvoiceApi {
+  static String _money(num value) => 'BDT ${value.toStringAsFixed(2)}';
+
   static Future<Uint8List> generateInvoice(
     Map<String, dynamic> bookingDetails,
   ) async {
@@ -195,14 +197,11 @@ class PdfInvoiceApi {
             ),
             pw.Padding(
               padding: const pw.EdgeInsets.all(8.0),
-              child: pw.Text('৳${unitPrice.toStringAsFixed(2)}'),
+              child: pw.Text(_money(unitPrice)),
             ),
             pw.Padding(
               padding: const pw.EdgeInsets.all(8.0),
-              child: pw.Text(
-                '৳${totalPrice.toStringAsFixed(2)}',
-                textAlign: pw.TextAlign.right,
-              ),
+              child: pw.Text(_money(totalPrice), textAlign: pw.TextAlign.right),
             ),
           ],
         ),
@@ -227,7 +226,7 @@ class PdfInvoiceApi {
                     'Subtotal:',
                     style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                   ),
-                  pw.Text('৳${totalPrice.toStringAsFixed(2)}'),
+                  pw.Text(_money(totalPrice)),
                 ],
               ),
               pw.Divider(),
@@ -242,7 +241,7 @@ class PdfInvoiceApi {
                     ),
                   ),
                   pw.Text(
-                    '৳${totalPrice.toStringAsFixed(2)}',
+                    _money(totalPrice),
                     style: pw.TextStyle(
                       fontWeight: pw.FontWeight.bold,
                       fontSize: 16,

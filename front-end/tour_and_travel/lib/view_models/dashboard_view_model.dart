@@ -28,7 +28,7 @@ class DashboardViewModel extends GetxController {
     isLoadingTop.value = true;
     try {
       final response = await _repository.getTopDestinations();
-      topDestinations.value = response;
+      topDestinations.value = _upcomingItems(response, 'startDate');
     } catch (e) {
       print("Error fetching top destinations: $e");
     } finally {
@@ -40,7 +40,7 @@ class DashboardViewModel extends GetxController {
     isLoadingAirlines.value = true;
     try {
       final response = await _repository.getPopularAirlines();
-      popularAirlines.value = response;
+      popularAirlines.value = _upcomingItems(response, 'departureTime');
     } catch (e) {
       print("Error fetching popular airlines: $e");
     } finally {
@@ -59,4 +59,25 @@ class DashboardViewModel extends GetxController {
       isLoadingHotels.value = false;
     }
   }
+
+  List<dynamic> _upcomingItems(dynamic response, String dateKey) {
+    if (response is! List) return [];
+    final today = _dateOnly(DateTime.now());
+
+    return response.where((item) {
+      if (item is! Map) return false;
+      final date = _parseDateTime(item[dateKey]);
+      if (date == null) return false;
+      return !_dateOnly(date).isBefore(today);
+    }).toList();
+  }
+
+  DateTime? _parseDateTime(dynamic value) {
+    if (value == null) return null;
+    if (value is DateTime) return value.toLocal();
+    return DateTime.tryParse(value.toString())?.toLocal();
+  }
+
+  DateTime _dateOnly(DateTime dateTime) =>
+      DateTime(dateTime.year, dateTime.month, dateTime.day);
 }

@@ -23,12 +23,13 @@ class FlightViewModel extends GetxController {
     try {
       isLoading(true);
       final response = await _flightRepository.getAllFlights();
-      flightList.value = response;
-      _originalFlightList = List.from(response);
+      final upcomingFlights = _upcomingFlights(response);
+      flightList.value = upcomingFlights;
+      _originalFlightList = List.from(upcomingFlights);
       // Ensure search results are seeded with all flights if no filter set.
       if (searchResults.isEmpty) {
-        searchResults.value = response;
-        _originalSearchResults = List.from(response);
+        searchResults.value = upcomingFlights;
+        _originalSearchResults = List.from(upcomingFlights);
       }
     } catch (e) {
       Get.snackbar("Error", e.toString());
@@ -50,8 +51,9 @@ class FlightViewModel extends GetxController {
       }
 
       final response = await _flightRepository.searchFlights(from, to);
-      searchResults.value = response;
-      _originalSearchResults = List.from(response);
+      final upcomingFlights = _upcomingFlights(response);
+      searchResults.value = upcomingFlights;
+      _originalSearchResults = List.from(upcomingFlights);
     } catch (e) {
       Get.snackbar("Search Error", e.toString());
     } finally {
@@ -110,19 +112,21 @@ class FlightViewModel extends GetxController {
     final currentSort = selectedSortType.value;
 
     final response = await _flightRepository.getAllFlights();
-    flightList.value = response;
-    _originalFlightList = List.from(response);
+    final upcomingFlights = _upcomingFlights(response);
+    flightList.value = upcomingFlights;
+    _originalFlightList = List.from(upcomingFlights);
 
     if (currentFrom.isNotEmpty && currentTo.isNotEmpty) {
       final searchResponse = await _flightRepository.searchFlights(
         currentFrom,
         currentTo,
       );
-      searchResults.value = searchResponse;
-      _originalSearchResults = List.from(searchResponse);
+      final upcomingSearchResults = _upcomingFlights(searchResponse);
+      searchResults.value = upcomingSearchResults;
+      _originalSearchResults = List.from(upcomingSearchResults);
     } else {
-      searchResults.value = List.from(response);
-      _originalSearchResults = List.from(response);
+      searchResults.value = List.from(upcomingFlights);
+      _originalSearchResults = List.from(upcomingFlights);
     }
 
     if (currentSort != 'default') {
@@ -153,4 +157,25 @@ class FlightViewModel extends GetxController {
     searchResults.refresh();
     flightList.refresh();
   }
+
+  List<dynamic> _upcomingFlights(dynamic response) {
+    if (response is! List) return [];
+    final today = _dateOnly(DateTime.now());
+
+    return response.where((flight) {
+      if (flight is! Map) return false;
+      final departure = _parseDateTime(flight['departureTime']);
+      if (departure == null) return false;
+      return !_dateOnly(departure).isBefore(today);
+    }).toList();
+  }
+
+  DateTime? _parseDateTime(dynamic value) {
+    if (value == null) return null;
+    if (value is DateTime) return value.toLocal();
+    return DateTime.tryParse(value.toString())?.toLocal();
+  }
+
+  DateTime _dateOnly(DateTime dateTime) =>
+      DateTime(dateTime.year, dateTime.month, dateTime.day);
 }

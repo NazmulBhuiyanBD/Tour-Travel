@@ -239,24 +239,31 @@ class MyTourBookingsScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.person,
-                      color: Color(0xFFF2994A),
-                      size: 20,
-                    ),
-                    const SizedBox(width: 10),
-                    Text(
-                      booking['userName'] ?? "Traveler",
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        color: Colors.black87,
+                Expanded(
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.person,
+                        color: Color(0xFFF2994A),
+                        size: 20,
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          booking['userName'] ?? "Traveler",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            color: Colors.black87,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
+                const SizedBox(width: 12),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [

@@ -4,6 +4,7 @@ import 'package:tour_and_travel/models/support_ticket.dart';
 import 'package:tour_and_travel/models/chat_message.dart';
 import 'package:tour_and_travel/data/api/network_api_service.dart';
 import 'package:tour_and_travel/core/constant/api_constants.dart';
+import 'package:tour_and_travel/view_models/notification_view_model.dart';
 import 'dart:io';
 
 class SupportViewModel extends GetxController {
@@ -12,10 +13,10 @@ class SupportViewModel extends GetxController {
 
   var isLoading = false.obs;
   var isSending = false.obs;
-  
+
   var myTickets = <SupportTicket>[].obs;
   var allAdminTickets = <SupportTicket>[].obs;
-  
+
   var currentTicket = Rxn<SupportTicket>();
   var currentMessages = <ChatMessage>[].obs;
 
@@ -27,7 +28,9 @@ class SupportViewModel extends GetxController {
       final response = await _supportRepository.getUserTickets(userId);
       print("User tickets response: $response");
       if (response != null && response is List) {
-        myTickets.value = response.map((e) => SupportTicket.fromJson(e)).toList();
+        myTickets.value = response
+            .map((e) => SupportTicket.fromJson(e))
+            .toList();
         print("Loaded ${myTickets.length} tickets");
       }
     } catch (e) {
@@ -44,7 +47,9 @@ class SupportViewModel extends GetxController {
       isLoading.value = true;
       final response = await _supportRepository.getAllTickets();
       if (response != null && response is List) {
-        allAdminTickets.value = response.map((e) => SupportTicket.fromJson(e)).toList();
+        allAdminTickets.value = response
+            .map((e) => SupportTicket.fromJson(e))
+            .toList();
       }
     } catch (e) {
       Get.snackbar('Error', 'Failed to fetch all tickets: $e');
@@ -73,11 +78,15 @@ class SupportViewModel extends GetxController {
   }
 
   // Create a new ticket
-  Future<bool> createTicket(String subject, String initialMessage, {File? image}) async {
+  Future<bool> createTicket(
+    String subject,
+    String initialMessage, {
+    File? image,
+  }) async {
     try {
       isLoading.value = true;
       String? imageUrl;
-      
+
       if (image != null) {
         imageUrl = await uploadImage(image);
       }
@@ -85,11 +94,12 @@ class SupportViewModel extends GetxController {
       final data = {
         'subject': subject,
         'initialMessage': initialMessage,
-        'imageUrl': imageUrl
+        'imageUrl': imageUrl,
       };
 
       final response = await _supportRepository.createTicket(data);
       if (response != null) {
+        await NotificationViewModel.refreshIfActive();
         Get.snackbar('Success', 'Ticket created successfully');
         return true;
       }
@@ -107,20 +117,18 @@ class SupportViewModel extends GetxController {
     try {
       isSending.value = true;
       String? imageUrl;
-      
+
       if (image != null) {
         imageUrl = await uploadImage(image);
       }
 
-      final data = {
-        'message': message,
-        'imageUrl': imageUrl
-      };
+      final data = {'message': message, 'imageUrl': imageUrl};
 
       final response = await _supportRepository.sendMessage(ticketId, data);
       if (response != null) {
         final newMessage = ChatMessage.fromJson(response);
         currentMessages.add(newMessage);
+        await NotificationViewModel.refreshIfActive();
       }
     } catch (e) {
       Get.snackbar('Error', 'Failed to send message: $e');
@@ -135,7 +143,7 @@ class SupportViewModel extends GetxController {
       isLoading.value = true;
       await _supportRepository.closeTicket(ticketId);
       Get.snackbar('Success', 'Ticket closed');
-      
+
       // Update local state
       if (currentTicket.value != null && currentTicket.value!.id == ticketId) {
         currentTicket.value = SupportTicket(
@@ -147,7 +155,7 @@ class SupportViewModel extends GetxController {
           messages: currentTicket.value!.messages,
           hasUnread: currentTicket.value!.hasUnread,
           userName: currentTicket.value!.userName,
-          userEmail: currentTicket.value!.userEmail
+          userEmail: currentTicket.value!.userEmail,
         );
       }
       return true;
@@ -163,8 +171,8 @@ class SupportViewModel extends GetxController {
   Future<String?> uploadImage(File image) async {
     try {
       final response = await _networkApiService.getMultipartApiResponse(
-        ApiConstants.baseUrl + ApiConstants.supportUpload, 
-        image.path
+        ApiConstants.baseUrl + ApiConstants.supportUpload,
+        image.path,
       );
       if (response != null && response['path'] != null) {
         return response['path'];

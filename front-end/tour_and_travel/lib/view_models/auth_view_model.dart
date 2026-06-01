@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tour_and_travel/data/api/app_exceptions.dart';
 import 'package:tour_and_travel/data/services/storage_service.dart';
 import '../models/user_model.dart';
 import '../data/repositories/auth_repository.dart';
@@ -9,7 +10,7 @@ import '../routes/app_routes.dart';
 
 class AuthViewModel extends GetxController {
   final AuthRepository _authRepository = AuthRepository();
-  
+
   var isLoading = false.obs;
   var user = UserModel().obs;
   var isRememberMe = false.obs;
@@ -27,7 +28,7 @@ class AuthViewModel extends GetxController {
     }
   }
 
-  Future<void> fetchUserProfile() async {
+  Future<bool> fetchUserProfile() async {
     try {
       final UserRepository userRepository = UserRepository();
       final response = await userRepository.getProfile();
@@ -38,6 +39,7 @@ class AuthViewModel extends GetxController {
         user.value = updatedUser;
         await StorageService.to.setUser(updatedUser);
       }
+      return true;
     } catch (e) {
       if (e.toString().contains("BannedUser")) {
         await StorageService.to.clear();
@@ -50,25 +52,59 @@ class AuthViewModel extends GetxController {
           backgroundColor: Colors.red,
           colorText: Colors.white,
         );
+        return false;
+      } else if (_isSessionExpiredError(e)) {
+        await _redirectToLoginForExpiredSession();
+        return false;
       } else {
         debugPrint("Error fetching user profile: $e");
+        return false;
       }
     }
+  }
+
+  bool _isSessionExpiredError(Object error) {
+    final message = error.toString().toLowerCase();
+    return error is UnauthorisedException ||
+        message.contains("unauthorised request") ||
+        message.contains("unauthorized") ||
+        message.contains("session expired") ||
+        message.contains("invalid email or password") ||
+        message.contains("not found") ||
+        message.contains("404");
+  }
+
+  Future<void> _redirectToLoginForExpiredSession() async {
+    await StorageService.to.clear();
+    user.value = UserModel();
+
+    if (Get.currentRoute != Routes.LOGIN) {
+      Get.offAllNamed(Routes.LOGIN);
+    }
+
+    Get.snackbar(
+      "Session Expired",
+      "Please login again.",
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.orange,
+      colorText: Colors.white,
+    );
   }
 
   // LOGIN LOGIC
   Future<void> login(String email, String password) async {
     if (email.isEmpty || password.isEmpty) {
-      Get.snackbar("Error", "Please enter all fields", snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar(
+        "Error",
+        "Please enter all fields",
+        snackPosition: SnackPosition.BOTTOM,
+      );
       return;
     }
 
     try {
       isLoading.value = true;
-      Map<String, String> data = {
-        'email': email,
-        'password': password,
-      };
+      Map<String, String> data = {'email': email, 'password': password};
 
       final response = await _authRepository.loginApi(data);
 
@@ -83,7 +119,8 @@ class AuthViewModel extends GetxController {
 
       // Fetch complete user profile from server if not Admin
       if (user.value.role != 'Admin') {
-        await fetchUserProfile();
+        final profileLoaded = await fetchUserProfile();
+        if (!profileLoaded) return;
       }
 
       // Handle Remember Me
@@ -94,16 +131,19 @@ class AuthViewModel extends GetxController {
         await StorageService.to.clearSavedCredentials();
       }
 
-      Get.snackbar("Success", "Welcome ${user.value.name}", 
-          snackPosition: SnackPosition.BOTTOM, 
-          backgroundColor: Colors.green, 
-          colorText: Colors.white);
-      
+      Get.snackbar(
+        "Success",
+        "Welcome ${user.value.name}",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+
       // Navigate to Dashboard or Home
       if (user.value.role == 'Admin') {
         Get.offAllNamed(Routes.ADMIN_DASHBOARD);
       } else {
-        Get.offAllNamed(Routes.DASHBOARD); 
+        Get.offAllNamed(Routes.DASHBOARD);
       }
     } catch (e) {
       if (e.toString().contains("BannedUser")) {
@@ -117,15 +157,21 @@ class AuthViewModel extends GetxController {
         );
       } else if (e.toString().contains("EmailNotConfirmed")) {
         Get.toNamed(Routes.VERIFY_EMAIL, arguments: email);
-        Get.snackbar("Notice", "Your account is not verified. Please enter the verification code.", 
-            snackPosition: SnackPosition.BOTTOM, 
-            backgroundColor: Colors.orange, 
-            colorText: Colors.white);
+        Get.snackbar(
+          "Notice",
+          "Your account is not verified. Please enter the verification code.",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.orange,
+          colorText: Colors.white,
+        );
       } else {
-        Get.snackbar("Login Failed", e.toString(), 
-            snackPosition: SnackPosition.BOTTOM, 
-            backgroundColor: Colors.red, 
-            colorText: Colors.white);
+        Get.snackbar(
+          "Login Failed",
+          e.toString(),
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
       }
     } finally {
       isLoading.value = false;
@@ -135,16 +181,17 @@ class AuthViewModel extends GetxController {
   // ADMIN LOGIN LOGIC
   Future<void> adminLogin(String email, String password) async {
     if (email.isEmpty || password.isEmpty) {
-      Get.snackbar("Error", "Please enter all fields", snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar(
+        "Error",
+        "Please enter all fields",
+        snackPosition: SnackPosition.BOTTOM,
+      );
       return;
     }
 
     try {
       isLoading.value = true;
-      Map<String, String> data = {
-        'email': email,
-        'password': password,
-      };
+      Map<String, String> data = {'email': email, 'password': password};
 
       final response = await _authRepository.adminLoginApi(data);
 
@@ -155,26 +202,41 @@ class AuthViewModel extends GetxController {
         await StorageService.to.setUser(user.value);
       }
 
-      Get.snackbar("Success", "Admin Acccess Granted", 
-          snackPosition: SnackPosition.BOTTOM, 
-          backgroundColor: Colors.green, 
-          colorText: Colors.white);
-      
-      Get.offAllNamed(Routes.ADMIN_DASHBOARD); 
+      Get.snackbar(
+        "Success",
+        "Admin Acccess Granted",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+
+      Get.offAllNamed(Routes.ADMIN_DASHBOARD);
     } catch (e) {
-      Get.snackbar("Login Failed", "Invalid admin credentials", 
-          snackPosition: SnackPosition.BOTTOM, 
-          backgroundColor: Colors.red, 
-          colorText: Colors.white);
+      Get.snackbar(
+        "Login Failed",
+        "Invalid admin credentials",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     } finally {
       isLoading.value = false;
     }
   }
 
   // SIGNUP LOGIC
-  Future<void> register(String name, String email, String password, String phone) async {
+  Future<void> register(
+    String name,
+    String email,
+    String password,
+    String phone,
+  ) async {
     if (name.isEmpty || email.isEmpty || password.isEmpty || phone.isEmpty) {
-      Get.snackbar("Error", "Please fill all fields", snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar(
+        "Error",
+        "Please fill all fields",
+        snackPosition: SnackPosition.BOTTOM,
+      );
       return;
     }
 
@@ -184,7 +246,7 @@ class AuthViewModel extends GetxController {
         "name": name,
         "email": email,
         "password": password,
-        "phone": phone
+        "phone": phone,
       };
 
       final res = await _authRepository.registerApi(data);
@@ -192,16 +254,22 @@ class AuthViewModel extends GetxController {
 
       // Navigate to Verification screen
       Get.toNamed(Routes.VERIFY_EMAIL, arguments: email);
-      
-      Get.snackbar("Success", "Registered successfully. Please enter the code sent to your email.", 
-          snackPosition: SnackPosition.BOTTOM, 
-          backgroundColor: Colors.green, 
-          colorText: Colors.white);
+
+      Get.snackbar(
+        "Success",
+        "Registered successfully. Please enter the code sent to your email.",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
     } catch (e) {
-      Get.snackbar("Error", e.toString(), 
-          snackPosition: SnackPosition.BOTTOM, 
-          backgroundColor: Colors.red, 
-          colorText: Colors.white);
+      Get.snackbar(
+        "Error",
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     } finally {
       isLoading.value = false;
     }
@@ -210,29 +278,36 @@ class AuthViewModel extends GetxController {
   // VERIFY EMAIL LOGIC
   Future<void> verifyEmail(String email, String token) async {
     if (token.isEmpty) {
-      Get.snackbar("Error", "Please enter the verification code", snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar(
+        "Error",
+        "Please enter the verification code",
+        snackPosition: SnackPosition.BOTTOM,
+      );
       return;
     }
 
     try {
       isLoading.value = true;
-      Map<String, String> data = {
-        "email": email,
-        "token": token
-      };
+      Map<String, String> data = {"email": email, "token": token};
 
       await _authRepository.verifyEmailApi(data);
-      
+
       Get.offAllNamed(Routes.LOGIN);
-      Get.snackbar("Success", "Email verified successfully. You can now login.", 
-          snackPosition: SnackPosition.BOTTOM, 
-          backgroundColor: Colors.green, 
-          colorText: Colors.white);
+      Get.snackbar(
+        "Success",
+        "Email verified successfully. You can now login.",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
     } catch (e) {
-      Get.snackbar("Verification Failed", e.toString(), 
-          snackPosition: SnackPosition.BOTTOM, 
-          backgroundColor: Colors.red, 
-          colorText: Colors.white);
+      Get.snackbar(
+        "Verification Failed",
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     } finally {
       isLoading.value = false;
     }
@@ -241,37 +316,53 @@ class AuthViewModel extends GetxController {
   // FORGOT PASSWORD LOGIC
   Future<void> forgotPassword(String email) async {
     if (email.isEmpty) {
-      Get.snackbar("Error", "Please enter your email", snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar(
+        "Error",
+        "Please enter your email",
+        snackPosition: SnackPosition.BOTTOM,
+      );
       return;
     }
 
     try {
       isLoading.value = true;
-      Map<String, String> data = {
-        "email": email
-      };
+      Map<String, String> data = {"email": email};
 
       await _authRepository.forgotPasswordApi(data);
-      
+
       Get.toNamed(Routes.RESET_PASSWORD, arguments: email);
-      Get.snackbar("Success", "Reset code sent to your email.", 
-          snackPosition: SnackPosition.BOTTOM, 
-          backgroundColor: Colors.green, 
-          colorText: Colors.white);
+      Get.snackbar(
+        "Success",
+        "Reset code sent to your email.",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
     } catch (e) {
-      Get.snackbar("Error", e.toString(), 
-          snackPosition: SnackPosition.BOTTOM, 
-          backgroundColor: Colors.red, 
-          colorText: Colors.white);
+      Get.snackbar(
+        "Error",
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     } finally {
       isLoading.value = false;
     }
   }
 
   // RESET PASSWORD LOGIC
-  Future<void> resetPassword(String email, String token, String newPassword) async {
+  Future<void> resetPassword(
+    String email,
+    String token,
+    String newPassword,
+  ) async {
     if (token.isEmpty || newPassword.isEmpty) {
-      Get.snackbar("Error", "Please fill all fields", snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar(
+        "Error",
+        "Please fill all fields",
+        snackPosition: SnackPosition.BOTTOM,
+      );
       return;
     }
 
@@ -280,30 +371,44 @@ class AuthViewModel extends GetxController {
       Map<String, String> data = {
         "email": email,
         "token": token,
-        "newPassword": newPassword
+        "newPassword": newPassword,
       };
 
       await _authRepository.resetPasswordApi(data);
-      
+
       Get.offAllNamed(Routes.LOGIN);
-      Get.snackbar("Success", "Password reset successfully. You can now login.", 
-          snackPosition: SnackPosition.BOTTOM, 
-          backgroundColor: Colors.green, 
-          colorText: Colors.white);
+      Get.snackbar(
+        "Success",
+        "Password reset successfully. You can now login.",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
     } catch (e) {
-      Get.snackbar("Reset Failed", e.toString(), 
-          snackPosition: SnackPosition.BOTTOM, 
-          backgroundColor: Colors.red, 
-          colorText: Colors.white);
+      Get.snackbar(
+        "Reset Failed",
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     } finally {
       isLoading.value = false;
     }
   }
 
   // CHANGE PASSWORD LOGIC
-  Future<void> changePassword(String email, String oldPassword, String newPassword) async {
+  Future<void> changePassword(
+    String email,
+    String oldPassword,
+    String newPassword,
+  ) async {
     if (oldPassword.isEmpty || newPassword.isEmpty) {
-      Get.snackbar("Error", "Please fill all fields", snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar(
+        "Error",
+        "Please fill all fields",
+        snackPosition: SnackPosition.BOTTOM,
+      );
       return;
     }
 
@@ -312,21 +417,27 @@ class AuthViewModel extends GetxController {
       Map<String, String> data = {
         "email": email,
         "oldPassword": oldPassword,
-        "newPassword": newPassword
+        "newPassword": newPassword,
       };
 
       await _authRepository.changePasswordApi(data);
-      
+
       Get.back(); // close dialog
-      Get.snackbar("Success", "Password updated successfully", 
-          snackPosition: SnackPosition.BOTTOM, 
-          backgroundColor: Colors.green, 
-          colorText: Colors.white);
+      Get.snackbar(
+        "Success",
+        "Password updated successfully",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
     } catch (e) {
-      Get.snackbar("Error", e.toString(), 
-          snackPosition: SnackPosition.BOTTOM, 
-          backgroundColor: Colors.red, 
-          colorText: Colors.white);
+      Get.snackbar(
+        "Error",
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     } finally {
       isLoading.value = false;
     }
@@ -337,9 +448,12 @@ class AuthViewModel extends GetxController {
     await StorageService.to.clear();
     user.value = UserModel();
     Get.offAllNamed(Routes.LOGIN);
-    Get.snackbar("Logged Out", "You have been successfully logged out", 
-        snackPosition: SnackPosition.BOTTOM, 
-        backgroundColor: Colors.blueAccent, 
-        colorText: Colors.white);
+    Get.snackbar(
+      "Logged Out",
+      "You have been successfully logged out",
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.blueAccent,
+      colorText: Colors.white,
+    );
   }
 }

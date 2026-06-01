@@ -22,11 +22,12 @@ class TourViewModel extends GetxController {
     try {
       isLoading(true);
       final response = await _tourRepository.getAllTours();
-      tourList.value = response;
-      _originalTourList = List.from(response);
+      final upcomingTours = _upcomingTours(response);
+      tourList.value = upcomingTours;
+      _originalTourList = List.from(upcomingTours);
       if (searchQuery.value.isEmpty) {
-        searchResults.value = response;
-        _originalSearchResults = List.from(response);
+        searchResults.value = upcomingTours;
+        _originalSearchResults = List.from(upcomingTours);
       }
     } catch (e) {
       Get.snackbar("Error", e.toString());
@@ -110,8 +111,9 @@ class TourViewModel extends GetxController {
     final currentSort = selectedSortType.value;
 
     final response = await _tourRepository.getAllTours();
-    tourList.value = response;
-    _originalTourList = List.from(response);
+    final upcomingTours = _upcomingTours(response);
+    tourList.value = upcomingTours;
+    _originalTourList = List.from(upcomingTours);
 
     searchTours(currentSearch);
 
@@ -122,4 +124,25 @@ class TourViewModel extends GetxController {
       searchResults.refresh();
     }
   }
+
+  List<dynamic> _upcomingTours(dynamic response) {
+    if (response is! List) return [];
+    final today = _dateOnly(DateTime.now());
+
+    return response.where((tour) {
+      if (tour is! Map) return false;
+      final startDate = _parseDateTime(tour['startDate']);
+      if (startDate == null) return false;
+      return !_dateOnly(startDate).isBefore(today);
+    }).toList();
+  }
+
+  DateTime? _parseDateTime(dynamic value) {
+    if (value == null) return null;
+    if (value is DateTime) return value.toLocal();
+    return DateTime.tryParse(value.toString())?.toLocal();
+  }
+
+  DateTime _dateOnly(DateTime dateTime) =>
+      DateTime(dateTime.year, dateTime.month, dateTime.day);
 }

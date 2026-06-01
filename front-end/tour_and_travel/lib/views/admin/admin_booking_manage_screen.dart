@@ -20,6 +20,11 @@ class _AdminBookingManageScreenState extends State<AdminBookingManageScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.fetchHotelBookings();
+      controller.fetchFlightBookings();
+      controller.fetchTourBookings();
+    });
   }
 
   @override
@@ -223,11 +228,11 @@ class _BookingList extends StatelessWidget {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: booking['status'] == 'Pending' 
+                        color: booking['status'] == 'Pending'
                             ? Colors.orange.withOpacity(0.1)
                             : booking['status'] == 'Cancelled'
-                                ? Colors.red.withOpacity(0.1)
-                                : const Color(0xFFE8F5E9),
+                            ? Colors.red.withOpacity(0.1)
+                            : const Color(0xFFE8F5E9),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
@@ -236,8 +241,8 @@ class _BookingList extends StatelessWidget {
                           color: booking['status'] == 'Pending'
                               ? Colors.orange
                               : booking['status'] == 'Cancelled'
-                                  ? Colors.red
-                                  : const Color(0xFF43A047),
+                              ? Colors.red
+                              : const Color(0xFF43A047),
                           fontSize: 11,
                           fontWeight: FontWeight.w700,
                         ),
@@ -250,7 +255,14 @@ class _BookingList extends StatelessWidget {
                   _DetailRow(
                     Icons.business_rounded,
                     'Hotel',
-                    booking['hotel']?['name'] ?? 'N/A',
+                    booking['hotel']?['name'] ??
+                        booking['room']?['hotel']?['name'] ??
+                        'N/A',
+                  ),
+                  _DetailRow(
+                    Icons.king_bed_rounded,
+                    'Room Type',
+                    booking['room']?['type'] ?? 'N/A',
                   ),
                   _DetailRow(
                     Icons.calendar_today_rounded,
@@ -282,7 +294,17 @@ class _BookingList extends StatelessWidget {
                   _DetailRow(
                     Icons.explore_rounded,
                     'Tour',
-                    booking['tour']?['title'] ?? 'N/A', // Assuming backend joins tour, otherwise use tourId
+                    booking['tour']?['title'] ?? 'N/A',
+                  ),
+                  _DetailRow(
+                    Icons.route_rounded,
+                    'Route',
+                    '${booking['tour']?['startPoint'] ?? 'N/A'} → ${booking['tour']?['endPoint'] ?? 'N/A'}',
+                  ),
+                  _DetailRow(
+                    Icons.event_available_rounded,
+                    'Start Date',
+                    _formatDate(booking['tour']?['startDate']),
                   ),
                   _DetailRow(
                     Icons.calendar_month_rounded,
@@ -305,7 +327,9 @@ class _BookingList extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'User ID: ${booking['userId']}',
+                      booking['userName'] == null
+                          ? 'User ID: ${booking['userId']}'
+                          : '${booking['userName']} (ID: ${booking['userId']})',
                       style: const TextStyle(
                         fontSize: 12,
                         color: Color(0xFF697386),

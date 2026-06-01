@@ -76,27 +76,6 @@ class BookingSuccessScreen extends StatelessWidget {
               ),
               
               const Spacer(),
-              
-              // View Booking Button
-              SizedBox(
-                width: double.infinity,
-                height: 55,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Get.toNamed(Routes.BOOKING_HISTORY);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue[700],
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                  ),
-                  child: const Text(
-                    "View Booking",
-                    style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
               const SizedBox(height: 15),
 
               // Download PDF Button

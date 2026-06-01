@@ -883,7 +883,6 @@ class AdminFlightManageScreen extends StatelessWidget {
               onChanged: (_) => onChanged?.call(),
               decoration: InputDecoration(
                 labelText: 'Seats',
-                prefixIcon: const Icon(Icons.event_seat_rounded, size: 20),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -906,7 +905,6 @@ class AdminFlightManageScreen extends StatelessWidget {
               onChanged: (_) => onChanged?.call(),
               decoration: InputDecoration(
                 labelText: 'Price (৳)',
-                prefixIcon: const Icon(Icons.attach_money_rounded, size: 20),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),

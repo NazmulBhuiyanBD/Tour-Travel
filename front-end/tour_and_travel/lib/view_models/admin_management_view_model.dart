@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tour_and_travel/core/constant/api_constants.dart';
+import 'package:tour_and_travel/view_models/auth_view_model.dart';
 import '../data/repositories/admin_repository.dart';
 
 class AdminManagementViewModel extends GetxController {
@@ -44,6 +45,20 @@ class AdminManagementViewModel extends GetxController {
   }
 
   void _showError(String message) {
+    final lowerMessage = message.toLowerCase();
+    if (lowerMessage.contains("unauthorised") || 
+        lowerMessage.contains("unauthorized") || 
+        lowerMessage.contains("session expired") || 
+        lowerMessage.contains("not found") || 
+        lowerMessage.contains("404")) {
+      
+      // Prevent showing multiple error dialogs/snackbars; redirect immediately
+      if (Get.isRegistered<AuthViewModel>()) {
+        Get.find<AuthViewModel>().logout();
+      }
+      return;
+    }
+
     Get.snackbar(
       'Error',
       message,

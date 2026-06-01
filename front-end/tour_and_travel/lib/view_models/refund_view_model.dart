@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import '../data/repositories/refund_repository.dart';
+import 'notification_view_model.dart';
 
 class RefundViewModel extends GetxController {
   final RefundRepository _refundRepository = RefundRepository();
@@ -8,25 +9,30 @@ class RefundViewModel extends GetxController {
   var isLoading = false.obs;
   var userRefunds = <dynamic>[].obs;
 
-  Future<bool> createRefundRequest(String itemType, int bookingId, String reason) async {
+  Future<bool> createRefundRequest(
+    String itemType,
+    int bookingId,
+    String reason,
+  ) async {
     try {
       isLoading(true);
-      
+
       final data = {
         "itemType": itemType,
         "bookingId": bookingId,
-        "reason": reason
+        "reason": reason,
       };
 
       await _refundRepository.createRefundRequest(data);
-      
+      await NotificationViewModel.refreshIfActive();
+
       Get.snackbar(
         "Success",
         "Refund request submitted successfully.",
         backgroundColor: Colors.green,
         colorText: Colors.white,
       );
-      
+
       return true;
     } catch (e) {
       Get.snackbar(
@@ -67,25 +73,31 @@ class RefundViewModel extends GetxController {
     }
   }
 
-  Future<bool> updateRefundStatus(int id, String status, int refundPercentage, String? adminFeedback) async {
+  Future<bool> updateRefundStatus(
+    int id,
+    String status,
+    int refundPercentage,
+    String? adminFeedback,
+  ) async {
     try {
       isLoading(true);
-      
+
       final data = {
         "status": status,
         "refundPercentage": refundPercentage,
-        "adminFeedback": adminFeedback
+        "adminFeedback": adminFeedback,
       };
 
       await _refundRepository.updateRefundStatus(id, data);
-      
+      await NotificationViewModel.refreshIfActive();
+
       Get.snackbar(
         "Success",
         "Refund request status updated to $status.",
         backgroundColor: Colors.green,
         colorText: Colors.white,
       );
-      
+
       await fetchAllRefundRequests(); // Refresh the list
       return true;
     } catch (e) {
