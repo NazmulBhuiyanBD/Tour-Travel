@@ -5,7 +5,7 @@ import 'package:tour_and_travel/models/chat_message.dart';
 import 'package:tour_and_travel/data/api/network_api_service.dart';
 import 'package:tour_and_travel/core/constant/api_constants.dart';
 import 'package:tour_and_travel/view_models/notification_view_model.dart';
-import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 class SupportViewModel extends GetxController {
   final SupportRepository _supportRepository = SupportRepository();
@@ -81,7 +81,7 @@ class SupportViewModel extends GetxController {
   Future<bool> createTicket(
     String subject,
     String initialMessage, {
-    File? image,
+    XFile? image,
   }) async {
     try {
       isLoading.value = true;
@@ -113,7 +113,7 @@ class SupportViewModel extends GetxController {
   }
 
   // Send a message to a ticket
-  Future<void> sendMessage(int ticketId, String message, {File? image}) async {
+  Future<void> sendMessage(int ticketId, String message, {XFile? image}) async {
     try {
       isSending.value = true;
       String? imageUrl;
@@ -168,11 +168,11 @@ class SupportViewModel extends GetxController {
   }
 
   // Upload an image and get URL
-  Future<String?> uploadImage(File image) async {
+  Future<String?> uploadImage(XFile image) async {
     try {
       final response = await _networkApiService.getMultipartApiResponse(
         ApiConstants.baseUrl + ApiConstants.supportUpload,
-        image.path,
+        image,
       );
       if (response != null && response['path'] != null) {
         return response['path'];

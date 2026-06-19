@@ -72,16 +72,20 @@ class FlightListScreen extends StatelessWidget {
                 );
               }
 
-              return ListView.builder(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
+              return RefreshIndicator(
+                onRefresh: () => _flightViewModel.refreshCurrentFlights(),
+                child: ListView.builder(
+                  physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  itemCount: flights.length,
+                  itemBuilder: (context, index) {
+                    var flight = flights[index];
+                    return _buildFlightCard(flight);
+                  },
                 ),
-                itemCount: flights.length,
-                itemBuilder: (context, index) {
-                  var flight = flights[index];
-                  return _buildFlightCard(flight);
-                },
               );
             }),
           ),
@@ -272,7 +276,7 @@ class FlightListScreen extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(20),
-          onTap: () {
+          onTap: ((flight['availableSeats'] ?? 0) > 0) ? () {
             Get.to(
               () => FlightBookingScreen(
                 flightId: flight['id'] ?? 0,
@@ -280,7 +284,7 @@ class FlightListScreen extends StatelessWidget {
                 price: (flight['price'] ?? 0).toDouble(),
               ),
             );
-          },
+          } : null,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -405,10 +409,10 @@ class FlightListScreen extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    const Text(
-                      "Book Now",
+                    Text(
+                      (flight['availableSeats'] ?? 0) > 0 ? "Book Now" : "Not Available",
                       style: TextStyle(
-                        color: AppColors.primaryBlue,
+                        color: (flight['availableSeats'] ?? 0) > 0 ? AppColors.primaryBlue : Colors.grey,
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
                       ),

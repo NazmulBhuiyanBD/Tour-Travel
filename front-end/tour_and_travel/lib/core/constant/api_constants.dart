@@ -1,7 +1,9 @@
-import 'dart:io';
+import 'package:flutter/foundation.dart';
+
+import 'package:tour_and_travel/core/utils/platform_info.dart';
 
 class ApiConstants {
-  static String baseUrl = Platform.isAndroid
+  static String baseUrl = !kIsWeb && PlatformInfo.isAndroid
       ? 'http://10.0.2.2:5198/api'
       : 'http://127.0.0.1:5198/api';
 
@@ -87,7 +89,6 @@ class ApiConstants {
   static const String adminFlightBookings = '/Admin/bookings/flights';
   static const String adminTourBookings = '/Admin/bookings/tours';
   static const String adminUpload = '/Admin/upload';
-
 
   // Password Change
   static const String changePassword = '/Auth/change-password';

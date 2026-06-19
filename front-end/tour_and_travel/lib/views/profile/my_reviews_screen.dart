@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../view_models/review_view_model.dart';
-import '../../core/constant/app_colors.dart';
+import '../../core/constant/api_constants.dart';
 
 class MyReviewsScreen extends StatefulWidget {
   const MyReviewsScreen({super.key});
@@ -70,6 +70,10 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
 
   Widget _buildReviewCard(dynamic review) {
     final itemType = review['itemType'] ?? 'Unknown';
+    final itemName = review['itemName'] ?? 'Unknown Item';
+    final itemSubtitle = review['itemSubtitle'] ?? '';
+    final itemImage = review['itemImage'] ?? '';
+    
     Color badgeColor;
     IconData typeIcon;
 
@@ -121,51 +125,112 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: badgeColor.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(typeIcon, size: 14, color: badgeColor),
-                      const SizedBox(width: 6),
-                      Text(
-                        itemType,
-                        style: TextStyle(
-                          color: badgeColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
+                // Item Image / Icon Thumbnail
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: itemImage.toString().isNotEmpty
+                      ? Image.network(
+                          "${ApiConstants.mediaBaseUrl}$itemImage",
+                          width: 60,
+                          height: 60,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) => Container(
+                            width: 60,
+                            height: 60,
+                            color: badgeColor.withOpacity(0.1),
+                            child: Icon(typeIcon, color: badgeColor, size: 28),
+                          ),
+                        )
+                      : Container(
+                          width: 60,
+                          height: 60,
+                          color: badgeColor.withOpacity(0.1),
+                          child: Icon(typeIcon, color: badgeColor, size: 28),
                         ),
-                      ),
-                    ],
-                  ),
                 ),
-                Text(
-                  formattedDate,
-                  style: TextStyle(
-                    color: Colors.grey.shade400,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
+                const SizedBox(width: 14),
+                // Item Details (Name, Type, Subtitle, Date)
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: badgeColor.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(typeIcon, size: 12, color: badgeColor),
+                                const SizedBox(width: 4),
+                                Text(
+                                  itemType,
+                                  style: TextStyle(
+                                    color: badgeColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Text(
+                            formattedDate,
+                            style: TextStyle(
+                              color: Colors.grey.shade400,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        itemName,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF1E293B),
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      if (itemSubtitle.isNotEmpty) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          itemSubtitle,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey.shade500,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ],
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const Divider(height: 24, thickness: 1),
             Row(
               children: List.generate(5, (index) {
                 int rating = review['rating'] ?? 0;
                 return Icon(
                   index < rating ? Icons.star_rounded : Icons.star_border_rounded,
                   color: Colors.amber,
-                  size: 22,
+                  size: 20,
                 );
               }),
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 10),
             Text(
               review['comment'] ?? '',
               style: const TextStyle(

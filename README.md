@@ -38,19 +38,66 @@ A comprehensive, full-stack Tour and Travel Management system built with a Flutt
 
 ### User App
 
-| Home & Menu | Browsing Services | Onboarding & Login |
+#### Authentication
+| Onboarding Screen 1 | Onboarding Screen 2 | Login |
 |:---:|:---:|:---:|
-| <img src="screenshots/user_home.png" width="300"/> | <img src="screenshots/user_tour.png" width="300"/> | <img src="screenshots/user_login.png" width="300"/> |
-| <img src="screenshots/user_menu.png" width="300"/> | <img src="screenshots/user_flight.png" width="300"/> | <img src="screenshots/onbroading_screen.png" width="300"/> |
-| | <img src="screenshots/user_hotels.png" width="300"/> | <img src="screenshots/onbroading_screen2.png" width="300"/> |
+| <img src="screenshots/onbroading_screen.png" width="250"/> | <img src="screenshots/onbroading_screen2.png" width="250"/> | <img src="screenshots/user_login.png" width="250"/> |
+
+| Registration | Forgot Password | Email Verification |
+|:---:|:---:|:---:|
+| <img src="screenshots/user_registration.png" width="250"/> | <img src="screenshots/forget_password.png" width="250"/> | <img src="screenshots/verify_email.png" width="250"/> |
+
+#### Home & Navigation
+| Dashboard | Home | Menu |
+|:---:|:---:|:---:|
+| <img src="screenshots/user_dashboard.png" width="250"/> | <img src="screenshots/user_home.png" width="250"/> | <img src="screenshots/user_menu.png" width="250"/> |
+
+#### Services - Browsing
+| Browse Tours | Browse Flights | Browse Hotels |
+|:---:|:---:|:---:|
+| <img src="screenshots/user_tour.png" width="250"/> | <img src="screenshots/browse_flight.png" width="250"/> | <img src="screenshots/user_hotels.png" width="250"/> |
+
+#### Services - Booking
+| Flight Booking | Tour Booking | Hotel Booking |
+|:---:|:---:|:---:|
+| <img src="screenshots/flight_booking.png" width="250"/> | <img src="screenshots/tour_booking.png" width="250"/> | <img src="screenshots/hotel_booking.png" width="250"/> |
+
+#### User Features
+| Flights | Notifications | Reviews |
+|:---:|:---:|:---:|
+| <img src="screenshots/user_flight.png" width="250"/> | <img src="screenshots/user_notification .png" width="250"/> | <img src="screenshots/user_review.png" width="250"/> |
+
+#### Support & Help
+| Help & Support | Support Tickets |
+|:---:|:---:|
+| <img src="screenshots/user_help_support.png" width="250"/> | <img src="screenshots/user_support_tickets.png" width="250"/> |
 
 ### Admin Console
 
-| Analytics & Security | Control Panel | Inventory Management |
+#### Authentication & Dashboard
+| Admin Login | Dashboard | Revenue |
 |:---:|:---:|:---:|
-| <img src="screenshots/admin_login.png" width="300"/> | <img src="screenshots/admin_manage_user.png" width="300"/> | <img src="screenshots/admin_tours.png" width="300"/> |
-| <img src="screenshots/admin_dashboard.png" width="300"/> | <img src="screenshots/admin_air_tickets.png" width="300"/> | <img src="screenshots/admin_hotel.png" width="300"/> |
-| <img src="screenshots/admin_booking.png" width="300"/> | <img src="screenshots/admin_top_destination.png" width="300"/> | <img src="screenshots/admin_popular_airlines.png" width="300"/> |
+| <img src="screenshots/admin_login.png" width="250"/> | <img src="screenshots/admin_dashboard.png" width="250"/> | <img src="screenshots/admin_revenue.png" width="250"/> |
+
+#### Inventory Management
+| Tours Management | Air Tickets | Hotels |
+|:---:|:---:|:---:|
+| <img src="screenshots/admin_tours.png" width="250"/> | <img src="screenshots/admin_air_tickets.png" width="250"/> | <img src="screenshots/admin_hotel.png" width="250"/> |
+
+#### Content Control
+| Top Destinations | Popular Airlines |
+|:---:|:---:|
+| <img src="screenshots/admin_top_destination.png" width="250"/> | <img src="screenshots/admin_popular_airlines.png" width="250"/> |
+
+#### User & Transaction Management
+| Manage Users | Bookings | Refunds |
+|:---:|:---:|:---:|
+| <img src="screenshots/admin_manage_user.png" width="250"/> | <img src="screenshots/admin_booking.png" width="250"/> | <img src="screenshots/admin_refund.png" width="250"/> |
+
+#### Support & Communication
+| Support Management |
+|:---:|
+| <img src="screenshots/admin_support.png" width="250"/> |
 
 ---
 

@@ -96,11 +96,69 @@ namespace TravelApp.Services
                 .OrderByDescending(r => r.CreatedAt)
                 .ToList();
 
-        public List<Review> GetUserReviews(int userId) =>
-            _context.Reviews
+        public List<UserReviewDetailsDto> GetUserReviews(int userId)
+        {
+            var reviews = _context.Reviews
                 .Where(r => r.UserId == userId)
                 .OrderByDescending(r => r.CreatedAt)
                 .ToList();
+
+            var detailedReviews = new List<UserReviewDetailsDto>();
+
+            foreach (var r in reviews)
+            {
+                string itemName = "Unknown";
+                string itemImage = "";
+                string itemSubtitle = "";
+
+                if (r.ItemType == "Hotel")
+                {
+                    var hotel = _context.Hotels.Find(r.ItemId);
+                    if (hotel != null)
+                    {
+                        itemName = hotel.Name;
+                        itemImage = hotel.ImageUrl;
+                        itemSubtitle = hotel.Location;
+                    }
+                }
+                else if (r.ItemType == "Flight")
+                {
+                    var flight = _context.Flights.Find(r.ItemId);
+                    if (flight != null)
+                    {
+                        itemName = flight.Airline;
+                        itemSubtitle = $"{flight.From} to {flight.To}";
+                    }
+                }
+                else if (r.ItemType == "Tour")
+                {
+                    var tour = _context.Tours.Find(r.ItemId);
+                    if (tour != null)
+                    {
+                        itemName = tour.Title;
+                        itemImage = tour.ImageUrl;
+                        itemSubtitle = $"{tour.StartPoint} to {tour.EndPoint}";
+                    }
+                }
+
+                detailedReviews.Add(new UserReviewDetailsDto
+                {
+                    Id = r.Id,
+                    UserId = r.UserId,
+                    UserName = r.UserName,
+                    ItemType = r.ItemType,
+                    ItemId = r.ItemId,
+                    Rating = r.Rating,
+                    Comment = r.Comment,
+                    CreatedAt = r.CreatedAt,
+                    ItemName = itemName,
+                    ItemImage = itemImage,
+                    ItemSubtitle = itemSubtitle
+                });
+            }
+
+            return detailedReviews;
+        }
 
         public double GetAverageRating(string itemType, int itemId)
         {
@@ -110,5 +168,20 @@ namespace TravelApp.Services
 
         public int GetReviewCount(string itemType, int itemId) =>
             _context.Reviews.Count(r => r.ItemType == itemType && r.ItemId == itemId);
+    }
+
+    public class UserReviewDetailsDto
+    {
+        public int Id { get; set; }
+        public int UserId { get; set; }
+        public string UserName { get; set; } = string.Empty;
+        public string ItemType { get; set; } = string.Empty;
+        public int ItemId { get; set; }
+        public int Rating { get; set; }
+        public string Comment { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; }
+        public string ItemName { get; set; } = string.Empty;
+        public string ItemImage { get; set; } = string.Empty;
+        public string ItemSubtitle { get; set; } = string.Empty;
     }
 }

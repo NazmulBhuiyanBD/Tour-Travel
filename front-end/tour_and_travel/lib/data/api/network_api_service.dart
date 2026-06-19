@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:tour_and_travel/data/api/app_exceptions.dart';
 import 'package:tour_and_travel/data/services/storage_service.dart';
 import 'api_client.dart';
-
 
 class NetworkApiService extends BaseApiService {
   @override
@@ -92,7 +93,7 @@ class NetworkApiService extends BaseApiService {
   }
 
   @override
-  Future getMultipartApiResponse(String url, String filePath) async {
+  Future getMultipartApiResponse(String url, XFile file) async {
     dynamic responseJson;
     try {
       final token = StorageService.to.getToken();
@@ -102,9 +103,21 @@ class NetworkApiService extends BaseApiService {
         request.headers['Authorization'] = 'Bearer $token';
       }
 
-      request.files.add(await http.MultipartFile.fromPath('file', filePath));
+      if (kIsWeb) {
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            'file',
+            await file.readAsBytes(),
+            filename: file.name,
+          ),
+        );
+      } else {
+        request.files.add(await http.MultipartFile.fromPath('file', file.path));
+      }
 
-      var streamedResponse = await request.send().timeout(const Duration(seconds: 30));
+      var streamedResponse = await request.send().timeout(
+        const Duration(seconds: 30),
+      );
       var response = await http.Response.fromStream(streamedResponse);
 
       responseJson = returnResponse(response);
@@ -136,12 +149,15 @@ class NetworkApiService extends BaseApiService {
         } catch (e) {
           if (e is UnauthorisedException) rethrow;
         }
-        throw UnauthorisedException('Invalid email or password or session expired');
+        throw UnauthorisedException(
+          'Invalid email or password or session expired',
+        );
       case 500:
         throw InternalServerErrorException(response.body.toString());
       default:
         throw FetchDataException(
-            'Error occurred while communicating with server with status code : ${response.statusCode}');
+          'Error occurred while communicating with server with status code : ${response.statusCode}',
+        );
     }
   }
 }

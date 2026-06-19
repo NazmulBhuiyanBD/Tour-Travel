@@ -72,14 +72,17 @@ class TourListScreen extends StatelessWidget {
                     ),
                   ),
                   Expanded(
-                    child: ListView.builder(
-                      physics: const BouncingScrollPhysics(),
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
-                      itemCount: tours.length,
-                      itemBuilder: (context, index) {
-                        var tour = tours[index];
-                        return _buildTourCard(tour, context);
-                      },
+                    child: RefreshIndicator(
+                      onRefresh: () => _tourViewModel.refreshCurrentTours(),
+                      child: ListView.builder(
+                        physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+                        itemCount: tours.length,
+                        itemBuilder: (context, index) {
+                          var tour = tours[index];
+                          return _buildTourCard(tour, context);
+                        },
+                      ),
                     ),
                   ),
                 ],

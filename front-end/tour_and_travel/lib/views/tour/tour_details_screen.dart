@@ -335,7 +335,7 @@ class _TourDetailsScreenState extends State<TourDetailsScreen> {
             const SizedBox(width: 30),
             Expanded(
               child: ElevatedButton(
-                onPressed: () => Get.to(
+                onPressed: (tour.vacancy ?? 0) > 0 ? () => Get.to(
                   () => TourBookingScreen(
                     tourId: tour.id ?? 0,
                     title: tour.title ?? "Tour",
@@ -343,7 +343,7 @@ class _TourDetailsScreenState extends State<TourDetailsScreen> {
                     vacancy: tour.vacancy ?? 20,
                     startDate: tour.startDate,
                   ),
-                ),
+                ) : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primaryBlue,
                   padding: const EdgeInsets.symmetric(vertical: 15),
@@ -351,9 +351,9 @@ class _TourDetailsScreenState extends State<TourDetailsScreen> {
                     borderRadius: BorderRadius.circular(15),
                   ),
                 ),
-                child: const Text(
-                  "Book Now",
-                  style: TextStyle(
+                child: Text(
+                  (tour.vacancy ?? 0) > 0 ? "Book Now" : "Not Available",
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,

@@ -1,8 +1,6 @@
-import 'dart:io';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:tour_and_travel/core/constant/api_constants.dart';
 import 'package:tour_and_travel/view_models/auth_view_model.dart';
 import '../data/repositories/admin_repository.dart';
 
@@ -18,7 +16,7 @@ class AdminManagementViewModel extends GetxController {
   var flightBookings = <dynamic>[].obs;
   var tourBookings = <dynamic>[].obs;
   var hotelRooms = <dynamic>[].obs;
-  
+
   var isLoading = false.obs;
   var selectedHotelImagePath = ''.obs;
   var selectedTourImagePath = ''.obs;
@@ -46,12 +44,11 @@ class AdminManagementViewModel extends GetxController {
 
   void _showError(String message) {
     final lowerMessage = message.toLowerCase();
-    if (lowerMessage.contains("unauthorised") || 
-        lowerMessage.contains("unauthorized") || 
-        lowerMessage.contains("session expired") || 
-        lowerMessage.contains("not found") || 
+    if (lowerMessage.contains("unauthorised") ||
+        lowerMessage.contains("unauthorized") ||
+        lowerMessage.contains("session expired") ||
+        lowerMessage.contains("not found") ||
         lowerMessage.contains("404")) {
-      
       // Prevent showing multiple error dialogs/snackbars; redirect immediately
       if (Get.isRegistered<AuthViewModel>()) {
         Get.find<AuthViewModel>().logout();
@@ -111,8 +108,6 @@ class AdminManagementViewModel extends GetxController {
     }
   }
 
-
-
   // Tours
   Future<void> fetchTours() async {
     try {
@@ -161,9 +156,7 @@ class AdminManagementViewModel extends GetxController {
       if (image == null) return;
 
       isUploading.value = true;
-      File file = File(image.path);
-      
-      dynamic response = await _repository.uploadImage(file);
+      dynamic response = await _repository.uploadImage(image);
       if (response != null && response['path'] != null) {
         selectedTourImagePath.value = response['path'];
         _showSuccess('Tour image uploaded successfully');
@@ -213,9 +206,7 @@ class AdminManagementViewModel extends GetxController {
       if (image == null) return;
 
       isUploading.value = true;
-      File file = File(image.path);
-      
-      dynamic response = await _repository.uploadImage(file);
+      dynamic response = await _repository.uploadImage(image);
       if (response != null && response['path'] != null) {
         selectedHotelImagePath.value = response['path'];
         _showSuccess('Image uploaded successfully');
@@ -278,7 +269,6 @@ class AdminManagementViewModel extends GetxController {
       _showError(e.toString());
     }
   }
-
 
   // Bookings
   Future<void> fetchHotelBookings() async {
@@ -414,4 +404,3 @@ class AdminManagementViewModel extends GetxController {
     }
   }
 }
-

@@ -74,14 +74,17 @@ class HotelListScreen extends StatelessWidget {
                     ),
                   ),
                   Expanded(
-                    child: ListView.builder(
-                      physics: const BouncingScrollPhysics(),
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
-                      itemCount: hotels.length,
-                      itemBuilder: (context, index) {
-                        var hotel = hotels[index];
-                        return _buildHotelCard(hotel);
-                      },
+                    child: RefreshIndicator(
+                      onRefresh: () => _hotelViewModel.refreshCurrentHotels(),
+                      child: ListView.builder(
+                        physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+                        itemCount: hotels.length,
+                        itemBuilder: (context, index) {
+                          var hotel = hotels[index];
+                          return _buildHotelCard(hotel);
+                        },
+                      ),
                     ),
                   ),
                 ],

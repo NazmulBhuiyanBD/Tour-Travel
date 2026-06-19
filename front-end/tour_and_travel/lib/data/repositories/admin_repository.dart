@@ -1,5 +1,4 @@
-import 'dart:io';
-import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:tour_and_travel/core/constant/api_constants.dart';
 import 'package:tour_and_travel/data/api/network_api_service.dart';
 import 'package:tour_and_travel/data/api/api_client.dart';
@@ -10,18 +9,19 @@ class AdminRepository {
   Future<dynamic> getUsers() async {
     try {
       return await _apiService.getGetApiResponse(
-          ApiConstants.baseUrl + ApiConstants.adminUsers);
+        ApiConstants.baseUrl + ApiConstants.adminUsers,
+      );
     } catch (e) {
       rethrow;
     }
   }
 
-
-
   Future<dynamic> toggleUserStatus(int id) async {
     try {
       return await _apiService.getPutApiResponse(
-          "${ApiConstants.baseUrl}${ApiConstants.adminToggleUser}$id/toggle-status", {});
+        "${ApiConstants.baseUrl}${ApiConstants.adminToggleUser}$id/toggle-status",
+        {},
+      );
     } catch (e) {
       rethrow;
     }
@@ -30,7 +30,8 @@ class AdminRepository {
   Future<dynamic> deleteUser(int id) async {
     try {
       return await _apiService.getDeleteApiResponse(
-          "${ApiConstants.baseUrl}${ApiConstants.adminDeleteUser}$id");
+        "${ApiConstants.baseUrl}${ApiConstants.adminDeleteUser}$id",
+      );
     } catch (e) {
       rethrow;
     }
@@ -40,7 +41,8 @@ class AdminRepository {
   Future<dynamic> getTours() async {
     try {
       return await _apiService.getGetApiResponse(
-          ApiConstants.baseUrl + ApiConstants.adminTours);
+        ApiConstants.baseUrl + ApiConstants.adminTours,
+      );
     } catch (e) {
       rethrow;
     }
@@ -49,7 +51,9 @@ class AdminRepository {
   Future<dynamic> createTour(dynamic data) async {
     try {
       return await _apiService.getPostApiResponse(
-          ApiConstants.baseUrl + ApiConstants.adminTour, data);
+        ApiConstants.baseUrl + ApiConstants.adminTour,
+        data,
+      );
     } catch (e) {
       rethrow;
     }
@@ -58,7 +62,9 @@ class AdminRepository {
   Future<dynamic> updateTour(int id, dynamic data) async {
     try {
       return await _apiService.getPutApiResponse(
-          "${ApiConstants.baseUrl}${ApiConstants.adminTour}/$id", data);
+        "${ApiConstants.baseUrl}${ApiConstants.adminTour}/$id",
+        data,
+      );
     } catch (e) {
       rethrow;
     }
@@ -67,7 +73,8 @@ class AdminRepository {
   Future<dynamic> deleteTour(int id) async {
     try {
       return await _apiService.getDeleteApiResponse(
-          "${ApiConstants.baseUrl}${ApiConstants.adminTour}/$id");
+        "${ApiConstants.baseUrl}${ApiConstants.adminTour}/$id",
+      );
     } catch (e) {
       rethrow;
     }
@@ -76,7 +83,9 @@ class AdminRepository {
   Future<dynamic> toggleTopTour(int id) async {
     try {
       return await _apiService.getPutApiResponse(
-          "${ApiConstants.baseUrl}${ApiConstants.adminTour}/$id/toggle-top", {});
+        "${ApiConstants.baseUrl}${ApiConstants.adminTour}/$id/toggle-top",
+        {},
+      );
     } catch (e) {
       rethrow;
     }
@@ -86,7 +95,8 @@ class AdminRepository {
   Future<dynamic> getHotels() async {
     try {
       return await _apiService.getGetApiResponse(
-          ApiConstants.baseUrl + ApiConstants.adminHotels);
+        ApiConstants.baseUrl + ApiConstants.adminHotels,
+      );
     } catch (e) {
       rethrow;
     }
@@ -95,7 +105,9 @@ class AdminRepository {
   Future<dynamic> createHotel(dynamic data) async {
     try {
       return await _apiService.getPostApiResponse(
-          ApiConstants.baseUrl + ApiConstants.adminHotel, data);
+        ApiConstants.baseUrl + ApiConstants.adminHotel,
+        data,
+      );
     } catch (e) {
       rethrow;
     }
@@ -104,7 +116,9 @@ class AdminRepository {
   Future<dynamic> updateHotel(int id, dynamic data) async {
     try {
       return await _apiService.getPutApiResponse(
-          "${ApiConstants.baseUrl}${ApiConstants.adminHotel}/$id", data);
+        "${ApiConstants.baseUrl}${ApiConstants.adminHotel}/$id",
+        data,
+      );
     } catch (e) {
       rethrow;
     }
@@ -113,7 +127,8 @@ class AdminRepository {
   Future<dynamic> deleteHotel(int id) async {
     try {
       return await _apiService.getDeleteApiResponse(
-          "${ApiConstants.baseUrl}${ApiConstants.adminHotel}/$id");
+        "${ApiConstants.baseUrl}${ApiConstants.adminHotel}/$id",
+      );
     } catch (e) {
       rethrow;
     }
@@ -122,7 +137,9 @@ class AdminRepository {
   Future<dynamic> toggleFeaturedHotel(int id) async {
     try {
       return await _apiService.getPutApiResponse(
-          "${ApiConstants.baseUrl}${ApiConstants.adminHotel}/$id/toggle-featured", {});
+        "${ApiConstants.baseUrl}${ApiConstants.adminHotel}/$id/toggle-featured",
+        {},
+      );
     } catch (e) {
       rethrow;
     }
@@ -132,7 +149,8 @@ class AdminRepository {
   Future<dynamic> getFlights() async {
     try {
       return await _apiService.getGetApiResponse(
-          ApiConstants.baseUrl + ApiConstants.adminFlights);
+        ApiConstants.baseUrl + ApiConstants.adminFlights,
+      );
     } catch (e) {
       rethrow;
     }
@@ -141,7 +159,9 @@ class AdminRepository {
   Future<dynamic> createFlight(dynamic data) async {
     try {
       return await _apiService.getPostApiResponse(
-          ApiConstants.baseUrl + ApiConstants.adminFlight, data);
+        ApiConstants.baseUrl + ApiConstants.adminFlight,
+        data,
+      );
     } catch (e) {
       rethrow;
     }
@@ -150,7 +170,9 @@ class AdminRepository {
   Future<dynamic> updateFlight(int id, dynamic data) async {
     try {
       return await _apiService.getPutApiResponse(
-          "${ApiConstants.baseUrl}${ApiConstants.adminFlight}/$id", data);
+        "${ApiConstants.baseUrl}${ApiConstants.adminFlight}/$id",
+        data,
+      );
     } catch (e) {
       rethrow;
     }
@@ -159,7 +181,8 @@ class AdminRepository {
   Future<dynamic> deleteFlight(int id) async {
     try {
       return await _apiService.getDeleteApiResponse(
-          "${ApiConstants.baseUrl}${ApiConstants.adminFlight}/$id");
+        "${ApiConstants.baseUrl}${ApiConstants.adminFlight}/$id",
+      );
     } catch (e) {
       rethrow;
     }
@@ -168,19 +191,20 @@ class AdminRepository {
   Future<dynamic> togglePopularFlight(int id) async {
     try {
       return await _apiService.getPutApiResponse(
-          "${ApiConstants.baseUrl}${ApiConstants.adminFlight}/$id/toggle-popular", {});
+        "${ApiConstants.baseUrl}${ApiConstants.adminFlight}/$id/toggle-popular",
+        {},
+      );
     } catch (e) {
       rethrow;
     }
   }
 
-
-
   // Bookings
   Future<dynamic> getHotelBookings() async {
     try {
       return await _apiService.getGetApiResponse(
-          ApiConstants.baseUrl + ApiConstants.adminHotelBookings);
+        ApiConstants.baseUrl + ApiConstants.adminHotelBookings,
+      );
     } catch (e) {
       rethrow;
     }
@@ -189,7 +213,8 @@ class AdminRepository {
   Future<dynamic> getFlightBookings() async {
     try {
       return await _apiService.getGetApiResponse(
-          ApiConstants.baseUrl + ApiConstants.adminFlightBookings);
+        ApiConstants.baseUrl + ApiConstants.adminFlightBookings,
+      );
     } catch (e) {
       rethrow;
     }
@@ -198,16 +223,19 @@ class AdminRepository {
   Future<dynamic> getTourBookings() async {
     try {
       return await _apiService.getGetApiResponse(
-          ApiConstants.baseUrl + ApiConstants.adminTourBookings);
+        ApiConstants.baseUrl + ApiConstants.adminTourBookings,
+      );
     } catch (e) {
       rethrow;
     }
   }
 
-  Future<dynamic> uploadImage(File file) async {
+  Future<dynamic> uploadImage(XFile file) async {
     try {
       return await _apiService.getMultipartApiResponse(
-          ApiConstants.baseUrl + ApiConstants.adminUpload, file.path);
+        ApiConstants.baseUrl + ApiConstants.adminUpload,
+        file,
+      );
     } catch (e) {
       rethrow;
     }
@@ -216,7 +244,8 @@ class AdminRepository {
   Future<dynamic> getDashboardStats() async {
     try {
       return await _apiService.getGetApiResponse(
-          ApiConstants.baseUrl + ApiConstants.adminDashboard);
+        ApiConstants.baseUrl + ApiConstants.adminDashboard,
+      );
     } catch (e) {
       rethrow;
     }
@@ -225,7 +254,8 @@ class AdminRepository {
   Future<dynamic> getRevenueReport(String startDate, String endDate) async {
     try {
       return await _apiService.getGetApiResponse(
-          "${ApiConstants.baseUrl}/Admin/revenue-report?startDate=$startDate&endDate=$endDate");
+        "${ApiConstants.baseUrl}/Admin/revenue-report?startDate=$startDate&endDate=$endDate",
+      );
     } catch (e) {
       rethrow;
     }
@@ -234,7 +264,8 @@ class AdminRepository {
   Future<dynamic> getHotelRooms(int hotelId) async {
     try {
       return await _apiService.getGetApiResponse(
-          "${ApiConstants.baseUrl}/Admin/hotels/$hotelId/rooms");
+        "${ApiConstants.baseUrl}/Admin/hotels/$hotelId/rooms",
+      );
     } catch (e) {
       rethrow;
     }
@@ -243,7 +274,9 @@ class AdminRepository {
   Future<dynamic> createHotelRoom(int hotelId, dynamic data) async {
     try {
       return await _apiService.getPostApiResponse(
-          "${ApiConstants.baseUrl}/Admin/hotels/$hotelId/rooms", data);
+        "${ApiConstants.baseUrl}/Admin/hotels/$hotelId/rooms",
+        data,
+      );
     } catch (e) {
       rethrow;
     }
@@ -252,7 +285,9 @@ class AdminRepository {
   Future<dynamic> updateHotelRoom(int roomId, dynamic data) async {
     try {
       return await _apiService.getPutApiResponse(
-          "${ApiConstants.baseUrl}/Admin/hotels/rooms/$roomId", data);
+        "${ApiConstants.baseUrl}/Admin/hotels/rooms/$roomId",
+        data,
+      );
     } catch (e) {
       rethrow;
     }
@@ -261,7 +296,8 @@ class AdminRepository {
   Future<dynamic> deleteHotelRoom(int roomId) async {
     try {
       return await _apiService.getDeleteApiResponse(
-          "${ApiConstants.baseUrl}/Admin/hotels/rooms/$roomId");
+        "${ApiConstants.baseUrl}/Admin/hotels/rooms/$roomId",
+      );
     } catch (e) {
       rethrow;
     }

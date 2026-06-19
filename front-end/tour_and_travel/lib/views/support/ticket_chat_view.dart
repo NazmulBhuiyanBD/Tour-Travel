@@ -1,12 +1,12 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:tour_and_travel/core/constant/api_constants.dart';
-import 'package:tour_and_travel/core/constant/app_colors.dart';
 import 'package:tour_and_travel/data/services/storage_service.dart';
 import 'package:tour_and_travel/view_models/support_view_model.dart';
 
@@ -25,33 +25,25 @@ class TicketChatView extends StatefulWidget {
 }
 
 class _TicketChatViewState extends State<TicketChatView> {
-  final SupportViewModel supportViewModel =
-      Get.find<SupportViewModel>();
+  final SupportViewModel supportViewModel = Get.find<SupportViewModel>();
 
-  final TextEditingController _messageController =
-      TextEditingController();
+  final TextEditingController _messageController = TextEditingController();
 
-  final ScrollController _scrollController =
-      ScrollController();
+  final ScrollController _scrollController = ScrollController();
 
   final ImagePicker _picker = ImagePicker();
 
-  File? _selectedImage;
+  XFile? _selectedImage;
 
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      supportViewModel.fetchTicketDetails(
-        widget.ticketId,
-      );
+      supportViewModel.fetchTicketDetails(widget.ticketId);
 
       supportViewModel.currentMessages.listen((_) {
-        Future.delayed(
-          const Duration(milliseconds: 100),
-          _scrollToBottom,
-        );
+        Future.delayed(const Duration(milliseconds: 100), _scrollToBottom);
       });
     });
   }
@@ -67,32 +59,23 @@ class _TicketChatViewState extends State<TicketChatView> {
   }
 
   Future<void> _pickImage() async {
-    final XFile? image =
-        await _picker.pickImage(
-      source: ImageSource.gallery,
-    );
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
 
     if (image != null) {
       setState(() {
-        _selectedImage =
-            File(image.path);
+        _selectedImage = image;
       });
     }
   }
 
   Future<void> _sendMessage() async {
-    if (_messageController.text
-            .trim()
-            .isEmpty &&
-        _selectedImage == null) {
+    if (_messageController.text.trim().isEmpty && _selectedImage == null) {
       return;
     }
 
-    final message =
-        _messageController.text;
+    final message = _messageController.text;
 
-    final image =
-        _selectedImage;
+    final image = _selectedImage;
 
     _messageController.clear();
 
@@ -100,66 +83,44 @@ class _TicketChatViewState extends State<TicketChatView> {
       _selectedImage = null;
     });
 
-    await supportViewModel
-        .sendMessage(
-      widget.ticketId,
-      message,
-      image: image,
-    );
+    await supportViewModel.sendMessage(widget.ticketId, message, image: image);
 
     _scrollToBottom();
   }
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.subject, style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
+        title: Text(
+          widget.subject,
+          style: const TextStyle(
+            color: Colors.black87,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black87,
         elevation: 0.5,
         iconTheme: const IconThemeData(color: Colors.black87),
         actions: [
           Obx(() {
-            final ticket =
-                supportViewModel
-                    .currentTicket
-                    .value;
+            final ticket = supportViewModel.currentTicket.value;
 
-            final userRole =
-                StorageService.to
-                    .getUser()
-                    ?.role;
+            final userRole = StorageService.to.getUser()?.role;
 
-            if (ticket != null &&
-                !ticket.isClosed &&
-                userRole == 'Admin') {
+            if (ticket != null && !ticket.isClosed && userRole == 'Admin') {
               return IconButton(
-                icon: const Icon(
-                  Icons
-                      .check_circle_outline,
-                ),
+                icon: const Icon(Icons.check_circle_outline),
                 onPressed: () {
                   Get.defaultDialog(
-                    title:
-                        'Close Ticket?',
-                    middleText:
-                        'Are you sure?',
-                    textConfirm:
-                        'Yes',
-                    textCancel:
-                        'No',
-                    confirmTextColor:
-                        Colors.white,
-                    onConfirm:
-                        () {
-                      supportViewModel
-                          .closeTicket(
-                        widget
-                            .ticketId,
-                      );
+                    title: 'Close Ticket?',
+                    middleText: 'Are you sure?',
+                    textConfirm: 'Yes',
+                    textCancel: 'No',
+                    confirmTextColor: Colors.white,
+                    onConfirm: () {
+                      supportViewModel.closeTicket(widget.ticketId);
 
                       Get.back();
                     },
@@ -173,43 +134,23 @@ class _TicketChatViewState extends State<TicketChatView> {
         ],
       ),
 
-      backgroundColor:
-          const Color(
-        0xFFF4F7FC,
-      ),
+      backgroundColor: const Color(0xFFF4F7FC),
 
       body: Container(
         child: Column(
           children: [
-
             Obx(() {
-              final ticket =
-                  supportViewModel
-                      .currentTicket
-                      .value;
+              final ticket = supportViewModel.currentTicket.value;
 
-              if (ticket != null &&
-                  ticket
-                      .isClosed) {
+              if (ticket != null && ticket.isClosed) {
                 return Container(
-                  width:
-                      double.infinity,
-                  padding:
-                      const EdgeInsets
-                          .all(
-                    12,
-                  ),
-                  color:
-                      Colors.grey,
-                  child:
-                      const Center(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(12),
+                  color: Colors.grey,
+                  child: const Center(
                     child: Text(
                       'Ticket Closed',
-                      style:
-                          TextStyle(
-                        color: Colors
-                            .white,
-                      ),
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                 );
@@ -220,116 +161,68 @@ class _TicketChatViewState extends State<TicketChatView> {
 
             Expanded(
               child: Obx(() {
-
-                if (supportViewModel
-                        .isLoading
-                        .value &&
-                    supportViewModel
-                        .currentMessages
-                        .isEmpty) {
-                  return const Center(
-                    child:
-                        CircularProgressIndicator(),
-                  );
+                if (supportViewModel.isLoading.value &&
+                    supportViewModel.currentMessages.isEmpty) {
+                  return const Center(child: CircularProgressIndicator());
                 }
 
-                if (supportViewModel
-                        .currentMessages
-                        .isEmpty) {
-                  return const Center(
-                    child: Text(
-                      'No messages yet.',
-                    ),
-                  );
+                if (supportViewModel.currentMessages.isEmpty) {
+                  return const Center(child: Text('No messages yet.'));
                 }
 
                 return ListView.builder(
-                  controller:
-                      _scrollController,
-                  padding:
-                      const EdgeInsets
-                          .all(
-                    16,
-                  ),
-                  itemCount:
-                      supportViewModel
-                          .currentMessages
-                          .length,
-                  itemBuilder:
-                      (context,
-                          index) {
+                  controller: _scrollController,
+                  padding: const EdgeInsets.all(16),
+                  itemCount: supportViewModel.currentMessages.length,
+                  itemBuilder: (context, index) {
+                    final msg = supportViewModel.currentMessages[index];
 
-                    final msg =
-                        supportViewModel
-                            .currentMessages[index];
+                    final currentUser = StorageService.to.getUser();
 
-                    final currentUser =
-                        StorageService
-                            .to
-                            .getUser();
+                    final isAdminViewer = currentUser?.role == 'Admin';
 
-                    final isAdminViewer =
-                        currentUser
-                                    ?.role ==
-                                'Admin';
+                    final isMe = isAdminViewer
+                        ? msg.isAdminMessage
+                        : !msg.isAdminMessage;
 
-                    final isMe =
-                        isAdminViewer
-                            ? msg
-                                .isAdminMessage
-                            : !msg
-                                .isAdminMessage;
-
-                    return _buildMessageBubble(
-                      msg,
-                      isMe,
-                    );
+                    return _buildMessageBubble(msg, isMe);
                   },
                 );
               }),
             ),
 
-            if (_selectedImage !=
-                null)
+            if (_selectedImage != null)
               Container(
-                padding:
-                    const EdgeInsets
-                        .all(
-                  8,
-                ),
+                padding: const EdgeInsets.all(8),
                 child: Row(
                   children: [
-                    Image.file(
-                      _selectedImage!,
-                      width: 80,
-                      height: 80,
-                    ),
+                    kIsWeb
+                        ? Image.network(
+                            _selectedImage!.path,
+                            width: 80,
+                            height: 80,
+                          )
+                        : Image.file(
+                            File(_selectedImage!.path),
+                            width: 80,
+                            height: 80,
+                          ),
                     IconButton(
-                      onPressed:
-                          () {
+                      onPressed: () {
                         setState(() {
-                          _selectedImage =
-                              null;
+                          _selectedImage = null;
                         });
                       },
-                      icon:
-                          const Icon(
-                        Icons.close,
-                      ),
+                      icon: const Icon(Icons.close),
                     ),
                   ],
                 ),
               ),
 
             Obx(() {
-              final ticket =
-                  supportViewModel
-                      .currentTicket
-                      .value;
+              final ticket = supportViewModel.currentTicket.value;
 
-              if (ticket != null &&
-                  ticket
-                      .isClosed) {
+              if (ticket != null && ticket.isClosed) {
                 return const SizedBox();
               }
 
@@ -341,66 +234,26 @@ class _TicketChatViewState extends State<TicketChatView> {
     );
   }
 
-  Widget _buildMessageBubble(
-    dynamic msg,
-    bool isMe,
-  ) {
+  Widget _buildMessageBubble(dynamic msg, bool isMe) {
     return Align(
-      alignment: isMe
-          ? Alignment
-              .centerRight
-          : Alignment
-              .centerLeft,
+      alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
-        margin:
-            const EdgeInsets
-                .only(
-          bottom: 12,
-        ),
-        padding:
-            const EdgeInsets
-                .all(
-          12,
-        ),
-        decoration:
-            BoxDecoration(
-          color: isMe
-              ? Colors.blue
-              : Colors.white,
-          borderRadius:
-              BorderRadius
-                  .circular(
-            12,
-          ),
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: isMe ? Colors.blue : Colors.white,
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
-          crossAxisAlignment:
-              CrossAxisAlignment
-                  .start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (msg.imageUrl != null && msg.imageUrl.isNotEmpty)
+              Image.network(ApiConstants.mediaBaseUrl + msg.imageUrl),
 
-            if (msg.imageUrl !=
-                    null &&
-                msg.imageUrl
-                    .isNotEmpty)
-              Image.network(
-                ApiConstants
-                        .mediaBaseUrl +
-                    msg.imageUrl,
-              ),
-
-            if (msg.message
-                .isNotEmpty)
+            if (msg.message.isNotEmpty)
               Text(
                 msg.message,
-                style:
-                    TextStyle(
-                  color: isMe
-                      ? Colors
-                          .white
-                      : Colors
-                          .black,
-                ),
+                style: TextStyle(color: isMe ? Colors.white : Colors.black),
               ),
           ],
         ),
@@ -408,55 +261,28 @@ class _TicketChatViewState extends State<TicketChatView> {
     );
   }
 
-  Widget
-      _buildMessageInput() {
+  Widget _buildMessageInput() {
     return ClipRRect(
       child: BackdropFilter(
-        filter: ImageFilter.blur(
-          sigmaX: 10,
-          sigmaY: 10,
-        ),
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
-          padding:
-              const EdgeInsets
-                  .all(
-            12,
-          ),
+          padding: const EdgeInsets.all(12),
           child: Row(
             children: [
-
-              IconButton(
-                onPressed:
-                    _pickImage,
-                icon:
-                    const Icon(
-                  Icons.image,
-                ),
-              ),
+              IconButton(onPressed: _pickImage, icon: const Icon(Icons.image)),
 
               Expanded(
-                child:
-                    TextField(
-                  controller:
-                      _messageController,
+                child: TextField(
+                  controller: _messageController,
                   minLines: 1,
                   maxLines: 4,
-                  decoration:
-                      const InputDecoration(
-                    hintText:
-                        'Type a message...',
+                  decoration: const InputDecoration(
+                    hintText: 'Type a message...',
                   ),
                 ),
               ),
 
-              IconButton(
-                onPressed:
-                    _sendMessage,
-                icon:
-                    const Icon(
-                  Icons.send,
-                ),
-              ),
+              IconButton(onPressed: _sendMessage, icon: const Icon(Icons.send)),
             ],
           ),
         ),

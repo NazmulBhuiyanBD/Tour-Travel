@@ -406,9 +406,9 @@ class _HotelDetailsScreenState extends State<HotelDetailsScreen> {
                   borderRadius: BorderRadius.circular(15),
                 ),
               ),
-              child: const Text(
-                "Book Now",
-                style: TextStyle(
+              child: Text(
+                (hotel.availableRooms ?? 0) > 0 ? "Book Now" : "Not Available",
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),

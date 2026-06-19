@@ -20,7 +20,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final UserViewModel _userViewModel = Get.put(UserViewModel());
   final AuthViewModel _authViewModel = Get.find<AuthViewModel>();
   final ReviewViewModel _reviewViewModel = Get.put(ReviewViewModel());
-  
+
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
   late TextEditingController _phoneController;
@@ -36,13 +36,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.initState();
     final user = _authViewModel.user.value;
     _nameController = TextEditingController(text: user.name ?? '');
-    _phoneController = TextEditingController(text: user.phone ?? ''); 
+    _phoneController = TextEditingController(text: user.phone ?? '');
     _emailController = TextEditingController(text: user.email ?? '');
     _dobController = TextEditingController(text: _formatDate(user.dateOfBirth));
     _addressController = TextEditingController(text: user.address ?? '');
     _selectedGender = user.gender;
     _profilePicUrl = user.profilePicture;
-    
+
     // Fetch user reviews
     _reviewViewModel.fetchUserReviews();
   }
@@ -76,13 +76,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         elevation: 0.5,
         shadowColor: Colors.black.withOpacity(0.1),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.textPrimary, size: 20),
+          icon: const Icon(
+            Icons.arrow_back_ios_new,
+            color: AppColors.textPrimary,
+            size: 20,
+          ),
           onPressed: () => Get.back(),
         ),
         centerTitle: true,
         title: const Text(
           "Edit Profile",
-          style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold, fontSize: 18),
+          style: TextStyle(
+            color: AppColors.textPrimary,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
         ),
       ),
       body: SingleChildScrollView(
@@ -99,7 +107,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       controller: _nameController,
                       label: 'Full Name',
                       icon: Icons.person_outline,
-                      validator: (value) => value!.isEmpty ? 'Please enter your name' : null,
+                      validator: (value) =>
+                          value!.isEmpty ? 'Please enter your name' : null,
                     ),
                     const SizedBox(height: 20),
                     _buildTextField(
@@ -114,7 +123,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       label: 'Phone Number',
                       icon: Icons.phone_android_outlined,
                       keyboardType: TextInputType.phone,
-                      validator: (value) => value!.isEmpty ? 'Please enter your phone number' : null,
+                      validator: (value) => value!.isEmpty
+                          ? 'Please enter your phone number'
+                          : null,
                     ),
                     const SizedBox(height: 20),
                     _buildDropdownField(),
@@ -125,28 +136,41 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       controller: _addressController,
                       label: 'Address',
                       icon: Icons.home_outlined,
-                      validator: (value) => value!.isEmpty ? 'Please enter your address' : null,
+                      validator: (value) =>
+                          value!.isEmpty ? 'Please enter your address' : null,
                     ),
                     const SizedBox(height: 40),
-                    Obx(() => SizedBox(
-                      width: double.infinity,
-                      height: 55,
-                      child: ElevatedButton(
-                        onPressed: _userViewModel.isLoading.value ? null : _updateProfile,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primaryBlue,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                          elevation: 5,
-                          shadowColor: AppColors.primaryBlue.withOpacity(0.3),
+                    Obx(
+                      () => SizedBox(
+                        width: double.infinity,
+                        height: 55,
+                        child: ElevatedButton(
+                          onPressed: _userViewModel.isLoading.value
+                              ? null
+                              : _updateProfile,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primaryBlue,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            elevation: 5,
+                            shadowColor: AppColors.primaryBlue.withOpacity(0.3),
+                          ),
+                          child: _userViewModel.isLoading.value
+                              ? const CircularProgressIndicator(
+                                  color: Colors.white,
+                                )
+                              : const Text(
+                                  'Save Changes',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
                         ),
-                        child: _userViewModel.isLoading.value
-                            ? const CircularProgressIndicator(color: Colors.white)
-                            : const Text(
-                                'Save Changes',
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-                               ),
                       ),
-                    )),
+                    ),
                     const SizedBox(height: 40),
                     _buildReviewsSummary(),
                   ],
@@ -257,7 +281,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 child: const Text(
                   "View All Reviews",
-                  style: TextStyle(color: AppColors.primaryBlue, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    color: AppColors.primaryBlue,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
@@ -304,14 +331,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   child: CircleAvatar(
                     radius: 54,
                     backgroundColor: Colors.grey.shade100,
-                    backgroundImage: _profilePicUrl != null && _profilePicUrl!.isNotEmpty
-                        ? NetworkImage("${ApiConstants.mediaBaseUrl}$_profilePicUrl")
+                    backgroundImage:
+                        _profilePicUrl != null && _profilePicUrl!.isNotEmpty
+                        ? NetworkImage(
+                            "${ApiConstants.mediaBaseUrl}$_profilePicUrl",
+                          )
                         : null,
                     child: _isUploading
-                        ? const CircularProgressIndicator(color: AppColors.primaryBlue)
+                        ? const CircularProgressIndicator(
+                            color: AppColors.primaryBlue,
+                          )
                         : (_profilePicUrl == null || _profilePicUrl!.isEmpty)
-                            ? const Icon(Icons.person, size: 60, color: AppColors.textSecondary)
-                            : null,
+                        ? const Icon(
+                            Icons.person,
+                            size: 60,
+                            color: AppColors.textSecondary,
+                          )
+                        : null,
                   ),
                 ),
                 Positioned(
@@ -323,7 +359,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       color: AppColors.primaryBlue,
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.camera_alt, size: 18, color: Colors.white),
+                    child: const Icon(
+                      Icons.camera_alt,
+                      size: 18,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ],
@@ -384,8 +424,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ),
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
-          prefixIcon: Icon(icon, color: readOnly ? Colors.grey.shade400 : AppColors.primaryBlue),
+          labelStyle: const TextStyle(
+            color: AppColors.textSecondary,
+            fontSize: 14,
+          ),
+          prefixIcon: Icon(
+            icon,
+            color: readOnly ? Colors.grey.shade400 : AppColors.primaryBlue,
+          ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide(color: Colors.grey.shade200, width: 1),
@@ -396,11 +442,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
-            borderSide: const BorderSide(color: AppColors.primaryBlue, width: 1.5),
+            borderSide: const BorderSide(
+              color: AppColors.primaryBlue,
+              width: 1.5,
+            ),
           ),
           filled: true,
           fillColor: Colors.transparent,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 18,
+          ),
         ),
       ),
     );
@@ -428,7 +480,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ),
         decoration: InputDecoration(
           labelText: 'Gender',
-          labelStyle: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
+          labelStyle: const TextStyle(
+            color: AppColors.textSecondary,
+            fontSize: 14,
+          ),
           prefixIcon: const Icon(Icons.person, color: AppColors.primaryBlue),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
@@ -440,16 +495,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
-            borderSide: const BorderSide(color: AppColors.primaryBlue, width: 1.5),
+            borderSide: const BorderSide(
+              color: AppColors.primaryBlue,
+              width: 1.5,
+            ),
           ),
           filled: true,
           fillColor: Colors.transparent,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 18,
+          ),
         ),
         items: ['Male', 'Female', 'Other'].map((String value) {
           return DropdownMenuItem<String>(
             value: value,
-            child: Text(value, style: const TextStyle(color: AppColors.textPrimary)),
+            child: Text(
+              value,
+              style: const TextStyle(color: AppColors.textPrimary),
+            ),
           );
         }).toList(),
         onChanged: (newValue) {
@@ -457,7 +521,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             _selectedGender = newValue;
           });
         },
-        validator: (value) => value == null ? 'Please select your gender' : null,
+        validator: (value) =>
+            value == null ? 'Please select your gender' : null,
       ),
     );
   }
@@ -477,18 +542,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         );
         if (pickedDate != null) {
           setState(() {
-            _dobController.text = "${pickedDate.year}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.day.toString().padLeft(2, '0')}";
+            _dobController.text =
+                "${pickedDate.year}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.day.toString().padLeft(2, '0')}";
           });
         }
       },
-      validator: (value) => value!.isEmpty ? 'Please enter your date of birth' : null,
+      validator: (value) =>
+          value!.isEmpty ? 'Please enter your date of birth' : null,
     );
   }
 
   void _updateProfile() {
     if (_formKey.currentState!.validate()) {
       _userViewModel.updateProfile(
-        _nameController.text, 
+        _nameController.text,
         _phoneController.text,
         _selectedGender ?? '',
         _dobController.text,
@@ -510,7 +577,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           child: Wrap(
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 16,
+                  horizontal: 24,
+                ),
                 child: Text(
                   'Profile Picture',
                   style: TextStyle(
@@ -521,7 +591,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
               ),
               ListTile(
-                leading: const Icon(Icons.photo_library, color: AppColors.primaryBlue),
+                leading: const Icon(
+                  Icons.photo_library,
+                  color: AppColors.primaryBlue,
+                ),
                 title: const Text('Choose from Gallery'),
                 onTap: () {
                   Navigator.of(context).pop();
@@ -529,7 +602,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.camera_alt, color: AppColors.primaryBlue),
+                leading: const Icon(
+                  Icons.camera_alt,
+                  color: AppColors.primaryBlue,
+                ),
                 title: const Text('Take a Photo'),
                 onTap: () {
                   Navigator.of(context).pop();
@@ -562,8 +638,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
       final NetworkApiService apiService = NetworkApiService();
       final response = await apiService.getMultipartApiResponse(
-        ApiConstants.baseUrl + ApiConstants.supportUpload, 
-        file.path
+        ApiConstants.baseUrl + ApiConstants.supportUpload,
+        file,
       );
 
       if (response != null && response['path'] != null) {
@@ -572,9 +648,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           _isUploading = false;
         });
         Get.snackbar(
-          "Success", 
+          "Success",
           "Profile picture uploaded successfully!",
-          backgroundColor: Colors.green, 
+          backgroundColor: Colors.green,
           colorText: Colors.white,
         );
       } else {
@@ -582,9 +658,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           _isUploading = false;
         });
         Get.snackbar(
-          "Upload Failed", 
+          "Upload Failed",
           "Failed to upload image. Please try again.",
-          backgroundColor: Colors.red, 
+          backgroundColor: Colors.red,
           colorText: Colors.white,
         );
       }
@@ -593,9 +669,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         _isUploading = false;
       });
       Get.snackbar(
-        "Error", 
+        "Error",
         "An error occurred: $e",
-        backgroundColor: Colors.red, 
+        backgroundColor: Colors.red,
         colorText: Colors.white,
       );
     }
